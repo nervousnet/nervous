@@ -14,3 +14,4 @@
       temperature
       barometer
       battery
+      magnetic field
