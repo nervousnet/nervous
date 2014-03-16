@@ -57,10 +57,10 @@ public class MainActivity extends Activity implements SensorEventListener {
 		Sensor sensor = event.sensor;
 		switch (sensor.getType()) {
 		case Sensor.TYPE_LIGHT:
-			proximityView.setText(String.valueOf(event.values[0]));
+			lightView.setText(String.valueOf(event.values[0]));
 			break;
 		case Sensor.TYPE_PROXIMITY:
-			lightView.setText(String.valueOf(event.values[0]));
+			proximityView.setText(String.valueOf(event.values[0]));
 			break;
 		case Sensor.TYPE_ACCELEROMETER:
 			accXView.setText(String.valueOf(event.values[0]));
