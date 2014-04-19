@@ -1,0 +1,28 @@
+# Logs and databases #
+######################
+*.asv
+*.log
+*.sql
+*.sqlite
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Specific folders #
+####################
+/.metadata/
+
+# Sensor Service Test #
+/SensorServiceTest/bin
+/SensorServiceTest/.settings
+/SensorServiceTest/gen
+/SensorServiceTest/.classpath
+/SensorServiceTest/.project
