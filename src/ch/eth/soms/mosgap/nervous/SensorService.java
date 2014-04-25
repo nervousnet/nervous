@@ -132,43 +132,43 @@ public class SensorService extends Service implements SensorEventListener {
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-
+		long timestamp = System.currentTimeMillis();
 		Sensor sensor = event.sensor;
 		switch (sensor.getType()) {
 		case Sensor.TYPE_LIGHT:
-			sensorFrame.addSensorData(new SensorDataLight(event.timestamp, event.accuracy, event.values[0]));
+			sensorFrame.addSensorData(new SensorDataLight(timestamp, event.accuracy, event.values[0]));
 			Log.d(DEBUG_TAG, "Light data added to frame");
 			break;
 		case Sensor.TYPE_PROXIMITY:
-			sensorFrame.addSensorData(new SensorDataProximity(event.timestamp, event.accuracy, event.values[0]));
+			sensorFrame.addSensorData(new SensorDataProximity(timestamp, event.accuracy, event.values[0]));
 			Log.d(DEBUG_TAG, "Proximity data added to frame");
 			break;
 		case Sensor.TYPE_ACCELEROMETER:
-			sensorFrame.addSensorData(new SensorDataAccelerometer(event.timestamp, event.accuracy, event.values[0], event.values[1], event.values[2]));
+			sensorFrame.addSensorData(new SensorDataAccelerometer(timestamp, event.accuracy, event.values[0], event.values[1], event.values[2]));
 			Log.d(DEBUG_TAG, "Accelerometer data added to frame");
 			break;
 		case Sensor.TYPE_MAGNETIC_FIELD:
-			sensorFrame.addSensorData(new SensorDataMagnetic(event.timestamp, event.accuracy, event.values[0], event.values[1], event.values[2]));
+			sensorFrame.addSensorData(new SensorDataMagnetic(timestamp, event.accuracy, event.values[0], event.values[1], event.values[2]));
 			Log.d(DEBUG_TAG, "Magnetic data added to frame");
 			break;
 		case Sensor.TYPE_GYROSCOPE:
-			sensorFrame.addSensorData(new SensorDataGyroscope(event.timestamp, event.accuracy, event.values[0], event.values[1], event.values[2]));
+			sensorFrame.addSensorData(new SensorDataGyroscope(timestamp, event.accuracy, event.values[0], event.values[1], event.values[2]));
 			Log.d(DEBUG_TAG, "Gyroscope data added to frame");
 			break;
 		case Sensor.TYPE_AMBIENT_TEMPERATURE:
-			sensorFrame.addSensorData(new SensorDataTemperature(event.timestamp, event.accuracy, event.values[0]));
+			sensorFrame.addSensorData(new SensorDataTemperature(timestamp, event.accuracy, event.values[0]));
 			Log.d(DEBUG_TAG, "Temperature data added to frame");
 			break;
 		case Sensor.TYPE_RELATIVE_HUMIDITY:
-			sensorFrame.addSensorData(new SensorDataHumidity(event.timestamp, event.accuracy, event.values[0]));
+			sensorFrame.addSensorData(new SensorDataHumidity(timestamp, event.accuracy, event.values[0]));
 			Log.d(DEBUG_TAG, "Humidity data added to frame");
 			break;
 		}
 
 		if (sensorFrame.isComplete()) {
 			// Add sensor data which can be queried
-			long timestamp = System.currentTimeMillis();
-
+			timestamp = System.currentTimeMillis();
+			
 			int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
 			int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
 			int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
