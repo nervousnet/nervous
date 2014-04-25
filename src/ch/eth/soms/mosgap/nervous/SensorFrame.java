@@ -1,10 +1,9 @@
-package ch.eth.soms.mosgap.sensorservice;
+package ch.eth.soms.mosgap.nervous;
 
 public class SensorFrame {
 
 	private final SensorHeader sensorHeader;
 	private SensorData[] sensorDataArr;
-	private long timestamp;
 
 	SensorFrame(SensorHeader sensorHeader) {
 		this.sensorHeader = sensorHeader;
@@ -13,16 +12,10 @@ public class SensorFrame {
 
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(String.valueOf(timestamp)+";");
 		for (SensorData sensorData : sensorDataArr) {
 			sb.append(sensorData.toString());
 		}
-		sb.append("\n");
 		return sb.toString();
-	}
-
-	public void setTimestamp() {
-		timestamp = System.currentTimeMillis();
 	}
 
 	public void addSensorData(SensorData sensorData) {

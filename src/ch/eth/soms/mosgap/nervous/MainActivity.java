@@ -1,4 +1,4 @@
-package ch.eth.soms.mosgap.sensorservice;
+package ch.eth.soms.mosgap.nervous;
 
 import android.os.Bundle;
 import android.app.Activity;

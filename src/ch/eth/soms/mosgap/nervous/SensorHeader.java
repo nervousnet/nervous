@@ -1,4 +1,4 @@
-package ch.eth.soms.mosgap.sensorservice;
+package ch.eth.soms.mosgap.nervous;
 
 import java.lang.reflect.Method;
 import java.util.LinkedList;
@@ -80,20 +80,8 @@ public class SensorHeader {
 				sb.append("\n");
 			}
 		}
-		// Timestamp
-		sb.append("Timestamp;");
-		// Data columns
-		for (Class<? extends SensorData> sensorDataClass : sensorDataClasses) {
-			try {
-				Method method = sensorDataClass.getDeclaredMethod("getDataColumns", null);
-				String[] columns = (String[]) method.invoke(null, null);
-				for (String column : columns)
-					sb.append(column + ";");
-			} catch (Exception ex) {
-
-			}
-		}
-		sb.append("\n");
+		// Tripplet columns
+		sb.append("Timestamp;Type;Value\n");
 		return sb.toString();
 	}
 
