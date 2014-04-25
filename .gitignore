@@ -18,11 +18,10 @@ desktop.ini
 
 # Specific folders #
 ####################
-/.metadata/
 
-# Sensor Service Test #
-/SensorServiceTest/bin
-/SensorServiceTest/.settings
-/SensorServiceTest/gen
-/SensorServiceTest/.classpath
-/SensorServiceTest/.project
+# Nervous #
+/bin
+/.settings
+/gen
+/.classpath
+/.project
