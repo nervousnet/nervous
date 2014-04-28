@@ -55,7 +55,7 @@ public class MainActivity extends Activity {
 	public void stopSensorService() {
 		// Cancel
 		AlarmManager scheduler = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		Intent intent = new Intent(this, SensorService.class);
+		Intent intent = new Intent(getApplicationContext(), SensorService.class);
 		PendingIntent scheduledIntent = PendingIntent.getService(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		scheduler.cancel(scheduledIntent);
