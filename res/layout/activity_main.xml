@@ -18,8 +18,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onToggleClicked"
-            android:textOff="Service OFF"
-            android:textOn="Service ON" />
+            android:textOff="@string/service_off"
+            android:textOn="@string/service_on" />
         
         <TextView
             android:id="@+id/text_status"
