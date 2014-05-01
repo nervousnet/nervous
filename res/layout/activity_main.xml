@@ -34,10 +34,10 @@
             android:text="@string/settings" />
 
         <Button
-            android:id="@+id/button_upload"
+            android:id="@+id/button_export"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/upload" />
+            android:text="@string/export" />
     </LinearLayout>
 
 </RelativeLayout>
