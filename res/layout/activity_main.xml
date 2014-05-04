@@ -20,13 +20,7 @@
             android:onClick="onToggleClicked"
             android:textOff="@string/service_off"
             android:textOn="@string/service_on" />
-        
-        <TextView
-            android:id="@+id/text_status"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/status" />
-        
+
         <Button
             android:id="@+id/button_settings"
             android:layout_width="match_parent"
@@ -38,6 +32,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/export" />
+
+        <TextView
+            android:id="@+id/text_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.93"
+            android:text="@string/loadingStatus" />
     </LinearLayout>
 
 </RelativeLayout>

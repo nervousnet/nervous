@@ -1,7 +1,10 @@
 package ch.eth.soms.mosgap.nervous;
 
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -11,6 +14,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 import android.os.Environment;
 
 import java.io.BufferedWriter;
@@ -19,6 +23,8 @@ import android.content.Context;
 
 import java.io.FileWriter;
 import java.nio.channels.FileChannel;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
@@ -34,6 +40,8 @@ public class MainActivity extends Activity {
 	private TextView textStatus;
 	private Button buttonSettings;
 	private Button buttonExport;	
+	
+	private boolean serviceRunning;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,12 +53,15 @@ public class MainActivity extends Activity {
 		buttonSettings = (Button) findViewById(R.id.button_settings);
 		buttonExport = (Button) findViewById(R.id.button_export);
 		
-		toggleButtonOnOff.setChecked(serviceRunning());
+		buttonExport.setOnClickListener(export_handler);
 		
-		 buttonExport.setOnClickListener(export_handler);
+		updateServiceInfo();
+		
 	}
 	
 	public void startSensorService() {
+		
+		new ServiceInfo(getApplicationContext()).cleanOnServiceStart();
 		// Schedule
 		AlarmManager scheduler = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(getApplicationContext(), SensorService.class);
@@ -61,8 +72,9 @@ public class MainActivity extends Activity {
 
 		scheduler.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, scheduledIntent);
 		
+		serviceRunning = true;
+		textStatus.setText("Service started");
 		Log.d(DEBUG_TAG, "Service started");
-
 	}
 
 	public void stopSensorService() {
@@ -72,21 +84,23 @@ public class MainActivity extends Activity {
 		PendingIntent scheduledIntent = PendingIntent.getService(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		scheduler.cancel(scheduledIntent);
+		
+		serviceRunning = false;
 		Log.d(DEBUG_TAG, "Service stopped");
 	}
 	
 	public void onToggleClicked(View view) {
 	    boolean on = ((ToggleButton) view).isChecked();
 	    if (on) {
-	    	textStatus.setText("The service is running.");
 	    	startSensorService();
+
 	    } else {
-	    	textStatus.setText("The service is not running.");
 	    	stopSensorService();
 	    }
+	    
 	}
 	
-	 View.OnClickListener export_handler = new View.OnClickListener() {
+	View.OnClickListener export_handler = new View.OnClickListener() {
 
                     public void onClick(View v)
                     {
@@ -201,15 +215,37 @@ public class MainActivity extends Activity {
                         }
                     }
                 };
+		
 	
-	private boolean serviceRunning() {
-	    ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-	        if ("ch.eth.soms.mosgap.nervous.SensorService".equals(service.service.getClassName())) {
-	            return true;
-	        }
-	    }
-	    return false;
+    public void updateServiceInfo(){
+		
+		final ServiceInfo info = new ServiceInfo(getApplicationContext());
+		if(!info.ServiceIsRunning()) serviceRunning = false;
+		
+		new Timer().schedule(new TimerTask() {
+
+			
+		    @Override
+		    public void run() {
+		    	final String str;
+				if(serviceRunning){
+					long now = SystemClock.elapsedRealtime();
+					long elapsedTime = (now - info.getTimeOfFirstFrame())/1000;
+					str = "Service started. \nElapsed time: " + elapsedTime + " s\nFrames gathered: " + info.getAmountOfFrames();
+				}
+				else{
+					str = "Service stopped.";
+				}
+
+		        runOnUiThread(new Runnable() {
+		            @Override
+		            public void run() {
+		                // Thiss code will always run on the UI thread, therefore is safe to modify UI elements.
+	                	textStatus.setText(str);
+		            }
+		        });
+		    }
+		}, 0, 1000);
 	}
 	
 	@Override

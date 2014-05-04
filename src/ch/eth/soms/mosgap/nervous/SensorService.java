@@ -16,7 +16,9 @@ import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.util.Log;
+import android.widget.Toast;
 
 public class SensorService extends Service implements SensorEventListener {
 
@@ -44,7 +46,8 @@ public class SensorService extends Service implements SensorEventListener {
 	private boolean hasGyroscope = false;
 	private boolean hasTemperature = false;
 	private boolean hasHumidity = false;
-
+	
+	
 	public class SensorBinder extends Binder {
 		SensorService getService() {
 			return SensorService.this;
@@ -103,7 +106,7 @@ public class SensorService extends Service implements SensorEventListener {
 
 		IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
 		batteryStatus = getApplicationContext().registerReceiver(null, ifilter);
-
+		
 		Log.d(DEBUG_TAG, "Service execution started");
 		return START_STICKY;
 	}
@@ -184,14 +187,20 @@ public class SensorService extends Service implements SensorEventListener {
 
 			// Append frame to log
 			new SensorServiceLoggerTask().execute(sensorFrame);
+			
+			
 
 			// Stop service until it's triggered the next time
 			sensorManager.unregisterListener(this);
+
 			Log.d(DEBUG_TAG, "Service execution stopped");
+			
+			ServiceInfo info = new ServiceInfo(getApplicationContext());
+			info.setTimeOfLastFrame();
 			stopSelf();
 		}
 	}
-
+	
 	/**
 	 * Asynchronous task to write to the log file
 	 */
@@ -235,5 +244,5 @@ public class SensorService extends Service implements SensorEventListener {
 			return null;
 		}
 	}
-
+	
 }
