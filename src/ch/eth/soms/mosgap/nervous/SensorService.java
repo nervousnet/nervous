@@ -16,9 +16,7 @@ import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Binder;
 import android.os.IBinder;
-import android.os.SystemClock;
 import android.util.Log;
-import android.widget.Toast;
 
 public class SensorService extends Service implements SensorEventListener {
 

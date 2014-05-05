@@ -3,8 +3,6 @@ package ch.eth.soms.mosgap.nervous;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.app.Activity;
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningServiceInfo;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -19,15 +17,11 @@ import android.os.Environment;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import android.content.Context;
 
 import java.io.FileWriter;
-import java.nio.channels.FileChannel;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileNotFoundException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import android.widget.Toast;
@@ -36,7 +30,6 @@ public class MainActivity extends Activity {
 
 	private static final String DEBUG_TAG = "MainActivity";
 
-	private ToggleButton toggleButtonOnOff;
 	private TextView textStatus;
 	private Button buttonSettings;
 	private Button buttonExport;	
@@ -48,15 +41,16 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		toggleButtonOnOff = (ToggleButton) findViewById(R.id.togglebutton);
 		textStatus = (TextView) findViewById(R.id.text_status);		
 		buttonSettings = (Button) findViewById(R.id.button_settings);
 		buttonExport = (Button) findViewById(R.id.button_export);
 		
 		buttonExport.setOnClickListener(export_handler);
-		
+	}
+	
+	@Override
+	protected void onResume(){
 		updateServiceInfo();
-		
 	}
 	
 	public void startSensorService() {
@@ -223,8 +217,6 @@ public class MainActivity extends Activity {
 		if(!info.ServiceIsRunning()) serviceRunning = false;
 		
 		new Timer().schedule(new TimerTask() {
-
-			
 		    @Override
 		    public void run() {
 		    	final String str;
@@ -240,8 +232,7 @@ public class MainActivity extends Activity {
 		        runOnUiThread(new Runnable() {
 		            @Override
 		            public void run() {
-		                // Thiss code will always run on the UI thread, therefore is safe to modify UI elements.
-	                	textStatus.setText(str);
+	                	textStatus.setText(str); //Runs on UI Thread
 		            }
 		        });
 		    }
