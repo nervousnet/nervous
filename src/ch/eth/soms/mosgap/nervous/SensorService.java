@@ -186,7 +186,6 @@ public class SensorService extends Service implements SensorEventListener {
 			// Append frame to log
 			new SensorServiceLoggerTask().execute(sensorFrame);
 			
-			
 
 			// Stop service until it's triggered the next time
 			sensorManager.unregisterListener(this);

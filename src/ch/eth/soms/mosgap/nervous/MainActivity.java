@@ -32,29 +32,30 @@ public class MainActivity extends Activity {
 
 	private TextView textStatus;
 	private Button buttonSettings;
-	private Button buttonExport;	
-	
+	private Button buttonExport;
+
 	private boolean serviceRunning;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
-		textStatus = (TextView) findViewById(R.id.text_status);		
+
+		textStatus = (TextView) findViewById(R.id.text_status);
 		buttonSettings = (Button) findViewById(R.id.button_settings);
 		buttonExport = (Button) findViewById(R.id.button_export);
-		
+
 		buttonExport.setOnClickListener(export_handler);
 	}
-	
+
 	@Override
-	protected void onResume(){
+	protected void onResume() {
+		super.onResume();
 		updateServiceInfo();
 	}
-	
+
 	public void startSensorService() {
-		
+
 		new ServiceInfo(getApplicationContext()).cleanOnServiceStart();
 		// Schedule
 		AlarmManager scheduler = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
@@ -65,7 +66,7 @@ public class MainActivity extends Activity {
 		long interval = 30 * 1000;
 
 		scheduler.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, scheduledIntent);
-		
+
 		serviceRunning = true;
 		textStatus.setText("Service started");
 		Log.d(DEBUG_TAG, "Service started");
@@ -78,171 +79,143 @@ public class MainActivity extends Activity {
 		PendingIntent scheduledIntent = PendingIntent.getService(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		scheduler.cancel(scheduledIntent);
-		
+
 		serviceRunning = false;
 		Log.d(DEBUG_TAG, "Service stopped");
 	}
-	
-	public void onToggleClicked(View view) {
-	    boolean on = ((ToggleButton) view).isChecked();
-	    if (on) {
-	    	startSensorService();
 
-	    } else {
-	    	stopSensorService();
-	    }
-	    
+	public void onToggleClicked(View view) {
+		boolean on = ((ToggleButton) view).isChecked();
+		if (on) {
+			startSensorService();
+
+		} else {
+			stopSensorService();
+		}
+
 	}
-	
+
 	View.OnClickListener export_handler = new View.OnClickListener() {
 
-                    public void onClick(View v)
-                    {
+		public void onClick(View v) {
 
-                        String state = Environment.getExternalStorageState();
+			String state = Environment.getExternalStorageState();
 
-                        if (Environment.MEDIA_MOUNTED.equals(state))
-                        {
-                            Log.d(DEBUG_TAG, "SD card detected");
+			if (Environment.MEDIA_MOUNTED.equals(state)) {
+				Log.d(DEBUG_TAG, "SD card detected");
 
+				stopSensorService();
 
+				Log.d(DEBUG_TAG, "stopSensorService for file transfer");
 
-                            stopSensorService();
+				long TS = System.currentTimeMillis();
+				StringBuilder stringBuilder = new StringBuilder();
 
-                            Log.d(DEBUG_TAG, "stopSensorService for file transfer");
+				stringBuilder.append(TS);
+				stringBuilder.append(".txt");
 
-                            
-                            long TS = System.currentTimeMillis();
-                            StringBuilder stringBuilder = new StringBuilder();
+				String file_name = stringBuilder.toString();
+				Log.d(DEBUG_TAG, file_name);
+				Log.d(DEBUG_TAG, "file_name assigned to time");
 
-                            stringBuilder.append(TS);
-                            stringBuilder.append(".txt");
+				String sdCard = Environment.getExternalStorageDirectory().getAbsolutePath();
 
-                            String file_name = stringBuilder.toString();
-                            Log.d(DEBUG_TAG,file_name);
-                            Log.d(DEBUG_TAG, "file_name assigned to time");
+				File dir = new File(sdCard + "/nervous");
+				dir.mkdirs();
+				File file_ext = new File(dir, file_name);
 
-                            
+				Log.d(DEBUG_TAG, "store location of new file");
 
+				try {
+					file_ext.createNewFile();
+					Log.d(DEBUG_TAG, "Create file with file_name");
 
-                            String sdCard=Environment.getExternalStorageDirectory().getAbsolutePath();
+					File file = getBaseContext().getFileStreamPath("SensorLog.txt");
 
+					if (file.exists()) {
+						Log.d(DEBUG_TAG, "SensorLog.txt exists");
+						FileInputStream read_file = openFileInput("SensorLog.txt");
 
+						Log.d(DEBUG_TAG, "created Sensorlog.txt file obj read_file");
 
+						InputStreamReader inputStreamReader = new InputStreamReader(read_file);
+						BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+						StringBuilder sb = new StringBuilder();
 
-                            File dir = new File (sdCard + "/nervous");
-                            dir.mkdirs();
-                            File file_ext = new File(dir,file_name);
+						sb.append("Timestamp of export to SD : " + TS + "\n");
+						String line;
+						while ((line = bufferedReader.readLine()) != null) {
+							sb.append(line);
+						}
+						BufferedWriter bufWr = null;
 
-                            Log.d(DEBUG_TAG,"store location of new file");
+						bufWr = new BufferedWriter(new FileWriter(file_ext, false));
 
-                          
+						bufWr.append(sb.toString());
+						inputStreamReader.close();
+						bufWr.close();
+						read_file.close();
 
+						getApplicationContext().deleteFile("SensorLog.txt");
+						Log.d(DEBUG_TAG, "deleted sensorLog.txt");
 
-                            try
-                            {
-                                file_ext.createNewFile();
-                                Log.d(DEBUG_TAG, "Create file with file_name");
+					}
+					Log.d(DEBUG_TAG, "done with file transfer");
 
-                                File file = getBaseContext().getFileStreamPath("SensorLog.txt");
+				}
 
+				catch (Exception e) {
 
-                                if(file.exists())
-                                {
-                                    Log.d(DEBUG_TAG,"SensorLog.txt exists");
-                                    FileInputStream read_file = openFileInput("SensorLog.txt");
+					e.printStackTrace();
+				}
 
-                                    Log.d(DEBUG_TAG,"created Sensorlog.txt file obj read_file");
-                                    
-                                    InputStreamReader inputStreamReader = new InputStreamReader(read_file);
-                                    BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                                    StringBuilder sb = new StringBuilder();
-                                    
-                                    sb.append("Timestamp of export to SD : "+TS+"\n");
-                                    String line;
-                                    while ((line = bufferedReader.readLine()) != null) {
-                                        sb.append(line);
-                                    }
-                                    BufferedWriter bufWr = null;
+				startSensorService();
+				Log.d(DEBUG_TAG, "startSensorService for file transfer");
 
-                                    bufWr = new BufferedWriter(new FileWriter(file_ext, false));
+			} else
 
+			{
+				Log.d(DEBUG_TAG, "No external storage detected(cannot copy file)");
+				Toast.makeText(getApplicationContext(), "No external storage", Toast.LENGTH_LONG).show();
 
+			}
+		}
+	};
 
-                                    
-                                    bufWr.append(sb.toString());
-                                    inputStreamReader.close();
-                                    bufWr.close();
-                                    read_file.close();
+	public void updateServiceInfo() {
 
-
-
-
-                                    
-                                    getApplicationContext().deleteFile("SensorLog.txt");
-                                    Log.d(DEBUG_TAG,"deleted sensorLog.txt");
-
-                                }
-                                Log.d(DEBUG_TAG,"done with file transfer");
-
-
-                            }
-
-                            catch(Exception e){
-
-                                e.printStackTrace();
-                            }
-
-
-                            startSensorService();
-                            Log.d(DEBUG_TAG, "startSensorService for file transfer");
-
-
-
-                        }
-                        else
-
-                        {
-                            Log.d(DEBUG_TAG, "No external storage detected(cannot copy file)");
-                            Toast.makeText(getApplicationContext(), "No external storage", Toast.LENGTH_LONG).show();
-
-                        }
-                    }
-                };
-		
-	
-    public void updateServiceInfo(){
-		
 		final ServiceInfo info = new ServiceInfo(getApplicationContext());
-		if(!info.ServiceIsRunning()) serviceRunning = false;
+		
+		if (!info.serviceIsRunning()) {
+			serviceRunning = false;
+		}
 		
 		new Timer().schedule(new TimerTask() {
-		    @Override
-		    public void run() {
-		    	final String str;
-				if(serviceRunning){
+			@Override
+			public void run() {
+				final String str;
+				if (serviceRunning) {
 					long now = SystemClock.elapsedRealtime();
-					long elapsedTime = (now - info.getTimeOfFirstFrame())/1000;
+					long elapsedTime = (now - info.getTimeOfFirstFrame()) / 1000;
 					str = "Service started. \nElapsed time: " + elapsedTime + " s\nFrames gathered: " + info.getAmountOfFrames();
-				}
-				else{
+				} else {
 					str = "Service stopped.";
 				}
 
-		        runOnUiThread(new Runnable() {
-		            @Override
-		            public void run() {
-	                	textStatus.setText(str); //Runs on UI Thread
-		            }
-		        });
-		    }
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						textStatus.setText(str); // Runs on UI Thread
+					}
+				});
+			}
 		}, 0, 1000);
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-	
+
 }
