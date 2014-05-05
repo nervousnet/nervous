@@ -33,6 +33,7 @@ public class MainActivity extends Activity {
 	private TextView textStatus;
 	private Button buttonSettings;
 	private Button buttonExport;
+	private ToggleButton buttonOnOff;
 
 	private boolean serviceRunning;
 
@@ -44,6 +45,7 @@ public class MainActivity extends Activity {
 		textStatus = (TextView) findViewById(R.id.text_status);
 		buttonSettings = (Button) findViewById(R.id.button_settings);
 		buttonExport = (Button) findViewById(R.id.button_export);
+		buttonOnOff = (ToggleButton) findViewById(R.id.togglebutton);
 
 		buttonExport.setOnClickListener(export_handler);
 	}
@@ -56,7 +58,6 @@ public class MainActivity extends Activity {
 
 	public void startSensorService() {
 
-		new ServiceInfo(getApplicationContext()).cleanOnServiceStart();
 		// Schedule
 		AlarmManager scheduler = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(getApplicationContext(), SensorService.class);
@@ -68,6 +69,7 @@ public class MainActivity extends Activity {
 		scheduler.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, scheduledIntent);
 
 		serviceRunning = true;
+		new ServiceInfo(getApplicationContext()).clean();
 		textStatus.setText("Service started");
 		Log.d(DEBUG_TAG, "Service started");
 	}
@@ -81,6 +83,7 @@ public class MainActivity extends Activity {
 		scheduler.cancel(scheduledIntent);
 
 		serviceRunning = false;
+		new ServiceInfo(getApplicationContext()).clean();
 		Log.d(DEBUG_TAG, "Service stopped");
 	}
 
@@ -186,9 +189,7 @@ public class MainActivity extends Activity {
 
 		final ServiceInfo info = new ServiceInfo(getApplicationContext());
 		
-		if (!info.serviceIsRunning()) {
-			serviceRunning = false;
-		}
+		serviceRunning = info.serviceIsRunning();
 		
 		new Timer().schedule(new TimerTask() {
 			@Override
@@ -205,6 +206,7 @@ public class MainActivity extends Activity {
 				runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
+						buttonOnOff.setChecked(serviceRunning);
 						textStatus.setText(str); // Runs on UI Thread
 					}
 				});

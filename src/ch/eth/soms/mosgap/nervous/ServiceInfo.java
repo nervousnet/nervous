@@ -16,13 +16,15 @@ public class ServiceInfo {
 		preferences = context.getSharedPreferences("ServiceInfo", Context.MODE_PRIVATE);
 	}
 
-	public void cleanOnServiceStart() {
+	public void clean() {
 		Editor editor = preferences.edit();
 		editor.putLong("first", 0);
 		editor.putLong("last", 0);
 		editor.putInt("amountOfFrames", 0);
 		editor.commit();
 	}
+	
+	
 
 	public void frameAdded() {
 		Editor editor = preferences.edit();
@@ -58,8 +60,8 @@ public class ServiceInfo {
 
 		long last = preferences.getLong("last", 0);
 		long now = SystemClock.elapsedRealtime();
-
-		if (last != 0 && Math.abs((now - last) / 1000) < 60) {
+		double passedTime = Math.abs(((double)(now - last)) / 1000.d);
+		if (last != 0 && passedTime < 60.d) {
 			return true;
 		} else {
 			return false;
