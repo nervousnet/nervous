@@ -18,14 +18,14 @@ public class ServiceInfo {
 
 	public void clean() {
 		Editor editor = preferences.edit();
-		editor.putLong("first", 0);
+		editor.putLong("first", SystemClock.elapsedRealtime());
 		editor.putLong("last", 0);
 		editor.putInt("amountOfFrames", 0);
 		editor.commit();
 	}
 	
 	
-
+	
 	public void frameAdded() {
 		Editor editor = preferences.edit();
 		int amount = preferences.getInt("amountOfFrames", 0) + 1;
