@@ -197,7 +197,7 @@ public class SensorService extends Service implements SensorEventListener {
 			stopSelf();
 		}
 	}
-
+	
 	
 	/**
 	 * Asynchronous task to write to the log file

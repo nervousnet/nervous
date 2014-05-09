@@ -196,13 +196,11 @@ public class MainActivity extends Activity {
 			public void run() {
 				final String str;
 				if (serviceRunning) {
-					long now = SystemClock.elapsedRealtime();
-					long elapsedTime = (now - info.getTimeOfFirstFrame()) / 1000;
-					str = "Service started. \nElapsed time: " + elapsedTime + " s\nFrames gathered: " + info.getAmountOfFrames();
+					str = "Service started. \nStarted at: " + info.getTimeOfFirstFrame() + " s\nFrames gathered: " + info.getAmountOfFrames();
 				} else {
 					str = "Service stopped.";
 				}
-
+				
 				runOnUiThread(new Runnable() {
 					@Override
 					public void run() {

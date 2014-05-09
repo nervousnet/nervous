@@ -1,5 +1,9 @@
 package ch.eth.soms.mosgap.nervous;
 
+import java.sql.Date;
+import java.util.Calendar;
+import java.util.TimeZone;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -37,9 +41,10 @@ public class ServiceInfo {
 		return preferences.getInt("amountOfFrames", 0);
 	}
 
-	public long getTimeOfFirstFrame() {
+	public String getTimeOfFirstFrame() {
 		long first = preferences.getLong("first", 0);
-		return first;
+		Date date = new Date(first);
+		return date.toGMTString();
 	}
 
 	public void setTimeOfLastFrame() {
