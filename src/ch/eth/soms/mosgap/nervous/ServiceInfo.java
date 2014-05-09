@@ -1,7 +1,9 @@
 package ch.eth.soms.mosgap.nervous;
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 import android.content.Context;
@@ -22,7 +24,8 @@ public class ServiceInfo {
 
 	public void clean() {
 		Editor editor = preferences.edit();
-		editor.putLong("first", SystemClock.elapsedRealtime());
+    	long now = System.currentTimeMillis();
+		editor.putLong("first", now);
 		editor.putLong("last", 0);
 		editor.putInt("amountOfFrames", 0);
 		editor.commit();
@@ -42,9 +45,10 @@ public class ServiceInfo {
 	}
 
 	public String getTimeOfFirstFrame() {
-		long first = preferences.getLong("first", 0);
-		Date date = new Date(first);
-		return date.toGMTString();
+		
+		long first = preferences.getLong("first", 0);		
+        Date resultdate = new Date(first);
+        return SimpleDateFormat.getDateTimeInstance().format(resultdate);
 	}
 
 	public void setTimeOfLastFrame() {

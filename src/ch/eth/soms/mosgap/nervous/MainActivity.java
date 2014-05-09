@@ -196,7 +196,7 @@ public class MainActivity extends Activity {
 			public void run() {
 				final String str;
 				if (serviceRunning) {
-					str = "Service started. \nStarted at: " + info.getTimeOfFirstFrame() + " s\nFrames gathered: " + info.getAmountOfFrames();
+					str = "Service started. \nStarted at: " + info.getTimeOfFirstFrame() + " \nFrames gathered: " + info.getAmountOfFrames();
 				} else {
 					str = "Service stopped.";
 				}
