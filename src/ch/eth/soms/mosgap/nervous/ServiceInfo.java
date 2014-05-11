@@ -2,9 +2,6 @@ package ch.eth.soms.mosgap.nervous;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -31,7 +28,15 @@ public class ServiceInfo {
 		editor.commit();
 	}
 	
+	public void setFileSize(long size){
+		Editor editor = preferences.edit();
+		editor.putLong("fileSize", size);
+		editor.commit();
+	}
 	
+	public long getFileSize(){
+		return preferences.getLong("fileSize", 0);
+	}
 	
 	public void frameAdded() {
 		Editor editor = preferences.edit();

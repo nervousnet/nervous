@@ -8,11 +8,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" >
-
         <ToggleButton
             android:id="@+id/togglebutton"
             android:layout_width="wrap_content"
@@ -22,23 +17,22 @@
             android:textOn="@string/service_on" />
 
         <Button
-            android:id="@+id/button_settings"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/settings" />
-
-        <Button
             android:id="@+id/button_export"
-            android:layout_width="match_parent"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/text_status"
+            android:layout_marginLeft="17dp"
+            android:layout_toRightOf="@+id/togglebutton"
             android:text="@string/export" />
 
         <TextView
             android:id="@+id/text_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.93"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/togglebutton"
+            android:layout_marginTop="17dp"
             android:text="@string/loadingStatus" />
-    </LinearLayout>
+
 
 </RelativeLayout>

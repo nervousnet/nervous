@@ -1,7 +1,6 @@
 package ch.eth.soms.mosgap.nervous;
 
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -31,7 +30,6 @@ public class MainActivity extends Activity {
 	private static final String DEBUG_TAG = "MainActivity";
 
 	private TextView textStatus;
-	private Button buttonSettings;
 	private Button buttonExport;
 	private ToggleButton buttonOnOff;
 
@@ -43,7 +41,6 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 
 		textStatus = (TextView) findViewById(R.id.text_status);
-		buttonSettings = (Button) findViewById(R.id.button_settings);
 		buttonExport = (Button) findViewById(R.id.button_export);
 		buttonOnOff = (ToggleButton) findViewById(R.id.togglebutton);
 
@@ -172,7 +169,9 @@ public class MainActivity extends Activity {
 					e.printStackTrace();
 				}
 
-				startSensorService();
+				if(new ServiceInfo(getApplicationContext()).serviceIsRunning()) {
+					startSensorService();
+				}
 				Log.d(DEBUG_TAG, "startSensorService for file transfer");
 
 			} else
@@ -186,7 +185,7 @@ public class MainActivity extends Activity {
 	};
 
 	public void updateServiceInfo() {
-
+		
 		final ServiceInfo info = new ServiceInfo(getApplicationContext());
 		
 		serviceRunning = info.serviceIsRunning();
@@ -196,7 +195,7 @@ public class MainActivity extends Activity {
 			public void run() {
 				final String str;
 				if (serviceRunning) {
-					str = "Service started. \nStarted at: " + info.getTimeOfFirstFrame() + " \nFrames gathered: " + info.getAmountOfFrames();
+					str = "Service started. \nStarted at: " + info.getTimeOfFirstFrame() + " \nFrames gathered: " + info.getAmountOfFrames() + "\nFile size: " + info.getFileSize() + " Bytes";
 				} else {
 					str = "Service stopped.";
 				}

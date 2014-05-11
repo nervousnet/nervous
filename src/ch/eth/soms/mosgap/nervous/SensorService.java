@@ -45,7 +45,6 @@ public class SensorService extends Service implements SensorEventListener {
 	private boolean hasTemperature = false;
 	private boolean hasHumidity = false;
 	
-	
 	public class SensorBinder extends Binder {
 		SensorService getService() {
 			return SensorService.this;
@@ -226,6 +225,8 @@ public class SensorService extends Service implements SensorEventListener {
 				// Write frame
 				bufWr.append(sensorFrame.toString());
 				bufWr.flush();
+				
+				new ServiceInfo(getApplicationContext()).setFileSize(file.length());
 				Log.d(DEBUG_TAG, "Added frame to log");
 			} catch (IOException ex) {
 				// TODO: useful error handling
