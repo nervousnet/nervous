@@ -107,3 +107,13 @@ You will need a [JDK](http://www.oracle.com/technetwork/java/javase/downloads/in
     $ export PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
     $ ant debug
     $ adb install bin/nervous-debug.apk
+
+# Contribute
+
+We are interested in collaboratively developing a new information platform for everyone based on the following principles:
+
+* community-based, open and transparent
+* participatory, social, and fair
+* respecting privacy and informational self-determination
+* open for responsible applications of various kinds
+* core functionality shall be freely accessible to everyone
