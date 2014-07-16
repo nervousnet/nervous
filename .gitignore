@@ -20,8 +20,8 @@ desktop.ini
 ####################
 
 # Nervous #
-/bin
-/.settings
-/gen
-/.classpath
-/.project
+/android/bin
+/android/.settings
+/android/gen
+/android/.classpath
+/android/.project
