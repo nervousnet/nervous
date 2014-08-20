@@ -1,4 +1,4 @@
-package ch.eth.soms.nervous.android;
+package ch.ethz.soms.nervous.android;
 
 import java.io.BufferedWriter;
 import java.io.File;

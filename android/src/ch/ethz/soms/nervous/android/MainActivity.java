@@ -1,4 +1,4 @@
-package ch.eth.soms.nervous.android;
+package ch.ethz.soms.nervous.android;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -23,6 +23,8 @@ import java.util.TimerTask;
 import java.io.FileInputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+
+import ch.eth.soms.mosgap.nervous.R;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {

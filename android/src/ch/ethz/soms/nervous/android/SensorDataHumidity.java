@@ -1,4 +1,4 @@
-package ch.eth.soms.nervous.android;
+package ch.ethz.soms.nervous.android;
 
 public class SensorDataHumidity extends SensorData {
 	private final int accuracy;
