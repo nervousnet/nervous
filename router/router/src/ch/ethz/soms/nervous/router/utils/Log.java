@@ -5,10 +5,10 @@ import java.util.Date;
 
 public class Log {
 
-	private static final int FLAG_ERROR = 1;
-	private static final int FLAG_WARNING = 2;
-	private static final int FLAG_DEBUGGING = 4;
-	private static final int FLAG_INFO = 8;
+	public static final int FLAG_ERROR = 1;
+	public static final int FLAG_WARNING = 2;
+	public static final int FLAG_DEBUGGING = 4;
+	public static final int FLAG_INFO = 8;
 
 	private static Log log;
 
