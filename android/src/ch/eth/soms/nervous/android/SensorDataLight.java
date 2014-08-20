@@ -1,4 +1,4 @@
-package ch.eth.soms.mosgap.nervous;
+package ch.eth.soms.nervous.android;
 
 public class SensorDataLight extends SensorData {
 	private final int accuracy;

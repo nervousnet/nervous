@@ -1,4 +1,4 @@
-package ch.eth.soms.mosgap.nervous;
+package ch.eth.soms.nervous.android;
 
 import java.lang.reflect.Method;
 import java.util.LinkedList;

@@ -25,3 +25,12 @@ desktop.ini
 /android/gen
 /android/.classpath
 /android/.project
+/router/router/.classpath
+/router/router/.settings
+/router/router/.project
+/router/testclient/.classpath
+/router/testclient/.settings
+/router/testclient/.project
+/router/.metadata
+/router/RemoteSystemsTempFiles
+/.metadata

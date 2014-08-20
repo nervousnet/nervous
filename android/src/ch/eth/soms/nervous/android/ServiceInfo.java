@@ -1,4 +1,4 @@
-package ch.eth.soms.mosgap.nervous;
+package ch.eth.soms.nervous.android;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
