@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <config>
     <configPath>config.xml</configPath>
-    <logDisplayVerbosity>3</logDisplayVerbosity>
+    <logDisplayVerbosity>15</logDisplayVerbosity>
     <logPath>log.txt</logPath>
-    <logWriteVerbosity>3</logWriteVerbosity>
+    <logWriteVerbosity>15</logWriteVerbosity>
+    <serverPort>25600</serverPort>
+    <serverThreads>5</serverThreads>
     <sqlPassword></sqlPassword>
     <sqlServer></sqlServer>
     <sqlUsername></sqlUsername>

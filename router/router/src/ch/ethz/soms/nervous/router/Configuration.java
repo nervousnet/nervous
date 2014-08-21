@@ -26,6 +26,25 @@ public class Configuration {
 
 	private String configPath;
 	private String logPath;
+	
+	private int serverPort;
+	private int serverThreads;
+	
+	public int getServerThreads() {
+		return serverThreads;
+	}
+	
+	public void setServerThreads(int serverThreads) {
+		this.serverThreads = serverThreads;
+	}
+	
+	public int getServerPort() {
+		return serverPort;
+	}
+	
+	public void setServerPort(int serverPort) {
+		this.serverPort = serverPort;
+	}
 
 	public String getSqlServer() {
 		return sqlServer;
@@ -90,7 +109,8 @@ public class Configuration {
 	public static synchronized Configuration getInstance(String path) {
 		if (config == null) {
 			config = new Configuration(path);
-			marshal();
+			// Load configuration from file
+			unmarshal();
 		}
 		return config;
 	}
@@ -98,7 +118,8 @@ public class Configuration {
 	public static synchronized Configuration getInstance() {
 		if (config == null) {
 			config = new Configuration("config.xml");
-			marshal();
+			// Load configuration from file
+			unmarshal();
 		}
 		return config;
 	}
@@ -125,7 +146,9 @@ public class Configuration {
 		this.sqlServer = "";
 		this.sqlUsername = "";
 		this.sqlPassword = "";
-		//
+		// Networking
+		this.serverPort = 25600;
+		this.serverThreads = 5;
 	}
 
 	public static synchronized void marshal() {
@@ -151,6 +174,7 @@ public class Configuration {
 		} catch (JAXBException jbe) {
 			Log.getInstance().append(Log.FLAG_ERROR, "Error parsing the configuration file");
 		}
+		// Error reading the configuration, write current configuration
 		marshal();
 	}
 }
