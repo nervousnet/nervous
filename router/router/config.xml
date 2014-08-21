@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<config>
+    <configPath>config.xml</configPath>
+    <logDisplayVerbosity>3</logDisplayVerbosity>
+    <logPath>log.txt</logPath>
+    <logWriteVerbosity>3</logWriteVerbosity>
+    <sqlPassword></sqlPassword>
+    <sqlServer></sqlServer>
+    <sqlUsername></sqlUsername>
+</config>
