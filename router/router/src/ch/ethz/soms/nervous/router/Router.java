@@ -2,6 +2,7 @@ package ch.ethz.soms.nervous.router;
 
 import ch.ethz.soms.nervous.router.network.ConcurrentServer;
 import ch.ethz.soms.nervous.router.network.SimpleUploadWorkerFactory;
+import ch.ethz.soms.nervous.router.sql.SqlConnection;
 import ch.ethz.soms.nervous.router.utils.Log;
 
 public class Router {
@@ -20,9 +21,12 @@ public class Router {
 		Log log = Log.getInstance(config.getLogDisplayVerbosity(), config.getLogWriteVerbosity(), config.getLogPath());
 		log.append(Log.FLAG_INFO, "Reading configuration file done");
 
-		// TODO: Setup threading pool, setup network sockets, setup SQL connection
 
-		SimpleUploadWorkerFactory factory = new SimpleUploadWorkerFactory();
+		SqlConnection sqlco = new SqlConnection(config.getSqlUsername(), config.getSqlPassword(), config.getSqlHostname(), config.getSqlPort(), config.getSqlDatabase());
+		log.append(Log.FLAG_INFO, "Establishing connection to SQL database done");
+		
+		// Create factory which creates workers for uploading to the SQL database
+		SimpleUploadWorkerFactory factory = new SimpleUploadWorkerFactory(sqlco);
 		
 		// Start server
 		ConcurrentServer server = new ConcurrentServer(config.getServerPort(), config.getServerThreads(), factory);

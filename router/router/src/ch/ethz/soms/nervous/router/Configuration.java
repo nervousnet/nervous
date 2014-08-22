@@ -3,6 +3,8 @@ package ch.ethz.soms.nervous.router;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -10,6 +12,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import ch.ethz.soms.nervous.router.sql.SqlSensorConfiguration;
 import ch.ethz.soms.nervous.router.utils.Log;
 
 @XmlRootElement(name = "config")
@@ -17,9 +20,11 @@ public class Configuration {
 
 	private static Configuration config;
 
-	private String sqlServer;
 	private String sqlUsername;
 	private String sqlPassword;
+	private String sqlHostname;
+	private int sqlPort;
+	private String sqlDatabase;
 
 	private int logWriteVerbosity;
 	private int logDisplayVerbosity;
@@ -30,6 +35,24 @@ public class Configuration {
 	private int serverPort;
 	private int serverThreads;
 	
+	private List<SqlSensorConfiguration> sensors;
+		
+	public static Configuration getConfig() {
+		return config;
+	}
+
+	public static void setConfig(Configuration config) {
+		Configuration.config = config;
+	}
+
+	public List<SqlSensorConfiguration> getSensors() {
+		return sensors;
+	}
+
+	public void setSensors(List<SqlSensorConfiguration> sensors) {
+		this.sensors = sensors;
+	}
+
 	public int getServerThreads() {
 		return serverThreads;
 	}
@@ -46,12 +69,28 @@ public class Configuration {
 		this.serverPort = serverPort;
 	}
 
-	public String getSqlServer() {
-		return sqlServer;
+	public String getSqlHostname() {
+		return sqlHostname;
 	}
 
-	public void setSqlServer(String sqlServer) {
-		this.sqlServer = sqlServer;
+	public void setSqlHostname(String sqlHostname) {
+		this.sqlHostname = sqlHostname;
+	}
+
+	public int getSqlPort() {
+		return sqlPort;
+	}
+
+	public void setSqlPort(int sqlPort) {
+		this.sqlPort = sqlPort;
+	}
+
+	public String getSqlDatabase() {
+		return sqlDatabase;
+	}
+
+	public void setSqlDatabase(String sqlDatabase) {
+		this.sqlDatabase = sqlDatabase;
 	}
 
 	public String getSqlUsername() {
@@ -143,12 +182,15 @@ public class Configuration {
 		this.logWriteVerbosity = Log.FLAG_ERROR|Log.FLAG_WARNING;
 		this.logPath = "log.txt";
 		// SQL
-		this.sqlServer = "";
+		this.sqlHostname = "";
 		this.sqlUsername = "";
 		this.sqlPassword = "";
+		this.sqlPort = 3306;
 		// Networking
 		this.serverPort = 25600;
 		this.serverThreads = 5;
+		// Sensors
+		this.sensors = new ArrayList<SqlSensorConfiguration>();
 	}
 
 	public static synchronized void marshal() {

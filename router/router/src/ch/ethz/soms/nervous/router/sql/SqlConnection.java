@@ -1,13 +1,20 @@
 package ch.ethz.soms.nervous.router.sql;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import javax.swing.JOptionPane;
+import javax.sql.DataSource;
 
-import com.mysql.jdbc.Driver;
+import org.apache.commons.dbcp2.ConnectionFactory;
+import org.apache.commons.dbcp2.DriverManagerConnectionFactory;
+import org.apache.commons.dbcp2.PoolableConnection;
+import org.apache.commons.dbcp2.PoolableConnectionFactory;
+import org.apache.commons.dbcp2.PoolingDataSource;
+import org.apache.commons.pool2.ObjectPool;
+import org.apache.commons.pool2.impl.GenericObjectPool;
+
+import ch.ethz.soms.nervous.router.utils.Log;
 
 /**
  * A Wrapper around an SQL Connection
@@ -15,71 +22,60 @@ import com.mysql.jdbc.Driver;
 public final class SqlConnection {
 
 	// Server properties
-	public static final String USERNAME = "dmdb";
-	public static final String PASSWORD = "1234";
-	public static final String HOSTNAME = "localhost";
-	public static final int PORT = 3306;
-	public static final String DATABASE = "dmdb2014";
+	private String username;
+	private String password;
+	private String hostname;
+	private int port;
+	private String database;
 
-	private Connection connection;
+	private Properties props;
+	private DataSource source;
 
-	/**
-	 * Singleton instance: We want to avoid re-establishing connections across web server requests.
-	 */
-	private static SqlConnection instance = null;
-
-	public static synchronized SqlConnection getInstance() {
-		if (instance == null) {
-			instance = new SqlConnection();
+	public Connection getConnection() {
+		try {
+			return source.getConnection();
+		} catch (SQLException e) {
+			Log.getInstance().append(Log.FLAG_ERROR, "Can't get a connection from the data source");
+			return null;
 		}
-		return instance;
 	}
-	
-	private void connect()
-	{
-		Connection connection = null;
 
+	public SqlConnection(String hostname, String username, String password, int port, String database) {
+		this.username = username;
+		this.password = password;
+		this.hostname = hostname;
+		this.port = port;
+		this.database = database;
+		
+		// See: http://dev.mysql.com/doc/connector-j/en/connector-j-reference-configuration-properties.html
+		props = new Properties();
+		props.put("username", username);
+		props.put("password", password);
+		// props.put("autoReconnect", "true");
+		// props.put("maxReconnects", "10");
+		// props.put("initialTimeout", "1");
+		
+		source = setup();
+
+	}
+
+	private DataSource setup() {
 
 		try {
-			new Driver();
-			
-			// See: http://dev.mysql.com/doc/connector-j/en/connector-j-reference-configuration-properties.html
-			Properties properties = new Properties();
-			properties.put("user", USERNAME);
-			properties.put("password", PASSWORD);
-			properties.put("autoReconnect", "true");
-			properties.put("maxReconnects", "10");
-			properties.put("initialTimeout", "1");
-			
-			
-			connection = DriverManager.getConnection("jdbc:mysql://" + HOSTNAME + ":" + PORT + "/" + DATABASE, properties);
-			
-			//connection = DriverManager.getConnection("jdbc:mysql://" + HOSTNAME + ":" + PORT + "/" + DATABASE, USERNAME, PASSWORD);
-			
-
-		} catch (final SQLException e) {
-			/**
-			 * Make sure that we really see this error.
-			 */
-			System.err.println("Could not connect to MYSQL. Is the server running?");
-			JOptionPane.showMessageDialog(null, "Could not connect to MYSQL. Is the server running?\n" + "Error in " + this.getClass().getName() + ".", "Critical Error!", JOptionPane.ERROR_MESSAGE);
-			e.printStackTrace();
+			Class.forName("com.mysql.jdbc.Driver").newInstance();
+		} catch (Exception e) {
+			Log.getInstance().append(Log.FLAG_ERROR, "Error loading the SQL driver");
+			return null;
 		}
 
-		this.connection = connection;
-	}
+		ConnectionFactory cf = new DriverManagerConnectionFactory("jdbc:mysql://" + hostname + ":" + port + "/" + database, props);
+		PoolableConnectionFactory pcf = new PoolableConnectionFactory(cf, null);
 
-	private SqlConnection() {
-		connect();
-	}
-
-	public final Connection getConnection() {
-		return this.connection;
-	}
-	
-	public void reconnect()
-	{
-		connect();
+		ObjectPool<PoolableConnection> connPool = new GenericObjectPool<>(pcf);
+		
+		pcf.setPool(connPool);
+		PoolingDataSource<PoolableConnection> dataSource = new PoolingDataSource<>(connPool);
+		return dataSource;
 	}
 
 }

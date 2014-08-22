@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <config>
     <configPath>config.xml</configPath>
-    <logDisplayVerbosity>15</logDisplayVerbosity>
+    <logDisplayVerbosity>3</logDisplayVerbosity>
     <logPath>log.txt</logPath>
-    <logWriteVerbosity>15</logWriteVerbosity>
+    <logWriteVerbosity>3</logWriteVerbosity>
     <serverPort>25600</serverPort>
     <serverThreads>5</serverThreads>
+    <sqlHostname>localhost</sqlHostname>
     <sqlPassword></sqlPassword>
-    <sqlServer></sqlServer>
+    <sqlPort>3306</sqlPort>
     <sqlUsername></sqlUsername>
 </config>
