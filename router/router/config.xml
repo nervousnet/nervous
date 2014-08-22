@@ -13,8 +13,26 @@
     <sqlDatabase>nervous</sqlDatabase>
     <sqlsensors>
         <sensor>
-            <sensorName>test</sensorName>
-            <sensorID>1234</sensorID>
+            <sensorName>Accelerometer</sensorName>
+            <sensorID>0000000000000000</sensorID>
+            <attributes>
+                <attribute>
+                    <name>X</name>
+                    <type>FLOAT</type>
+                </attribute>
+                <attribute>
+                    <name>Y</name>
+                    <type>FLOAT</type>
+                </attribute>
+                <attribute>
+                    <name>Z</name>
+                    <type>FLOAT</type>
+                </attribute>
+                <attribute>
+                    <name>Accuracy</name>
+                    <type>INT</type>
+                </attribute>
+            </attributes>
         </sensor>
     </sqlsensors>
 </config>

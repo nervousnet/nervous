@@ -26,7 +26,6 @@ public final class SqlConnection {
 	private int port;
 	private String database;
 
-	private Properties props;
 	private DataSource source;
 
 	public Connection getConnection() {
@@ -54,14 +53,6 @@ public final class SqlConnection {
 		this.port = port;
 		this.database = database;
 		
-		// See: http://dev.mysql.com/doc/connector-j/en/connector-j-reference-configuration-properties.html
-		props = new Properties();
-		props.put("username", username);
-		props.put("password", password);
-		// props.put("autoReconnect", "true");
-		// props.put("maxReconnects", "10");
-		// props.put("initialTimeout", "1");
-		
 		source = setup();
 
 	}
@@ -75,7 +66,7 @@ public final class SqlConnection {
 			return null;
 		}
 
-		ConnectionFactory cf = new DriverManagerConnectionFactory("jdbc:mysql://" + hostname + ":" + port + "/" + database, props);
+		ConnectionFactory cf = new DriverManagerConnectionFactory("jdbc:mysql://" + hostname + ":" + port + "/" + database, username, password);
 		PoolableConnectionFactory pcf = new PoolableConnectionFactory(cf, null);
 
 		ObjectPool<PoolableConnection> connPool = new GenericObjectPool<>(pcf);
