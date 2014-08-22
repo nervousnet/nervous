@@ -10,6 +10,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import ch.ethz.soms.nervous.router.sql.SqlSensorConfiguration;
@@ -34,8 +36,8 @@ public class Configuration {
 	
 	private int serverPort;
 	private int serverThreads;
-	
-	private List<SqlSensorConfiguration> sensors;
+
+	private List<SqlSensorConfiguration> sensors = new ArrayList<SqlSensorConfiguration>();
 		
 	public static Configuration getConfig() {
 		return config;
@@ -45,6 +47,8 @@ public class Configuration {
 		Configuration.config = config;
 	}
 
+	@XmlElementWrapper(name = "sqlsensors")
+	@XmlElement(name = "sensor")
 	public List<SqlSensorConfiguration> getSensors() {
 		return sensors;
 	}
@@ -141,10 +145,6 @@ public class Configuration {
 		this.logPath = logPath;
 	}
 
-	public void setSqlServer() {
-
-	}
-
 	public static synchronized Configuration getInstance(String path) {
 		if (config == null) {
 			config = new Configuration(path);
@@ -167,8 +167,9 @@ public class Configuration {
 	 * No-arg default constructor for unmarshal
 	 */
 	private Configuration() {
-		
 	}
+	
+
 
 	/**
 	 * Default constructor if configuration file is not found
@@ -186,11 +187,11 @@ public class Configuration {
 		this.sqlUsername = "";
 		this.sqlPassword = "";
 		this.sqlPort = 3306;
+		this.sqlDatabase = "";
 		// Networking
 		this.serverPort = 25600;
 		this.serverThreads = 5;
 		// Sensors
-		this.sensors = new ArrayList<SqlSensorConfiguration>();
 	}
 
 	public static synchronized void marshal() {

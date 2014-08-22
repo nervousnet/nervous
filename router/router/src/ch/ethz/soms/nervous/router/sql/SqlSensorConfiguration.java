@@ -1,8 +1,5 @@
 package ch.ethz.soms.nervous.router.sql;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement(name = "sensor")
 public class SqlSensorConfiguration {
 
 	String sensorName;

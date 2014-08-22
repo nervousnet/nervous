@@ -16,9 +16,7 @@ import org.apache.commons.pool2.impl.GenericObjectPool;
 
 import ch.ethz.soms.nervous.router.utils.Log;
 
-/**
- * A Wrapper around an SQL Connection
- */
+
 public final class SqlConnection {
 
 	// Server properties
@@ -40,6 +38,15 @@ public final class SqlConnection {
 		}
 	}
 
+	/**
+	 * Connection will be set up this way:
+	 * [jdbc:mysql://" + hostname + ":" + port + "/" + database]
+	 * @param hostname
+	 * @param username
+	 * @param password
+	 * @param port
+	 * @param database
+	 */
 	public SqlConnection(String hostname, String username, String password, int port, String database) {
 		this.username = username;
 		this.password = password;
