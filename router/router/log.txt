@@ -36,3 +36,8 @@
 2014-08-23 01:14:51.526 - [I] - Reading configuration file done
 2014-08-23 01:14:51.626 - [I] - Establishing connection to SQL database done
 2014-08-23 01:14:52.019 - [I] - Setting up concurrent server done
+2014-08-26 01:36:42.451 - [I] - Reading configuration file done
+2014-08-26 01:36:42.657 - [I] - Establishing connection to SQL database done
+2014-09-01 01:02:48.557 - [I] - Reading configuration file done
+2014-09-01 01:02:48.627 - [I] - Establishing connection to SQL database done
+2014-09-01 01:02:49.357 - [I] - Setting up concurrent server done

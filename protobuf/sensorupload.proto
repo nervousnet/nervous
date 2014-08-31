@@ -1,0 +1,30 @@
+package nervousproto;
+
+option java_package = "ch.ethz.soms.nervous.nervousproto";
+option java_outer_classname = "SensorUpload";
+
+// This message is used to upload sensor data for collection purposes to a nervous router
+message SensorUpload {
+	// Unique application UUID
+	required uint64 uuid = 1;
+	// Timestamp of the upload. Used for router-side time correction
+	required uint64 upload_time = 2;
+	// Sensor Type
+	required uint64 sensor_id = 3;
+	
+	
+	// This message is used to store the actual sensor data.
+	// Ordering, count and meaning of the values is defined by the nervous system.
+	// This is not very nice, but protobuf packing makes it efficient either way.
+	message SensorData {
+		required uint64 record_time = 1;
+		repeated bool value_bool = 2 [packed=true];
+		repeated int32 value_int32 = 3 [packed=true];
+		repeated int64 value_int64 = 4 [packed=true];
+		repeated float value_float = 5 [packed=true];
+		repeated double value_double = 6 [packed=true];
+		repeated string value_string = 7;						// Strings can't be packed, length-delimited
+	}
+
+	repeated SensorData sensor_values = 4;
+}
