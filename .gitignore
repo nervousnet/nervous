@@ -29,3 +29,9 @@ desktop.ini
 /router/.metadata
 /router/RemoteSystemsTempFiles
 /.metadata
+/vm/.metadata
+/vm/RemoteSystemsTempFiles
+/vm/VMTest/Debug
+/vm/VMTest/Release
+/vm/NervousVM/Debug
+/vm/NervousVM/Release
