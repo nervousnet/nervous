@@ -36,6 +36,8 @@ public class Router {
 		
 		// Start server
 		ConcurrentServer server = new ConcurrentServer(config.getServerPort(), config.getServerThreads(), factory);
+		Thread serverThread = new Thread(server);
+		serverThread.start();
 		log.append(Log.FLAG_INFO, "Setting up concurrent server done");
 
 		boolean running = true;

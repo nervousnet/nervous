@@ -47,7 +47,7 @@ public class SqlSetup {
 	public PreparedStatement getSensorInsertStatement(Connection con, long sensorId) throws SQLException {
 		List<Integer> types = sensorsHash.get(sensorId);
 		StringBuilder sb = new StringBuilder();
-		sb.append("INSERT INTO `SENSOR_" + Long.toHexString(sensorId) + "` VALUES (");
+		sb.append("INSERT INTO `SENSOR_" + Long.toHexString(sensorId) + "` VALUES (?,?,");
 		for (int i = 0; i < types.size() - 1; i++) {
 			sb.append("?,");
 		}
@@ -102,6 +102,7 @@ public class SqlSetup {
 			} catch (SQLException e) {
 				Log.getInstance().append(Log.FLAG_ERROR, "Error setting up a sensor table (" + sensor.getSensorName() + ")");
 			}
+			sensorsHash.put(sensor.getSensorID(), types);
 		}
 	}
 
