@@ -6,11 +6,14 @@ option java_outer_classname = "SensorUploadProtos";
 // This message is used to upload sensor data for collection purposes to a nervous router
 message SensorUpload {
 	// Unique application UUID
-	required uint64 uuid = 1;
+	// High bits
+	required uint64 huuid = 1;
+	// Low bits
+	required uint64 luuid = 2;
 	// Timestamp of the upload. Used for router-side time correction
-	required uint64 upload_time = 2;
+	required uint64 upload_time = 3;
 	// Sensor Type
-	required uint64 sensor_id = 3;
+	required uint64 sensor_id = 4;
 	
 	// This message is used to store the actual sensor data.
 	// Ordering, count and meaning of the values is defined by the nervous system.
@@ -25,5 +28,5 @@ message SensorUpload {
 		repeated string value_string = 7;						// Strings can't be packed, length-delimited
 	}
 
-	repeated SensorData sensor_values = 4;
+	repeated SensorData sensor_values = 5;
 }

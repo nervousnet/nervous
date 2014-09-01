@@ -16,6 +16,7 @@ import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
 import ch.ethz.soms.nervous.router.sql.SqlSetup;
 import ch.ethz.soms.nervous.router.utils.Log;
+import ch.ethz.soms.nervous.router.utils.UUID;
 
 public class SimpleUploadWorker extends ConcurrentSocketWorker {
 
@@ -40,7 +41,11 @@ public class SimpleUploadWorker extends ConcurrentSocketWorker {
 					// Parse
 					SensorUpload su = SensorUpload.parseDelimitedFrom(is);
 					if (su != null) {
-						long uuid = su.getUuid();
+						long huuid = su.getHuuid();
+						long luuid = su.getLuuid();
+						
+						byte[] uuid = UUID.toByteArray(huuid, luuid);
+						
 						long sensorId = su.getSensorId();
 						long uploadTime = su.getUploadTime();
 						List<SensorData> sensorValues = su.getSensorValuesList();
@@ -51,7 +56,7 @@ public class SimpleUploadWorker extends ConcurrentSocketWorker {
 						try {
 							// Insert transaction
 							PreparedStatement transactstmt = sqlse.getTransactionInsertStatement(connection);
-							transactstmt.setLong(1, uuid);
+							transactstmt.setBytes(1, uuid);
 							transactstmt.setLong(2, uploadTime);
 							transactstmt.execute();
 							transactstmt.close();
@@ -63,7 +68,7 @@ public class SimpleUploadWorker extends ConcurrentSocketWorker {
 
 							for (SensorData sd : sensorValues) {
 								try {
-									datastmt.setLong(1,uuid);
+									datastmt.setBytes(1, uuid);
 									datastmt.setLong(2,sd.getRecordTime());
 									
 									Iterator<Boolean> iterBool = sd.getValueBoolList().iterator();

@@ -63,7 +63,7 @@ public class SqlSetup {
 			List<Integer> types = new ArrayList<Integer>(sensor.getAttributes().size());
 			StringBuilder sb = new StringBuilder();
 			sb.append("CREATE TABLE IF NOT EXISTS `" + config.getSqlDatabase() + "`.`SENSOR_" + Long.toHexString(sensor.getSensorID()) + "` (\n");
-			sb.append("`UUID` BIGINT UNSIGNED NOT NULL,\n");
+			sb.append("`UUID` BINARY(16) NOT NULL,\n");
 			sb.append("`RecordTime` BIGINT UNSIGNED NOT NULL,\n");
 			for (SqlSensorAttribute attribute : sensor.getAttributes()) {
 				types.add(attribute.getType());
@@ -109,7 +109,7 @@ public class SqlSetup {
 	private void setupTransactionTable() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("CREATE TABLE IF NOT EXISTS `" + config.getSqlDatabase() + "`.`Transact` (\n");
-		sb.append("`UUID` BIGINT UNSIGNED NOT NULL,\n");
+		sb.append("`UUID` BINARY(16) NOT NULL,\n");
 		sb.append("`UploadTime` BIGINT UNSIGNED NOT NULL,\n");
 		sb.append("PRIMARY KEY (`UUID`, `UploadTime`));");
 		String command = sb.toString();

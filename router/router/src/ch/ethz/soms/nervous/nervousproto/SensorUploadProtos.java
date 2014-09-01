@@ -11,27 +11,47 @@ public final class SensorUploadProtos {
   public interface SensorUploadOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
 
-    // required uint64 uuid = 1;
+    // required uint64 huuid = 1;
     /**
-     * <code>required uint64 uuid = 1;</code>
+     * <code>required uint64 huuid = 1;</code>
      *
      * <pre>
      * Unique application UUID
+     * High bits
      * </pre>
      */
-    boolean hasUuid();
+    boolean hasHuuid();
     /**
-     * <code>required uint64 uuid = 1;</code>
+     * <code>required uint64 huuid = 1;</code>
      *
      * <pre>
      * Unique application UUID
+     * High bits
      * </pre>
      */
-    long getUuid();
+    long getHuuid();
 
-    // required uint64 upload_time = 2;
+    // required uint64 luuid = 2;
     /**
-     * <code>required uint64 upload_time = 2;</code>
+     * <code>required uint64 luuid = 2;</code>
+     *
+     * <pre>
+     * Low bits
+     * </pre>
+     */
+    boolean hasLuuid();
+    /**
+     * <code>required uint64 luuid = 2;</code>
+     *
+     * <pre>
+     * Low bits
+     * </pre>
+     */
+    long getLuuid();
+
+    // required uint64 upload_time = 3;
+    /**
+     * <code>required uint64 upload_time = 3;</code>
      *
      * <pre>
      * Timestamp of the upload. Used for router-side time correction
@@ -39,7 +59,7 @@ public final class SensorUploadProtos {
      */
     boolean hasUploadTime();
     /**
-     * <code>required uint64 upload_time = 2;</code>
+     * <code>required uint64 upload_time = 3;</code>
      *
      * <pre>
      * Timestamp of the upload. Used for router-side time correction
@@ -47,9 +67,9 @@ public final class SensorUploadProtos {
      */
     long getUploadTime();
 
-    // required uint64 sensor_id = 3;
+    // required uint64 sensor_id = 4;
     /**
-     * <code>required uint64 sensor_id = 3;</code>
+     * <code>required uint64 sensor_id = 4;</code>
      *
      * <pre>
      * Sensor Type
@@ -57,7 +77,7 @@ public final class SensorUploadProtos {
      */
     boolean hasSensorId();
     /**
-     * <code>required uint64 sensor_id = 3;</code>
+     * <code>required uint64 sensor_id = 4;</code>
      *
      * <pre>
      * Sensor Type
@@ -65,27 +85,27 @@ public final class SensorUploadProtos {
      */
     long getSensorId();
 
-    // repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;
+    // repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;
     /**
-     * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;</code>
+     * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;</code>
      */
     java.util.List<ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData> 
         getSensorValuesList();
     /**
-     * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;</code>
+     * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;</code>
      */
     ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData getSensorValues(int index);
     /**
-     * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;</code>
+     * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;</code>
      */
     int getSensorValuesCount();
     /**
-     * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;</code>
+     * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;</code>
      */
     java.util.List<? extends ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorDataOrBuilder> 
         getSensorValuesOrBuilderList();
     /**
-     * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;</code>
+     * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;</code>
      */
     ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorDataOrBuilder getSensorValuesOrBuilder(
         int index);
@@ -147,23 +167,28 @@ public final class SensorUploadProtos {
             }
             case 8: {
               bitField0_ |= 0x00000001;
-              uuid_ = input.readUInt64();
+              huuid_ = input.readUInt64();
               break;
             }
             case 16: {
               bitField0_ |= 0x00000002;
-              uploadTime_ = input.readUInt64();
+              luuid_ = input.readUInt64();
               break;
             }
             case 24: {
               bitField0_ |= 0x00000004;
+              uploadTime_ = input.readUInt64();
+              break;
+            }
+            case 32: {
+              bitField0_ |= 0x00000008;
               sensorId_ = input.readUInt64();
               break;
             }
-            case 34: {
-              if (!((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+            case 42: {
+              if (!((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
                 sensorValues_ = new java.util.ArrayList<ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData>();
-                mutable_bitField0_ |= 0x00000008;
+                mutable_bitField0_ |= 0x00000010;
               }
               sensorValues_.add(input.readMessage(ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData.PARSER, extensionRegistry));
               break;
@@ -176,7 +201,7 @@ public final class SensorUploadProtos {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+        if (((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
           sensorValues_ = java.util.Collections.unmodifiableList(sensorValues_);
         }
         this.unknownFields = unknownFields.build();
@@ -1706,45 +1731,71 @@ public final class SensorUploadProtos {
     }
 
     private int bitField0_;
-    // required uint64 uuid = 1;
-    public static final int UUID_FIELD_NUMBER = 1;
-    private long uuid_;
+    // required uint64 huuid = 1;
+    public static final int HUUID_FIELD_NUMBER = 1;
+    private long huuid_;
     /**
-     * <code>required uint64 uuid = 1;</code>
+     * <code>required uint64 huuid = 1;</code>
      *
      * <pre>
      * Unique application UUID
+     * High bits
      * </pre>
      */
-    public boolean hasUuid() {
+    public boolean hasHuuid() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required uint64 uuid = 1;</code>
+     * <code>required uint64 huuid = 1;</code>
      *
      * <pre>
      * Unique application UUID
+     * High bits
      * </pre>
      */
-    public long getUuid() {
-      return uuid_;
+    public long getHuuid() {
+      return huuid_;
     }
 
-    // required uint64 upload_time = 2;
-    public static final int UPLOAD_TIME_FIELD_NUMBER = 2;
+    // required uint64 luuid = 2;
+    public static final int LUUID_FIELD_NUMBER = 2;
+    private long luuid_;
+    /**
+     * <code>required uint64 luuid = 2;</code>
+     *
+     * <pre>
+     * Low bits
+     * </pre>
+     */
+    public boolean hasLuuid() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>required uint64 luuid = 2;</code>
+     *
+     * <pre>
+     * Low bits
+     * </pre>
+     */
+    public long getLuuid() {
+      return luuid_;
+    }
+
+    // required uint64 upload_time = 3;
+    public static final int UPLOAD_TIME_FIELD_NUMBER = 3;
     private long uploadTime_;
     /**
-     * <code>required uint64 upload_time = 2;</code>
+     * <code>required uint64 upload_time = 3;</code>
      *
      * <pre>
      * Timestamp of the upload. Used for router-side time correction
      * </pre>
      */
     public boolean hasUploadTime() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
+      return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
-     * <code>required uint64 upload_time = 2;</code>
+     * <code>required uint64 upload_time = 3;</code>
      *
      * <pre>
      * Timestamp of the upload. Used for router-side time correction
@@ -1754,21 +1805,21 @@ public final class SensorUploadProtos {
       return uploadTime_;
     }
 
-    // required uint64 sensor_id = 3;
-    public static final int SENSOR_ID_FIELD_NUMBER = 3;
+    // required uint64 sensor_id = 4;
+    public static final int SENSOR_ID_FIELD_NUMBER = 4;
     private long sensorId_;
     /**
-     * <code>required uint64 sensor_id = 3;</code>
+     * <code>required uint64 sensor_id = 4;</code>
      *
      * <pre>
      * Sensor Type
      * </pre>
      */
     public boolean hasSensorId() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
+      return ((bitField0_ & 0x00000008) == 0x00000008);
     }
     /**
-     * <code>required uint64 sensor_id = 3;</code>
+     * <code>required uint64 sensor_id = 4;</code>
      *
      * <pre>
      * Sensor Type
@@ -1778,36 +1829,36 @@ public final class SensorUploadProtos {
       return sensorId_;
     }
 
-    // repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;
-    public static final int SENSOR_VALUES_FIELD_NUMBER = 4;
+    // repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;
+    public static final int SENSOR_VALUES_FIELD_NUMBER = 5;
     private java.util.List<ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData> sensorValues_;
     /**
-     * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;</code>
+     * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;</code>
      */
     public java.util.List<ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData> getSensorValuesList() {
       return sensorValues_;
     }
     /**
-     * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;</code>
+     * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;</code>
      */
     public java.util.List<? extends ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorDataOrBuilder> 
         getSensorValuesOrBuilderList() {
       return sensorValues_;
     }
     /**
-     * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;</code>
+     * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;</code>
      */
     public int getSensorValuesCount() {
       return sensorValues_.size();
     }
     /**
-     * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;</code>
+     * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;</code>
      */
     public ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData getSensorValues(int index) {
       return sensorValues_.get(index);
     }
     /**
-     * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;</code>
+     * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;</code>
      */
     public ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorDataOrBuilder getSensorValuesOrBuilder(
         int index) {
@@ -1815,7 +1866,8 @@ public final class SensorUploadProtos {
     }
 
     private void initFields() {
-      uuid_ = 0L;
+      huuid_ = 0L;
+      luuid_ = 0L;
       uploadTime_ = 0L;
       sensorId_ = 0L;
       sensorValues_ = java.util.Collections.emptyList();
@@ -1825,7 +1877,11 @@ public final class SensorUploadProtos {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
 
-      if (!hasUuid()) {
+      if (!hasHuuid()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasLuuid()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -1851,16 +1907,19 @@ public final class SensorUploadProtos {
                         throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeUInt64(1, uuid_);
+        output.writeUInt64(1, huuid_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeUInt64(2, uploadTime_);
+        output.writeUInt64(2, luuid_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeUInt64(3, sensorId_);
+        output.writeUInt64(3, uploadTime_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeUInt64(4, sensorId_);
       }
       for (int i = 0; i < sensorValues_.size(); i++) {
-        output.writeMessage(4, sensorValues_.get(i));
+        output.writeMessage(5, sensorValues_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -1873,19 +1932,23 @@ public final class SensorUploadProtos {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(1, uuid_);
+          .computeUInt64Size(1, huuid_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(2, uploadTime_);
+          .computeUInt64Size(2, luuid_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(3, sensorId_);
+          .computeUInt64Size(3, uploadTime_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(4, sensorId_);
       }
       for (int i = 0; i < sensorValues_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, sensorValues_.get(i));
+          .computeMessageSize(5, sensorValues_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -2008,15 +2071,17 @@ public final class SensorUploadProtos {
 
       public Builder clear() {
         super.clear();
-        uuid_ = 0L;
+        huuid_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000001);
-        uploadTime_ = 0L;
+        luuid_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000002);
-        sensorId_ = 0L;
+        uploadTime_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000004);
+        sensorId_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000008);
         if (sensorValuesBuilder_ == null) {
           sensorValues_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000008);
+          bitField0_ = (bitField0_ & ~0x00000010);
         } else {
           sensorValuesBuilder_.clear();
         }
@@ -2051,19 +2116,23 @@ public final class SensorUploadProtos {
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
           to_bitField0_ |= 0x00000001;
         }
-        result.uuid_ = uuid_;
+        result.huuid_ = huuid_;
         if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000002;
         }
-        result.uploadTime_ = uploadTime_;
+        result.luuid_ = luuid_;
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000004;
         }
+        result.uploadTime_ = uploadTime_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
         result.sensorId_ = sensorId_;
         if (sensorValuesBuilder_ == null) {
-          if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          if (((bitField0_ & 0x00000010) == 0x00000010)) {
             sensorValues_ = java.util.Collections.unmodifiableList(sensorValues_);
-            bitField0_ = (bitField0_ & ~0x00000008);
+            bitField0_ = (bitField0_ & ~0x00000010);
           }
           result.sensorValues_ = sensorValues_;
         } else {
@@ -2085,8 +2154,11 @@ public final class SensorUploadProtos {
 
       public Builder mergeFrom(ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload other) {
         if (other == ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.getDefaultInstance()) return this;
-        if (other.hasUuid()) {
-          setUuid(other.getUuid());
+        if (other.hasHuuid()) {
+          setHuuid(other.getHuuid());
+        }
+        if (other.hasLuuid()) {
+          setLuuid(other.getLuuid());
         }
         if (other.hasUploadTime()) {
           setUploadTime(other.getUploadTime());
@@ -2098,7 +2170,7 @@ public final class SensorUploadProtos {
           if (!other.sensorValues_.isEmpty()) {
             if (sensorValues_.isEmpty()) {
               sensorValues_ = other.sensorValues_;
-              bitField0_ = (bitField0_ & ~0x00000008);
+              bitField0_ = (bitField0_ & ~0x00000010);
             } else {
               ensureSensorValuesIsMutable();
               sensorValues_.addAll(other.sensorValues_);
@@ -2111,7 +2183,7 @@ public final class SensorUploadProtos {
               sensorValuesBuilder_.dispose();
               sensorValuesBuilder_ = null;
               sensorValues_ = other.sensorValues_;
-              bitField0_ = (bitField0_ & ~0x00000008);
+              bitField0_ = (bitField0_ & ~0x00000010);
               sensorValuesBuilder_ = 
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getSensorValuesFieldBuilder() : null;
@@ -2125,7 +2197,11 @@ public final class SensorUploadProtos {
       }
 
       public final boolean isInitialized() {
-        if (!hasUuid()) {
+        if (!hasHuuid()) {
+          
+          return false;
+        }
+        if (!hasLuuid()) {
           
           return false;
         }
@@ -2165,69 +2241,122 @@ public final class SensorUploadProtos {
       }
       private int bitField0_;
 
-      // required uint64 uuid = 1;
-      private long uuid_ ;
+      // required uint64 huuid = 1;
+      private long huuid_ ;
       /**
-       * <code>required uint64 uuid = 1;</code>
+       * <code>required uint64 huuid = 1;</code>
        *
        * <pre>
        * Unique application UUID
+       * High bits
        * </pre>
        */
-      public boolean hasUuid() {
+      public boolean hasHuuid() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required uint64 uuid = 1;</code>
+       * <code>required uint64 huuid = 1;</code>
        *
        * <pre>
        * Unique application UUID
+       * High bits
        * </pre>
        */
-      public long getUuid() {
-        return uuid_;
+      public long getHuuid() {
+        return huuid_;
       }
       /**
-       * <code>required uint64 uuid = 1;</code>
+       * <code>required uint64 huuid = 1;</code>
        *
        * <pre>
        * Unique application UUID
+       * High bits
        * </pre>
        */
-      public Builder setUuid(long value) {
+      public Builder setHuuid(long value) {
         bitField0_ |= 0x00000001;
-        uuid_ = value;
+        huuid_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required uint64 uuid = 1;</code>
+       * <code>required uint64 huuid = 1;</code>
        *
        * <pre>
        * Unique application UUID
+       * High bits
        * </pre>
        */
-      public Builder clearUuid() {
+      public Builder clearHuuid() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        uuid_ = 0L;
+        huuid_ = 0L;
         onChanged();
         return this;
       }
 
-      // required uint64 upload_time = 2;
+      // required uint64 luuid = 2;
+      private long luuid_ ;
+      /**
+       * <code>required uint64 luuid = 2;</code>
+       *
+       * <pre>
+       * Low bits
+       * </pre>
+       */
+      public boolean hasLuuid() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>required uint64 luuid = 2;</code>
+       *
+       * <pre>
+       * Low bits
+       * </pre>
+       */
+      public long getLuuid() {
+        return luuid_;
+      }
+      /**
+       * <code>required uint64 luuid = 2;</code>
+       *
+       * <pre>
+       * Low bits
+       * </pre>
+       */
+      public Builder setLuuid(long value) {
+        bitField0_ |= 0x00000002;
+        luuid_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required uint64 luuid = 2;</code>
+       *
+       * <pre>
+       * Low bits
+       * </pre>
+       */
+      public Builder clearLuuid() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        luuid_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      // required uint64 upload_time = 3;
       private long uploadTime_ ;
       /**
-       * <code>required uint64 upload_time = 2;</code>
+       * <code>required uint64 upload_time = 3;</code>
        *
        * <pre>
        * Timestamp of the upload. Used for router-side time correction
        * </pre>
        */
       public boolean hasUploadTime() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
+        return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>required uint64 upload_time = 2;</code>
+       * <code>required uint64 upload_time = 3;</code>
        *
        * <pre>
        * Timestamp of the upload. Used for router-side time correction
@@ -2237,46 +2366,46 @@ public final class SensorUploadProtos {
         return uploadTime_;
       }
       /**
-       * <code>required uint64 upload_time = 2;</code>
+       * <code>required uint64 upload_time = 3;</code>
        *
        * <pre>
        * Timestamp of the upload. Used for router-side time correction
        * </pre>
        */
       public Builder setUploadTime(long value) {
-        bitField0_ |= 0x00000002;
+        bitField0_ |= 0x00000004;
         uploadTime_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required uint64 upload_time = 2;</code>
+       * <code>required uint64 upload_time = 3;</code>
        *
        * <pre>
        * Timestamp of the upload. Used for router-side time correction
        * </pre>
        */
       public Builder clearUploadTime() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+        bitField0_ = (bitField0_ & ~0x00000004);
         uploadTime_ = 0L;
         onChanged();
         return this;
       }
 
-      // required uint64 sensor_id = 3;
+      // required uint64 sensor_id = 4;
       private long sensorId_ ;
       /**
-       * <code>required uint64 sensor_id = 3;</code>
+       * <code>required uint64 sensor_id = 4;</code>
        *
        * <pre>
        * Sensor Type
        * </pre>
        */
       public boolean hasSensorId() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
+        return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       /**
-       * <code>required uint64 sensor_id = 3;</code>
+       * <code>required uint64 sensor_id = 4;</code>
        *
        * <pre>
        * Sensor Type
@@ -2286,39 +2415,39 @@ public final class SensorUploadProtos {
         return sensorId_;
       }
       /**
-       * <code>required uint64 sensor_id = 3;</code>
+       * <code>required uint64 sensor_id = 4;</code>
        *
        * <pre>
        * Sensor Type
        * </pre>
        */
       public Builder setSensorId(long value) {
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000008;
         sensorId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required uint64 sensor_id = 3;</code>
+       * <code>required uint64 sensor_id = 4;</code>
        *
        * <pre>
        * Sensor Type
        * </pre>
        */
       public Builder clearSensorId() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000008);
         sensorId_ = 0L;
         onChanged();
         return this;
       }
 
-      // repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;
+      // repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;
       private java.util.List<ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData> sensorValues_ =
         java.util.Collections.emptyList();
       private void ensureSensorValuesIsMutable() {
-        if (!((bitField0_ & 0x00000008) == 0x00000008)) {
+        if (!((bitField0_ & 0x00000010) == 0x00000010)) {
           sensorValues_ = new java.util.ArrayList<ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData>(sensorValues_);
-          bitField0_ |= 0x00000008;
+          bitField0_ |= 0x00000010;
          }
       }
 
@@ -2326,7 +2455,7 @@ public final class SensorUploadProtos {
           ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData, ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData.Builder, ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorDataOrBuilder> sensorValuesBuilder_;
 
       /**
-       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;</code>
+       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;</code>
        */
       public java.util.List<ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData> getSensorValuesList() {
         if (sensorValuesBuilder_ == null) {
@@ -2336,7 +2465,7 @@ public final class SensorUploadProtos {
         }
       }
       /**
-       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;</code>
+       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;</code>
        */
       public int getSensorValuesCount() {
         if (sensorValuesBuilder_ == null) {
@@ -2346,7 +2475,7 @@ public final class SensorUploadProtos {
         }
       }
       /**
-       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;</code>
+       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;</code>
        */
       public ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData getSensorValues(int index) {
         if (sensorValuesBuilder_ == null) {
@@ -2356,7 +2485,7 @@ public final class SensorUploadProtos {
         }
       }
       /**
-       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;</code>
+       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;</code>
        */
       public Builder setSensorValues(
           int index, ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData value) {
@@ -2373,7 +2502,7 @@ public final class SensorUploadProtos {
         return this;
       }
       /**
-       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;</code>
+       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;</code>
        */
       public Builder setSensorValues(
           int index, ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData.Builder builderForValue) {
@@ -2387,7 +2516,7 @@ public final class SensorUploadProtos {
         return this;
       }
       /**
-       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;</code>
+       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;</code>
        */
       public Builder addSensorValues(ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData value) {
         if (sensorValuesBuilder_ == null) {
@@ -2403,7 +2532,7 @@ public final class SensorUploadProtos {
         return this;
       }
       /**
-       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;</code>
+       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;</code>
        */
       public Builder addSensorValues(
           int index, ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData value) {
@@ -2420,7 +2549,7 @@ public final class SensorUploadProtos {
         return this;
       }
       /**
-       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;</code>
+       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;</code>
        */
       public Builder addSensorValues(
           ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData.Builder builderForValue) {
@@ -2434,7 +2563,7 @@ public final class SensorUploadProtos {
         return this;
       }
       /**
-       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;</code>
+       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;</code>
        */
       public Builder addSensorValues(
           int index, ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData.Builder builderForValue) {
@@ -2448,7 +2577,7 @@ public final class SensorUploadProtos {
         return this;
       }
       /**
-       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;</code>
+       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;</code>
        */
       public Builder addAllSensorValues(
           java.lang.Iterable<? extends ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData> values) {
@@ -2462,12 +2591,12 @@ public final class SensorUploadProtos {
         return this;
       }
       /**
-       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;</code>
+       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;</code>
        */
       public Builder clearSensorValues() {
         if (sensorValuesBuilder_ == null) {
           sensorValues_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000008);
+          bitField0_ = (bitField0_ & ~0x00000010);
           onChanged();
         } else {
           sensorValuesBuilder_.clear();
@@ -2475,7 +2604,7 @@ public final class SensorUploadProtos {
         return this;
       }
       /**
-       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;</code>
+       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;</code>
        */
       public Builder removeSensorValues(int index) {
         if (sensorValuesBuilder_ == null) {
@@ -2488,14 +2617,14 @@ public final class SensorUploadProtos {
         return this;
       }
       /**
-       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;</code>
+       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;</code>
        */
       public ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData.Builder getSensorValuesBuilder(
           int index) {
         return getSensorValuesFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;</code>
+       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;</code>
        */
       public ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorDataOrBuilder getSensorValuesOrBuilder(
           int index) {
@@ -2505,7 +2634,7 @@ public final class SensorUploadProtos {
         }
       }
       /**
-       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;</code>
+       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;</code>
        */
       public java.util.List<? extends ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorDataOrBuilder> 
            getSensorValuesOrBuilderList() {
@@ -2516,14 +2645,14 @@ public final class SensorUploadProtos {
         }
       }
       /**
-       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;</code>
+       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;</code>
        */
       public ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData.Builder addSensorValuesBuilder() {
         return getSensorValuesFieldBuilder().addBuilder(
             ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData.getDefaultInstance());
       }
       /**
-       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;</code>
+       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;</code>
        */
       public ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData.Builder addSensorValuesBuilder(
           int index) {
@@ -2531,7 +2660,7 @@ public final class SensorUploadProtos {
             index, ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData.getDefaultInstance());
       }
       /**
-       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 4;</code>
+       * <code>repeated .nervousproto.SensorUpload.SensorData sensor_values = 5;</code>
        */
       public java.util.List<ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData.Builder> 
            getSensorValuesBuilderList() {
@@ -2544,7 +2673,7 @@ public final class SensorUploadProtos {
           sensorValuesBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
               ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData, ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData.Builder, ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorDataOrBuilder>(
                   sensorValues_,
-                  ((bitField0_ & 0x00000008) == 0x00000008),
+                  ((bitField0_ & 0x00000010) == 0x00000010),
                   getParentForChildren(),
                   isClean());
           sensorValues_ = null;
@@ -2582,17 +2711,17 @@ public final class SensorUploadProtos {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\022sensorupload.proto\022\014nervousproto\"\271\002\n\014S" +
-      "ensorUpload\022\014\n\004uuid\030\001 \002(\004\022\023\n\013upload_time" +
-      "\030\002 \002(\004\022\021\n\tsensor_id\030\003 \002(\004\022<\n\rsensor_valu" +
-      "es\030\004 \003(\0132%.nervousproto.SensorUpload.Sen" +
-      "sorData\032\264\001\n\nSensorData\022\023\n\013record_time\030\001 " +
-      "\002(\004\022\026\n\nvalue_bool\030\002 \003(\010B\002\020\001\022\027\n\013value_int" +
-      "32\030\003 \003(\005B\002\020\001\022\027\n\013value_int64\030\004 \003(\003B\002\020\001\022\027\n" +
-      "\013value_float\030\005 \003(\002B\002\020\001\022\030\n\014value_double\030\006" +
-      " \003(\001B\002\020\001\022\024\n\014value_string\030\007 \003(\tB7\n!ch.eth" +
-      "z.soms.nervous.nervousprotoB\022SensorUploa",
-      "dProtos"
+      "\n\022sensorupload.proto\022\014nervousproto\"\311\002\n\014S" +
+      "ensorUpload\022\r\n\005huuid\030\001 \002(\004\022\r\n\005luuid\030\002 \002(" +
+      "\004\022\023\n\013upload_time\030\003 \002(\004\022\021\n\tsensor_id\030\004 \002(" +
+      "\004\022<\n\rsensor_values\030\005 \003(\0132%.nervousproto." +
+      "SensorUpload.SensorData\032\264\001\n\nSensorData\022\023" +
+      "\n\013record_time\030\001 \002(\004\022\026\n\nvalue_bool\030\002 \003(\010B" +
+      "\002\020\001\022\027\n\013value_int32\030\003 \003(\005B\002\020\001\022\027\n\013value_in" +
+      "t64\030\004 \003(\003B\002\020\001\022\027\n\013value_float\030\005 \003(\002B\002\020\001\022\030" +
+      "\n\014value_double\030\006 \003(\001B\002\020\001\022\024\n\014value_string" +
+      "\030\007 \003(\tB7\n!ch.ethz.soms.nervous.nervouspr",
+      "otoB\022SensorUploadProtos"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -2604,7 +2733,7 @@ public final class SensorUploadProtos {
           internal_static_nervousproto_SensorUpload_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_nervousproto_SensorUpload_descriptor,
-              new java.lang.String[] { "Uuid", "UploadTime", "SensorId", "SensorValues", });
+              new java.lang.String[] { "Huuid", "Luuid", "UploadTime", "SensorId", "SensorValues", });
           internal_static_nervousproto_SensorUpload_SensorData_descriptor =
             internal_static_nervousproto_SensorUpload_descriptor.getNestedTypes().get(0);
           internal_static_nervousproto_SensorUpload_SensorData_fieldAccessorTable = new

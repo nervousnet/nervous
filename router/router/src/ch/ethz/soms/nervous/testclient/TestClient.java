@@ -11,14 +11,16 @@ import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorD
 
 public class TestClient {
 
-	public static final long UUID = 123456789;
+	public static final long HUUID = 0x11223344;
+	public static final long LUUID = 0x55667788;
 	public static final long SENSOR_ID = 0;			// Currently accelerometer
 	public static final int VALUE_COUNT = 100;
 
 	public static void main(String args[]) {
 
 		SensorUpload.Builder sub = SensorUpload.newBuilder();
-		sub.setUuid(UUID);
+		sub.setHuuid(HUUID);
+		sub.setLuuid(LUUID);
 		sub.setSensorId(SENSOR_ID);
 		
 		Long baseTime = Calendar.getInstance().getTimeInMillis();
