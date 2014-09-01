@@ -1,7 +1,7 @@
 package nervousproto;
 
 option java_package = "ch.ethz.soms.nervous.nervousproto";
-option java_outer_classname = "SensorUpload";
+option java_outer_classname = "SensorUploadProtos";
 
 // This message is used to upload sensor data for collection purposes to a nervous router
 message SensorUpload {
@@ -11,7 +11,6 @@ message SensorUpload {
 	required uint64 upload_time = 2;
 	// Sensor Type
 	required uint64 sensor_id = 3;
-	
 	
 	// This message is used to store the actual sensor data.
 	// Ordering, count and meaning of the values is defined by the nervous system.
