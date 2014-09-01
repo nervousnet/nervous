@@ -32,7 +32,7 @@ public class Router {
 		sqlse.setupTables();
 		
 		// Create factory which creates workers for uploading to the SQL database
-		SimpleUploadWorkerFactory factory = new SimpleUploadWorkerFactory(sqlco);
+		SimpleUploadWorkerFactory factory = new SimpleUploadWorkerFactory(sqlco, sqlse);
 		
 		// Start server
 		ConcurrentServer server = new ConcurrentServer(config.getServerPort(), config.getServerThreads(), factory);

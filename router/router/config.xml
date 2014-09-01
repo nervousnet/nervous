@@ -18,19 +18,19 @@
             <attributes>
                 <attribute>
                     <name>X</name>
-                    <type>FLOAT</type>
+                    <type>3</type>
                 </attribute>
                 <attribute>
                     <name>Y</name>
-                    <type>FLOAT</type>
+                    <type>3</type>
                 </attribute>
                 <attribute>
                     <name>Z</name>
-                    <type>FLOAT</type>
+                    <type>3</type>
                 </attribute>
                 <attribute>
                     <name>Accuracy</name>
-                    <type>INT</type>
+                    <type>1</type>
                 </attribute>
             </attributes>
         </sensor>
