@@ -141,6 +141,82 @@ if(NERVOUSVM_OS_LINUX OR NERVOUSVM_OS_FREEBSD)
 				CONFIGURE_FILE(
 					"tools/pkg-config/nervousvm-${nervousvm_module}.pc.in"
 					"tools/pkg-config/nervousvm-${nervousvm_module}.pc"
+					@ONLY)
+				INSTALL(FILES "${CMAKE_CURRENT_BINARY_DIR}/tools/pkg-config/nervousvm-${nervousvm_module}.pc"
+					DESTINATION "${CMAKE_INSTALL_PREFIX}/${PKGCONFIG_DIR}")
+			endforeach()
+		endif()
 	endif()
+endif()
+
+# enable project folders
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "CMake")
+
+# add the subdirectories
+add_subdirectory(src/NervousVM)
+if(NERVOUSVM_BUILD_DOC)
+	add_subdirectory(doc)
+endif()
+
+# setup the install rules
+if(NOT NERVOUSVM_BUILD_FRAMEWORKS)
+	install(DIRECTORY include
+			DESTINATION .
+			COMPONENT devel
+			FILES_MATCHING PATTERN "*.hpp" PATTERN "*.inl")
+else()
+	# find only "root" headers
+	file(GLOB NERVOUSVM_HEADERS RELATIVE ${PROJECT_SOURCE_DIR} "include/NervousVM/*")
+	
+	# we need a dummy file in order to compile the framework
+    add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/dummy.cpp
+                       COMMAND touch ${CMAKE_CURRENT_BINARY_DIR}/dummy.cpp)
+
+    set(NERVOUSVM_SOURCES ${NERVOUSVM_HEADERS})
+    list(APPEND NERVOUSVM_SOURCES ${CMAKE_CURRENT_BINARY_DIR}/dummy.cpp)
+			
+	# create NervousVM.framework
+    add_library(NervousVM ${NERVOUSVM_SOURCES})
+	
+	# edit target properties
+	set_target_properties(NervousVM PROPERTIES
+						  BUILD_WITH_INSTALL_RPATH 1
+						  INSTALL_NAME_DIR "@executable_path/../Frameworks")
+	
+	# install rule
+	install(TARGETS NervousVM
+			FRAMEWORK DESTINATION ${CMAKE_INSTALL_FRAMEWORK_PREFIX}
+			COMPONENT devel)
+endif()
+
+# install 3rd-party libraries and tools
+if(NERVOUSVM_OS_WINDOWS)
+
+    # install future external libraries if necessary, here
+
+elseif(NERVOUSVM_OS_MACOSX)
+
+    # install future external libraries if necessary, here
+
+    # install the Xcode templates if requested, those have to be prepared first, if it's wanted
+
+elseif(NERVOUSVM_OS_IOS)
+
+    # fix CMake install rules broken for iOS (see http://public.kitware.com/Bug/view.php?id=12506)
+    if(NERVOUSVM_OS_IOS)
+        install(DIRECTORY "${CMAKE_BINARY_DIR}/lib/\$ENV{CONFIGURATION}/" DESTINATION lib${LIB_SUFFIX})
+    endif()
+
+    # since the iOS libraries are built as static, we must install the NervousVM dependencies
+    # too so that the end user can easily link them to its final application
+    # install future external libraries if necessary, here
+
+elseif(NERVOUSVM_OS_ANDROID)
+
+    # install future external libraries if necessary, here
+
+endif()
+
 		
 		
