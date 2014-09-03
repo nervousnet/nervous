@@ -106,3 +106,41 @@ if(NERVOUSVM_OS_WINDOWS)
 endif()
 
 if(NERVOUSVM_OS_MACOSX)
+	if(NERVOUSVM_BUILD_FRAMEWORKS)
+        if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
+            message(FATAL_ERROR "CMAKE_BUILD_TYPE should be \"Release\" when NERVOUSVM_BUILD_FRAMEWORKS is TRUE")
+            return()
+        endif()
+		
+		if(NOT BUILD_SHARED_LIBS)
+            message(FATAL_ERROR "BUILD_SHARED_LIBS should be TRUE when NERVOUSVM_BUILD_FRAMEWORKS is TRUE")
+            return()
+        endif()
+    endif()
+	
+	# configure Xcode templates
+    if(CMAKE_OSX_ARCHITECTURES)
+        # maybe multiple arches are present in CMAKE_OSX_ARCHITECTURES
+        # we simply need to replace ';' by ' ' (space) and store the result in XCODE_TEMPLATES_ARCH
+        string(REPLACE ";" " " XCODE_TEMPLATES_ARCH "${CMAKE_OSX_ARCHITECTURES}")
+    else()
+        # no arch was provided to cmake, so we use the default one
+        set(XCODE_TEMPLATES_ARCH "\$(NATIVE_ARCH_ACTUAL)")
+    endif()
+endif()
+
+if(NERVOUSVM_OS_LINUX OR NERVOUSVM_OS_FREEBSD)
+	set(PKGCONFIG_DIR lib${LIB_SUFFIX}/pkgconfig)
+	if(NERVOUSVM_OS_FREEBSD)
+		set(PKGCONFIG_DIR libdata/pkgconfig)
+	endif()
+	if(BUILD_SHARED_LIBS)
+		nervousvm_set_option(NERVOUSVM_INSTALL_PKGCONFIG_FILES FALSE BOOL "TRUE: automatically install pkg-config files so other projects can find NervousVM")
+		if(NERVOUSVM_INSTALL_PKGCONFIG_FILES)
+			foreach(nervousvm_module in ITEMS all uuid)
+				CONFIGURE_FILE(
+					"tools/pkg-config/nervousvm-${nervousvm_module}.pc.in"
+					"tools/pkg-config/nervousvm-${nervousvm_module}.pc"
+	endif()
+		
+		
