@@ -18,22 +18,28 @@ desktop.ini
 ####################
 
 # Nervous #
+/.metadata
+
+# Nervous Android #
 /android/bin
 /android/.settings
 /android/gen
 /android/.classpath
+
+# Nervous Router #
 /router/router/.classpath
 /router/router/.settings
 /router/testclient/.classpath
 /router/testclient/.settings
 /router/.metadata
 /router/RemoteSystemsTempFiles
-/.metadata
+
+# Nervous VM #
 /vm/.metadata
 /vm/RemoteSystemsTempFiles
 /vm/VMTest/Debug
 /vm/VMTest/Release
+/vm/VMTest/.settings
 /vm/NervousVM/Debug
 /vm/NervousVM/Release
-/vm/VMTest/.settings
 /vm/NervousVM/.settings
