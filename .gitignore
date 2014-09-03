@@ -35,3 +35,5 @@ desktop.ini
 /vm/VMTest/Release
 /vm/NervousVM/Debug
 /vm/NervousVM/Release
+/vm/VMTest/.settings
+/vm/NervousVM/.settings

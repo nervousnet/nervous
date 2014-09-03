@@ -3,6 +3,7 @@
 	<name>VMTest</name>
 	<comment></comment>
 	<projects>
+		<project>NervousVM</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
