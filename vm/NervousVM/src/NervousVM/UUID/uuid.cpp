@@ -2,7 +2,7 @@
  * uuid.cpp
  *
  *  Created on: 02.09.2014
- *      Author: Fabian
+ *      Author: Fabian Tschopp
  */
 
 #include "ooid/kashmir/uuid.h"
@@ -14,7 +14,7 @@ using kashmir::system::DevRand;
 
 void generateUUID(uuid_t uuid) {
 
-
 	DevRand devrandom;
-
+	DevRand& in = devrandom;
+	in >> uuid;
 }
