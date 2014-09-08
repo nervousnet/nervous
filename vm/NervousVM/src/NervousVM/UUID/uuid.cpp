@@ -5,12 +5,16 @@
  *      Author: Fabian
  */
 
-extern "C" {
-#include <libuuid/uuid.h>
-}
+#include "ooid/kashmir/uuid.h"
+#include "ooid/kashmir/devrand.h"
 
-uuid_t generateUUID() {
-	uuid_t uuid;
-	uuid_generate_random(uuid);
-	return uuid;
+using kashmir::uuid_t;
+using kashmir::system::DevRand;
+
+
+void generateUUID(uuid_t uuid) {
+
+
+	DevRand devrandom;
+
 }

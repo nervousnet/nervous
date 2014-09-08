@@ -38,7 +38,7 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 	endif()
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Android")
 	set(NERVOUSVM_OS_ANDROID 1)
-else
+else()
 	message(FATAL_ERROR "Unsupported OS")
 	return()
 endif()
