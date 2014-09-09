@@ -8,13 +8,10 @@
 #ifndef UUID_HPP_
 #define UUID_HPP_
 
-#include "ooid/kashmir/uuid.h"
-
-using kashmir::uuid_t;
 
 namespace nervousvm
 {
-	void generateUUID(uuid_t uuid);
+	boost::uuids::uuid generateUUID();
 }
 
 
