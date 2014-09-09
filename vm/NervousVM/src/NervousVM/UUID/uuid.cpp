@@ -1,20 +1,10 @@
-/*
- * uuid.cpp
- *
- *  Created on: 02.09.2014
- *      Author: Fabian Tschopp
- */
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_generators.hpp>
+#include <boost/uuid/uuid_io.hpp>
 
-#include "ooid/kashmir/uuid.h"
-#include "ooid/kashmir/devrand.h"
-
-using kashmir::uuid_t;
-using kashmir::system::DevRand;
-
-
-void generateUUID(uuid_t uuid) {
-
-	DevRand devrandom;
-	DevRand& in = devrandom;
-	in >> uuid;
+namespace nervousvm {
+boost::uuids::uuid generateUUID() {
+	boost::uuids::uuid uuid = boost::uuids::random_generator()();
+	return uuid;
+}
 }
