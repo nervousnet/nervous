@@ -13,7 +13,7 @@
         android:background="#0099CC" >
 
         <TextView
-            android:id="@+id/TextView01"
+            android:id="@+id/txt_HeadingIF"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/If"
@@ -25,10 +25,9 @@
             android:id="@+id/spinner1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/TextView01"
-            android:layout_alignParentRight="true"
+            android:layout_alignBottom="@+id/txt_HeadingIF"
             android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/TextView01"
+            android:layout_toRightOf="@+id/txt_HeadingIF"
             android:background="#47BCE8"
             android:entries="@array/if_part" />
     </RelativeLayout>
@@ -39,7 +38,7 @@
         android:layout_weight="1" >
 
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/txt_HeadingTHEN"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#1C8C77"
