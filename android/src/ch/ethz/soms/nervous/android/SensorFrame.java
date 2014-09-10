@@ -3,24 +3,24 @@ package ch.ethz.soms.nervous.android;
 public class SensorFrame {
 
 	private final SensorHeader sensorHeader;
-	private SensorData[] sensorDataArr;
+	private SensorDesc[] sensorDataArr;
 
 	SensorFrame(SensorHeader sensorHeader) {
 		this.sensorHeader = sensorHeader;
-		this.sensorDataArr = new SensorData[sensorHeader.getSensorDataClasses().size()];
+		this.sensorDataArr = new SensorDesc[sensorHeader.getSensorDataClasses().size()];
 	}
 
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		for (SensorData sensorData : sensorDataArr) {
+		for (SensorDesc sensorData : sensorDataArr) {
 			sb.append(sensorData.toString());
 		}
 		return sb.toString();
 	}
 
-	public void addSensorData(SensorData sensorData) {
+	public void addSensorData(SensorDesc sensorData) {
 		int i = 0;
-		for (Class<? extends SensorData> sensorDataClass : sensorHeader.getSensorDataClasses()) {
+		for (Class<? extends SensorDesc> sensorDataClass : sensorHeader.getSensorDataClasses()) {
 			if (sensorData.getClass().equals(sensorDataClass)) {
 				sensorDataArr[i] = sensorData;
 				break;

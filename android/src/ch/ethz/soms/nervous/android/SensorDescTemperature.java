@@ -1,11 +1,14 @@
 package ch.ethz.soms.nervous.android;
 
-public class SensorDataTemperature extends SensorData {
+public class SensorDescTemperature extends SensorDesc {
+	
+	public static final long SENSOR_ID = 0x0000000000000007;
+	
 	private final int accuracy;
 	private final float temperature;
 
 
-	public SensorDataTemperature(final long timestamp, final int accuracy, final float temperature) {
+	public SensorDescTemperature(final long timestamp, final int accuracy, final float temperature) {
 		super(timestamp);
 		this.accuracy = accuracy;
 		this.temperature = temperature;

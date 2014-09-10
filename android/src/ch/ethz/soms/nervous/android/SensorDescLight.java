@@ -1,11 +1,15 @@
 package ch.ethz.soms.nervous.android;
 
-public class SensorDataLight extends SensorData {
+public class SensorDescLight extends SensorDesc {
+	
+	public static final long SENSOR_ID = 0x0000000000000004;
+
+	
 	private final int accuracy;
 	private final float light;
 
 
-	public SensorDataLight(final long timestamp, final int accuracy, final float light) {
+	public SensorDescLight(final long timestamp, final int accuracy, final float light) {
 		super(timestamp);
 		this.accuracy = accuracy;
 		this.light = light;

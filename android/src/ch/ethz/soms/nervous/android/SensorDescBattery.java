@@ -1,13 +1,15 @@
 package ch.ethz.soms.nervous.android;
 
-public class SensorDataBattery extends SensorData {
+public class SensorDescBattery extends SensorDesc {
+	
+	public static final long SENSOR_ID = 0x0000000000000001;
 
 	private final float batteryPercent;
 	private final boolean isCharging;
 	private final boolean isUsbCharge;
 	private final boolean isAcCharge;
 
-	public SensorDataBattery(final long timestamp, float batteryPercent, final boolean isCharging, final boolean isUsbCharge, final boolean isAcCharge) {
+	public SensorDescBattery(final long timestamp, float batteryPercent, final boolean isCharging, final boolean isUsbCharge, final boolean isAcCharge) {
 		super(timestamp);
 		this.batteryPercent = batteryPercent;
 		this.isCharging = isCharging;

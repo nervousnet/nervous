@@ -75,29 +75,29 @@ public class SensorService extends Service implements SensorEventListener {
 
 		// True means the sensor works with a listener and we don't know when it will be triggered
 		if (hasAccelerometer) {
-			sensorHeader.addSensor(SensorDataAccelerometer.class, true);
+			sensorHeader.addSensor(SensorDescAccelerometer.class, true);
 		}
 		if (hasLight) {
-			sensorHeader.addSensor(SensorDataLight.class, true);
+			sensorHeader.addSensor(SensorDescLight.class, true);
 		}
 		if (hasMagnet) {
-			sensorHeader.addSensor(SensorDataMagnetic.class, true);
+			sensorHeader.addSensor(SensorDescMagnetic.class, true);
 		}
 		if (hasProximity) {
-			sensorHeader.addSensor(SensorDataProximity.class, true);
+			sensorHeader.addSensor(SensorDescProximity.class, true);
 		}
 		if (hasGyroscope) {
-			sensorHeader.addSensor(SensorDataGyroscope.class, true);
+			sensorHeader.addSensor(SensorDescGyroscope.class, true);
 		}
 		if (hasTemperature) {
-			sensorHeader.addSensor(SensorDataTemperature.class, true);
+			sensorHeader.addSensor(SensorDescTemperature.class, true);
 		}
 		if (hasHumidity) {
-			sensorHeader.addSensor(SensorDataHumidity.class, true);
+			sensorHeader.addSensor(SensorDescHumidity.class, true);
 		}
 
 		// False means it's a parameter we can query, therefore we don't have to wait for it
-		sensorHeader.addSensor(SensorDataBattery.class, false);
+		sensorHeader.addSensor(SensorDescBattery.class, false);
 
 		sensorFrame = new SensorFrame(sensorHeader);
 
@@ -136,31 +136,31 @@ public class SensorService extends Service implements SensorEventListener {
 		Sensor sensor = event.sensor;
 		switch (sensor.getType()) {
 		case Sensor.TYPE_LIGHT:
-			sensorFrame.addSensorData(new SensorDataLight(timestamp, event.accuracy, event.values[0]));
+			sensorFrame.addSensorData(new SensorDescLight(timestamp, event.accuracy, event.values[0]));
 			Log.d(DEBUG_TAG, "Light data added to frame");
 			break;
 		case Sensor.TYPE_PROXIMITY:
-			sensorFrame.addSensorData(new SensorDataProximity(timestamp, event.accuracy, event.values[0]));
+			sensorFrame.addSensorData(new SensorDescProximity(timestamp, event.accuracy, event.values[0]));
 			Log.d(DEBUG_TAG, "Proximity data added to frame");
 			break;
 		case Sensor.TYPE_ACCELEROMETER:
-			sensorFrame.addSensorData(new SensorDataAccelerometer(timestamp, event.accuracy, event.values[0], event.values[1], event.values[2]));
+			sensorFrame.addSensorData(new SensorDescAccelerometer(timestamp, event.accuracy, event.values[0], event.values[1], event.values[2]));
 			Log.d(DEBUG_TAG, "Accelerometer data added to frame");
 			break;
 		case Sensor.TYPE_MAGNETIC_FIELD:
-			sensorFrame.addSensorData(new SensorDataMagnetic(timestamp, event.accuracy, event.values[0], event.values[1], event.values[2]));
+			sensorFrame.addSensorData(new SensorDescMagnetic(timestamp, event.accuracy, event.values[0], event.values[1], event.values[2]));
 			Log.d(DEBUG_TAG, "Magnetic data added to frame");
 			break;
 		case Sensor.TYPE_GYROSCOPE:
-			sensorFrame.addSensorData(new SensorDataGyroscope(timestamp, event.accuracy, event.values[0], event.values[1], event.values[2]));
+			sensorFrame.addSensorData(new SensorDescGyroscope(timestamp, event.accuracy, event.values[0], event.values[1], event.values[2]));
 			Log.d(DEBUG_TAG, "Gyroscope data added to frame");
 			break;
 		case Sensor.TYPE_AMBIENT_TEMPERATURE:
-			sensorFrame.addSensorData(new SensorDataTemperature(timestamp, event.accuracy, event.values[0]));
+			sensorFrame.addSensorData(new SensorDescTemperature(timestamp, event.accuracy, event.values[0]));
 			Log.d(DEBUG_TAG, "Temperature data added to frame");
 			break;
 		case Sensor.TYPE_RELATIVE_HUMIDITY:
-			sensorFrame.addSensorData(new SensorDataHumidity(timestamp, event.accuracy, event.values[0]));
+			sensorFrame.addSensorData(new SensorDescHumidity(timestamp, event.accuracy, event.values[0]));
 			Log.d(DEBUG_TAG, "Humidity data added to frame");
 			break;
 		}
@@ -178,7 +178,7 @@ public class SensorService extends Service implements SensorEventListener {
 			boolean acCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_AC;
 			float batteryPct = level / (float) scale;
 
-			SensorDataBattery sensorDataBattey = new SensorDataBattery(timestamp, batteryPct, isCharging, usbCharge, acCharge);
+			SensorDescBattery sensorDataBattey = new SensorDescBattery(timestamp, batteryPct, isCharging, usbCharge, acCharge);
 			sensorFrame.addSensorData(sensorDataBattey);
 			Log.d(DEBUG_TAG, "Battery data added to frame");
 

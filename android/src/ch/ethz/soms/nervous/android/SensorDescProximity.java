@@ -1,11 +1,15 @@
 package ch.ethz.soms.nervous.android;
 
-public class SensorDataProximity extends SensorData {
+public class SensorDescProximity extends SensorDesc {
+	
+	public static final long SENSOR_ID = 0x0000000000000006;
+	
+	
 	private final int accuracy;
 	private final float proximity;
 
 
-	public SensorDataProximity(final long timestamp, final int accuracy, final float proximity) {
+	public SensorDescProximity(final long timestamp, final int accuracy, final float proximity) {
 		super(timestamp);
 		this.accuracy = accuracy;
 		this.proximity = proximity;

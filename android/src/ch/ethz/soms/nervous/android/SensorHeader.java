@@ -16,19 +16,19 @@ public class SensorHeader {
 	private static final String DEVICE = android.os.Build.DEVICE;
 	private static final String MODEL = android.os.Build.MODEL + " (" + android.os.Build.PRODUCT + ")";
 
-	private final LinkedList<Class<? extends SensorData>> sensorDataClasses;
+	private final LinkedList<Class<? extends SensorDesc>> sensorDataClasses;
 	private final LinkedList<Boolean> sensorTypeListenerList;
 
 	private final SensorManager sensorManager;
 
 	public SensorHeader(final SensorManager sensorManager) {
         //assigns all the sensor classes
-		sensorDataClasses = new LinkedList<Class<? extends SensorData>>();
+		sensorDataClasses = new LinkedList<Class<? extends SensorDesc>>();
 		sensorTypeListenerList = new LinkedList<Boolean>();
 		this.sensorManager = sensorManager;
 	}
 
-	public void addSensor(Class<? extends SensorData> sensorClass, boolean sensorTypeListener) {
+	public void addSensor(Class<? extends SensorDesc> sensorClass, boolean sensorTypeListener) {
 		sensorDataClasses.add(sensorClass);
 		sensorTypeListenerList.add(sensorTypeListener);
 	}
@@ -94,7 +94,7 @@ public class SensorHeader {
 		return sb.toString();
 	}
     // getSensorDataClasses() returns a linked list of type class
-	public LinkedList<Class<? extends SensorData>> getSensorDataClasses() {
+	public LinkedList<Class<? extends SensorDesc>> getSensorDataClasses() {
 		return sensorDataClasses;
 	}
 

@@ -59,17 +59,23 @@ public class MainActivity extends Activity {
 
 		// Schedule
 		AlarmManager scheduler = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		Intent intent = new Intent(getApplicationContext(), SensorService.class);
-		PendingIntent scheduledIntent = PendingIntent.getService(
-				getApplicationContext(), 0, intent,
-				PendingIntent.FLAG_UPDATE_CURRENT);
+		Intent sensorIntent = new Intent(getApplicationContext(), SensorService.class);
+		PendingIntent scheduledSensorIntent = PendingIntent.getService(getApplicationContext(), 0, sensorIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		
+		Intent uploadIntent = new Intent(getApplicationContext(), UploadService.class);
+		PendingIntent scheduledUploadIntent = PendingIntent.getService(getApplicationContext(), 0, uploadIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		// 30 seconds
-		long interval = 30 * 1000;
+		long sensorInterval = 30 * 1000;
+		
+		// 60 seconds
+		long uploadInterval = 60 * 1000;
+		
 
-		scheduler.setInexactRepeating(AlarmManager.RTC_WAKEUP,
-				System.currentTimeMillis(), interval, scheduledIntent);
+		scheduler.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), sensorInterval, scheduledSensorIntent);
 
+		scheduler.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), uploadInterval, scheduledUploadIntent);
+		
 		serviceRunning = true;
 		new ServiceInfo(getApplicationContext()).clean();
 		textStatus.setText("Service started");
@@ -80,9 +86,7 @@ public class MainActivity extends Activity {
 		// Cancel
 		AlarmManager scheduler = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(getApplicationContext(), SensorService.class);
-		PendingIntent scheduledIntent = PendingIntent.getService(
-				getApplicationContext(), 0, intent,
-				PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent scheduledIntent = PendingIntent.getService(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		scheduler.cancel(scheduledIntent);
 
@@ -125,8 +129,7 @@ public class MainActivity extends Activity {
 				Log.d(DEBUG_TAG, file_name);
 				Log.d(DEBUG_TAG, "file_name assigned to time");
 
-				String sdCard = Environment.getExternalStorageDirectory()
-						.getAbsolutePath();
+				String sdCard = Environment.getExternalStorageDirectory().getAbsolutePath();
 
 				File dir = new File(sdCard + "/nervous");
 				dir.mkdirs();
@@ -138,20 +141,16 @@ public class MainActivity extends Activity {
 					file_ext.createNewFile();
 					Log.d(DEBUG_TAG, "Create file with file_name");
 
-					File file = getBaseContext().getFileStreamPath(
-							"SensorLog.txt");
+					File file = getBaseContext().getFileStreamPath("SensorLog.txt");
 
 					if (file.exists()) {
 						Log.d(DEBUG_TAG, "SensorLog.txt exists");
 						FileInputStream read_file = openFileInput("SensorLog.txt");
 
-						Log.d(DEBUG_TAG,
-								"created Sensorlog.txt file obj read_file");
+						Log.d(DEBUG_TAG, "created Sensorlog.txt file obj read_file");
 
-						InputStreamReader inputStreamReader = new InputStreamReader(
-								read_file);
-						BufferedReader bufferedReader = new BufferedReader(
-								inputStreamReader);
+						InputStreamReader inputStreamReader = new InputStreamReader(read_file);
+						BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 						StringBuilder sb = new StringBuilder();
 
 						sb.append("Timestamp of export to SD : " + TS + "\n");
@@ -161,8 +160,7 @@ public class MainActivity extends Activity {
 						}
 						BufferedWriter bufWr = null;
 
-						bufWr = new BufferedWriter(new FileWriter(file_ext,
-								false));
+						bufWr = new BufferedWriter(new FileWriter(file_ext, false));
 
 						bufWr.append(sb.toString());
 						inputStreamReader.close();
@@ -190,10 +188,8 @@ public class MainActivity extends Activity {
 			} else
 
 			{
-				Log.d(DEBUG_TAG,
-						"No external storage detected(cannot copy file)");
-				Toast.makeText(getApplicationContext(), "No external storage",
-						Toast.LENGTH_LONG).show();
+				Log.d(DEBUG_TAG, "No external storage detected(cannot copy file)");
+				Toast.makeText(getApplicationContext(), "No external storage", Toast.LENGTH_LONG).show();
 
 			}
 		}
@@ -208,12 +204,7 @@ public class MainActivity extends Activity {
 		new Timer().schedule(new TimerTask() {
 			@Override
 			public void run() {
-				final StringBuilder strBuf = new StringBuilder(
-						"Service started. \nStarted at: "
-								+ info.getTimeOfFirstFrame()
-								+ " \nFrames gathered: "
-								+ info.getAmountOfFrames() + "\nFile size: "
-								+ info.getFileSize() + " Bytes");
+				final StringBuilder strBuf = new StringBuilder("Service started. \nStarted at: " + info.getTimeOfFirstFrame() + " \nFrames gathered: " + info.getAmountOfFrames() + "\nFile size: " + info.getFileSize() + " Bytes");
 				if (!serviceRunning) {
 					strBuf.append("\n\nService stopped.");
 				}

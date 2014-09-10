@@ -1,12 +1,14 @@
 package ch.ethz.soms.nervous.android;
 
-public abstract class SensorData {
+public abstract class SensorDesc {
+	
+	public static final long SENSOR_ID = 0x0000000000000000;
 	
 	private final long timestamp;
 
 	public abstract String toString();
 	
-	public SensorData(final long timestamp)
+	public SensorDesc(final long timestamp)
 	{
 		this.timestamp = timestamp;
 	}
@@ -23,6 +25,7 @@ public abstract class SensorData {
 	public long getTimestamp() {
 		return timestamp;
 	}
+	
 	
 
 }

@@ -1,12 +1,15 @@
 package ch.ethz.soms.nervous.android;
 
-public class SensorDataGyroscope extends SensorData {
+public class SensorDescGyroscope extends SensorDesc {
+	
+	public static final long SENSOR_ID = 0x0000000000000002;
+	
 	private final int accuracy;
 	private final float gyrX;
 	private final float gyrY;
 	private final float gyrZ;
 
-	public SensorDataGyroscope(final long timestamp, final int accuracy, final float gyrX, final float gyrY, final float gyrZ) {
+	public SensorDescGyroscope(final long timestamp, final int accuracy, final float gyrX, final float gyrY, final float gyrZ) {
 		super(timestamp);
 		this.accuracy = accuracy;
 		this.gyrX = gyrX;

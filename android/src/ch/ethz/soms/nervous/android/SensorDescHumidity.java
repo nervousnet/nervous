@@ -1,11 +1,14 @@
 package ch.ethz.soms.nervous.android;
 
-public class SensorDataHumidity extends SensorData {
+public class SensorDescHumidity extends SensorDesc {
+	
+	public static final long SENSOR_ID = 0x0000000000000003;
+	
 	private final int accuracy;
 	private final float humidity;
 
 
-	public SensorDataHumidity(final long timestamp, final int accuracy, final float humidity) {
+	public SensorDescHumidity(final long timestamp, final int accuracy, final float humidity) {
 		super(timestamp);
 		this.accuracy = accuracy;
 		this.humidity = humidity;
