@@ -25,7 +25,6 @@ import java.io.FileInputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-import ch.eth.soms.mosgap.nervous.R;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
@@ -225,9 +224,8 @@ public class MainActivity extends Activity {
 	
 		switch (item.getItemId()) {
 		case R.id.menu_IfThisThenThat:
-//			Intent intent = new Intent(this, IfThisThenThatActivity.class);
-//			startActivity(intent);
-			Log.d(DEBUG_TAG, "Launch If This then That Activity");
+			Intent intent = new Intent(this, IfThisThenThatActivity.class);
+			startActivity(intent);
 			break;
 		default:
 			break;

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">Nervous</string>
     <string name="action_settings">Settings</string>
     <string name="start_service">Start Service</string>
@@ -11,4 +12,15 @@
     <string name="stopped">Stopped</string>
     <string name="service_on">Service ON</string>
     <string name="service_off">Service OFF</string>
+    <string name="title_activity_if_this_then_that">IfThisThenThatActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="If">IF</string>
+    <string name="then">THEN</string>
+    <string-array name="if_part">
+        <item >Accelerometer</item>
+        <item >Battery</item>
+        <item >Gyroscope</item>
+        <item >Humidity</item>
+    </string-array>
+
 </resources>
