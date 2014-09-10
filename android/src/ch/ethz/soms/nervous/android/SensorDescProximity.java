@@ -1,5 +1,7 @@
 package ch.ethz.soms.nervous.android;
 
+import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
+
 public class SensorDescProximity extends SensorDesc {
 	
 	public static final long SENSOR_ID = 0x0000000000000006;
@@ -29,6 +31,12 @@ public class SensorDescProximity extends SensorDesc {
 
 	public float getProximity() {
 		return proximity;
+	}
+
+	@Override
+	public SensorData toProtoSensor() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

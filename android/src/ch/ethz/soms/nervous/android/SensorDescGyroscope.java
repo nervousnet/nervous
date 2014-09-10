@@ -1,5 +1,7 @@
 package ch.ethz.soms.nervous.android;
 
+import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
+
 public class SensorDescGyroscope extends SensorDesc {
 	
 	public static final long SENSOR_ID = 0x0000000000000002;
@@ -41,6 +43,12 @@ public class SensorDescGyroscope extends SensorDesc {
 
 	public float getGyrZ() {
 		return gyrZ;
+	}
+
+	@Override
+	public SensorData toProtoSensor() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -4,7 +4,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashSet;
 
+import ch.ethz.soms.nervous.vm.StoreTask;
 import android.app.Service;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -25,9 +27,6 @@ public class SensorService extends Service implements SensorEventListener {
 	private final IBinder mBinder = new SensorBinder();
 	private SensorManager sensorManager = null;
 
-	private SensorFrame sensorFrame = null;
-	private SensorHeader sensorHeader = null;
-
 	private Intent batteryStatus = null;
 	private Sensor sensorAccelerometer = null;
 	private Sensor sensorLight = null;
@@ -44,7 +43,9 @@ public class SensorService extends Service implements SensorEventListener {
 	private boolean hasGyroscope = false;
 	private boolean hasTemperature = false;
 	private boolean hasHumidity = false;
-	
+
+	private HashSet<Class<? extends SensorDesc>> sensorCollected;
+
 	public class SensorBinder extends Binder {
 		SensorService getService() {
 			return SensorService.this;
@@ -71,39 +72,47 @@ public class SensorService extends Service implements SensorEventListener {
 		hasTemperature = sensorManager.registerListener(this, sensorTemperature, SensorManager.SENSOR_DELAY_NORMAL);
 		hasHumidity = sensorManager.registerListener(this, sensorHumidity, SensorManager.SENSOR_DELAY_NORMAL);
 
-		sensorHeader = new SensorHeader(sensorManager);
-
-		// True means the sensor works with a listener and we don't know when it will be triggered
+		sensorCollected = new HashSet<Class<? extends SensorDesc>>();
 		if (hasAccelerometer) {
-			sensorHeader.addSensor(SensorDescAccelerometer.class, true);
+			sensorCollected.add(SensorDescAccelerometer.class);
 		}
 		if (hasLight) {
-			sensorHeader.addSensor(SensorDescLight.class, true);
+			sensorCollected.add(SensorDescLight.class);
 		}
 		if (hasMagnet) {
-			sensorHeader.addSensor(SensorDescMagnetic.class, true);
+			sensorCollected.add(SensorDescMagnetic.class);
 		}
 		if (hasProximity) {
-			sensorHeader.addSensor(SensorDescProximity.class, true);
+			sensorCollected.add(SensorDescProximity.class);
 		}
 		if (hasGyroscope) {
-			sensorHeader.addSensor(SensorDescGyroscope.class, true);
+			sensorCollected.add(SensorDescGyroscope.class);
 		}
 		if (hasTemperature) {
-			sensorHeader.addSensor(SensorDescTemperature.class, true);
+			sensorCollected.add(SensorDescTemperature.class);
 		}
 		if (hasHumidity) {
-			sensorHeader.addSensor(SensorDescHumidity.class, true);
+			sensorCollected.add(SensorDescHumidity.class);
 		}
 
-		// False means it's a parameter we can query, therefore we don't have to wait for it
-		sensorHeader.addSensor(SensorDescBattery.class, false);
-
-		sensorFrame = new SensorFrame(sensorHeader);
-
 		IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+
 		batteryStatus = getApplicationContext().registerReceiver(null, ifilter);
-		
+		int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+		int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+		int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
+		boolean isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING || status == BatteryManager.BATTERY_STATUS_FULL;
+		int chargePlug = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
+		boolean usbCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_USB;
+		boolean acCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_AC;
+		float batteryPct = level / (float) scale;
+
+		long timestamp = System.currentTimeMillis();
+		SensorDescBattery sensorDescBattey = new SensorDescBattery(timestamp, batteryPct, isCharging, usbCharge, acCharge);
+		SensorDesc sensorDesc = sensorDescBattey;
+		Log.d(DEBUG_TAG, "Battery data collected");
+		new StoreTask().execute(sensorDesc);
+
 		Log.d(DEBUG_TAG, "Service execution started");
 		return START_STICKY;
 	}
@@ -134,78 +143,65 @@ public class SensorService extends Service implements SensorEventListener {
 	public void onSensorChanged(SensorEvent event) {
 		long timestamp = System.currentTimeMillis();
 		Sensor sensor = event.sensor;
+		SensorDesc sensorDesc = null;
+
 		switch (sensor.getType()) {
 		case Sensor.TYPE_LIGHT:
-			sensorFrame.addSensorData(new SensorDescLight(timestamp, event.accuracy, event.values[0]));
-			Log.d(DEBUG_TAG, "Light data added to frame");
+			sensorDesc = new SensorDescLight(timestamp, event.accuracy, event.values[0]);
+			Log.d(DEBUG_TAG, "Light data collected");
 			break;
 		case Sensor.TYPE_PROXIMITY:
-			sensorFrame.addSensorData(new SensorDescProximity(timestamp, event.accuracy, event.values[0]));
-			Log.d(DEBUG_TAG, "Proximity data added to frame");
+			sensorDesc = new SensorDescProximity(timestamp, event.accuracy, event.values[0]);
+			Log.d(DEBUG_TAG, "Proximity data collected");
 			break;
 		case Sensor.TYPE_ACCELEROMETER:
-			sensorFrame.addSensorData(new SensorDescAccelerometer(timestamp, event.accuracy, event.values[0], event.values[1], event.values[2]));
-			Log.d(DEBUG_TAG, "Accelerometer data added to frame");
+			sensorDesc = new SensorDescAccelerometer(timestamp, event.accuracy, event.values[0], event.values[1], event.values[2]);
+			Log.d(DEBUG_TAG, "Accelerometer data collected");
 			break;
 		case Sensor.TYPE_MAGNETIC_FIELD:
-			sensorFrame.addSensorData(new SensorDescMagnetic(timestamp, event.accuracy, event.values[0], event.values[1], event.values[2]));
-			Log.d(DEBUG_TAG, "Magnetic data added to frame");
+			sensorDesc = new SensorDescMagnetic(timestamp, event.accuracy, event.values[0], event.values[1], event.values[2]);
+			Log.d(DEBUG_TAG, "Magnetic data collected");
 			break;
 		case Sensor.TYPE_GYROSCOPE:
-			sensorFrame.addSensorData(new SensorDescGyroscope(timestamp, event.accuracy, event.values[0], event.values[1], event.values[2]));
-			Log.d(DEBUG_TAG, "Gyroscope data added to frame");
+			sensorDesc = new SensorDescGyroscope(timestamp, event.accuracy, event.values[0], event.values[1], event.values[2]);
+			Log.d(DEBUG_TAG, "Gyroscope data collected");
 			break;
 		case Sensor.TYPE_AMBIENT_TEMPERATURE:
-			sensorFrame.addSensorData(new SensorDescTemperature(timestamp, event.accuracy, event.values[0]));
-			Log.d(DEBUG_TAG, "Temperature data added to frame");
+			sensorDesc = new SensorDescTemperature(timestamp, event.accuracy, event.values[0]);
+			Log.d(DEBUG_TAG, "Temperature data collected");
 			break;
 		case Sensor.TYPE_RELATIVE_HUMIDITY:
-			sensorFrame.addSensorData(new SensorDescHumidity(timestamp, event.accuracy, event.values[0]));
-			Log.d(DEBUG_TAG, "Humidity data added to frame");
+			sensorDesc = new SensorDescHumidity(timestamp, event.accuracy, event.values[0]);
+			Log.d(DEBUG_TAG, "Humidity data collected");
 			break;
 		}
 
-		if (sensorFrame.isComplete()) {
-			// Add sensor data which can be queried
-			timestamp = System.currentTimeMillis();
-			
-			int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-			int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-			int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
-			boolean isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING || status == BatteryManager.BATTERY_STATUS_FULL;
-			int chargePlug = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
-			boolean usbCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_USB;
-			boolean acCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_AC;
-			float batteryPct = level / (float) scale;
+		if (sensorDesc != null) {
+			if (sensorCollected.contains(sensorDesc.getClass())) {
+				sensorCollected.remove(sensorDesc.getClass());
+				new StoreTask().execute(sensorDesc);
+			}
+		}
 
-			SensorDescBattery sensorDataBattey = new SensorDescBattery(timestamp, batteryPct, isCharging, usbCharge, acCharge);
-			sensorFrame.addSensorData(sensorDataBattey);
-			Log.d(DEBUG_TAG, "Battery data added to frame");
-
-			// Append frame to log
-			new SensorServiceLoggerTask().execute(sensorFrame);
-			
-
+		if (sensorCollected.isEmpty()) {
 			// Stop service until it's triggered the next time
 			sensorManager.unregisterListener(this);
 
 			Log.d(DEBUG_TAG, "Service execution stopped");
-			
+
 			ServiceInfo info = new ServiceInfo(getApplicationContext());
 			info.setTimeOfLastFrame();
 			stopSelf();
 		}
 	}
-	
-	
+
 	/**
 	 * Asynchronous task to write to the log file
 	 */
-	private class SensorServiceLoggerTask extends AsyncTask<SensorFrame, Void, Void> {
+	private class SensorServiceLoggerTask extends AsyncTask<String, Void, Void> {
 
 		@Override
-		protected Void doInBackground(SensorFrame... frames) {
-			SensorFrame frame = frames[0];
+		protected Void doInBackground(String... frames) {
 
 			BufferedWriter bufWr = null;
 			try {
@@ -220,12 +216,12 @@ public class SensorService extends Service implements SensorEventListener {
 					// Append to existing file
 					bufWr = new BufferedWriter(new FileWriter(file, false));
 					// Write header
-					bufWr.append(sensorHeader.toString());
+					bufWr.append("");
 				}
 				// Write frame
-				bufWr.append(sensorFrame.toString());
+				bufWr.append("");
 				bufWr.flush();
-				
+
 				new ServiceInfo(getApplicationContext()).setFileSize(file.length());
 				Log.d(DEBUG_TAG, "Added frame to log");
 			} catch (IOException ex) {
@@ -243,5 +239,5 @@ public class SensorService extends Service implements SensorEventListener {
 			return null;
 		}
 	}
-	
+
 }

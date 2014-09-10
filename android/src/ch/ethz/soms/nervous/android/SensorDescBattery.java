@@ -1,5 +1,7 @@
 package ch.ethz.soms.nervous.android;
 
+import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
+
 public class SensorDescBattery extends SensorDesc {
 	
 	public static final long SENSOR_ID = 0x0000000000000001;
@@ -17,6 +19,14 @@ public class SensorDescBattery extends SensorDesc {
 		this.isAcCharge = isAcCharge;
 	}
 
+	public SensorDescBattery(SensorData sensorData) {
+		super(sensorData);
+		this.batteryPercent = sensorData.getValueFloat(0);
+		this.isCharging = sensorData.getValueBool(0);
+		this.isUsbCharge = sensorData.getValueBool(1);
+		this.isAcCharge = sensorData.getValueBool(2);
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -42,6 +52,17 @@ public class SensorDescBattery extends SensorDesc {
 
 	public boolean isAcCharge() {
 		return isAcCharge;
+	}
+
+	@Override
+	public SensorData toProtoSensor() {
+		SensorData.Builder sdb = SensorData.newBuilder();
+		sdb.setRecordTime(getTimestamp());
+		sdb.addValueFloat(getBatteryPercent());
+		sdb.addValueBool(isCharging);
+		sdb.addValueBool(isUsbCharge);
+		sdb.addValueBool(isAcCharge);
+		return sdb.build();
 	}
 
 }

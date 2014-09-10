@@ -1,5 +1,7 @@
 package ch.ethz.soms.nervous.android;
 
+import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
+
 public class SensorDescHumidity extends SensorDesc {
 	
 	public static final long SENSOR_ID = 0x0000000000000003;
@@ -28,6 +30,12 @@ public class SensorDescHumidity extends SensorDesc {
 
 	public float getHumidity() {
 		return humidity;
+	}
+
+	@Override
+	public SensorData toProtoSensor() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 
