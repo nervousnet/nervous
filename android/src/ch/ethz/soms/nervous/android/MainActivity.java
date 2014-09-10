@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -217,6 +218,22 @@ public class MainActivity extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	
+		switch (item.getItemId()) {
+		case R.id.menu_IfThisThenThat:
+//			Intent intent = new Intent(this, IfThisThenThatActivity.class);
+//			startActivity(intent);
+			Log.d(DEBUG_TAG, "Launch If This then That Activity");
+			break;
+		default:
+			break;
+		}
+		// TODO Auto-generated method stub
+		return super.onOptionsItemSelected(item);
 	}
 
 }
