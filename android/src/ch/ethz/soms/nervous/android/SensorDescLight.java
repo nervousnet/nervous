@@ -38,6 +38,11 @@ public class SensorDescLight extends SensorDesc {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public long getSensorIdentifier() {
+		return SENSOR_ID;
+	}
 
 
 }

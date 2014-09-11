@@ -64,4 +64,9 @@ public class SensorDescAccelerometer extends SensorDesc {
 		return sdb.build();
 	}
 
+	@Override
+	public long getSensorIdentifier() {
+		return SENSOR_ID;
+	}
+
 }

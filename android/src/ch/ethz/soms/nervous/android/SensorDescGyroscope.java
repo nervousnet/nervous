@@ -46,6 +46,11 @@ public class SensorDescGyroscope extends SensorDesc {
 	}
 
 	@Override
+	public long getSensorIdentifier() {
+		return SENSOR_ID;
+	}
+
+	@Override
 	public SensorData toProtoSensor() {
 		// TODO Auto-generated method stub
 		return null;

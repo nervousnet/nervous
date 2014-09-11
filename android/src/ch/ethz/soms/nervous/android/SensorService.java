@@ -1,12 +1,7 @@
 package ch.ethz.soms.nervous.android;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.HashSet;
 
-import ch.ethz.soms.nervous.vm.StoreTask;
 import android.app.Service;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -14,11 +9,11 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+import ch.ethz.soms.nervous.vm.StoreTask;
 
 public class SensorService extends Service implements SensorEventListener {
 
@@ -111,7 +106,7 @@ public class SensorService extends Service implements SensorEventListener {
 		SensorDescBattery sensorDescBattey = new SensorDescBattery(timestamp, batteryPct, isCharging, usbCharge, acCharge);
 		SensorDesc sensorDesc = sensorDescBattey;
 		Log.d(DEBUG_TAG, "Battery data collected");
-		new StoreTask().execute(sensorDesc);
+		new StoreTask(getApplicationContext()).execute(sensorDesc);
 
 		Log.d(DEBUG_TAG, "Service execution started");
 		return START_STICKY;
@@ -179,7 +174,7 @@ public class SensorService extends Service implements SensorEventListener {
 		if (sensorDesc != null) {
 			if (sensorCollected.contains(sensorDesc.getClass())) {
 				sensorCollected.remove(sensorDesc.getClass());
-				new StoreTask().execute(sensorDesc);
+				new StoreTask(getApplicationContext()).execute(sensorDesc);
 			}
 		}
 
@@ -194,50 +189,4 @@ public class SensorService extends Service implements SensorEventListener {
 			stopSelf();
 		}
 	}
-
-	/**
-	 * Asynchronous task to write to the log file
-	 */
-	private class SensorServiceLoggerTask extends AsyncTask<String, Void, Void> {
-
-		@Override
-		protected Void doInBackground(String... frames) {
-
-			BufferedWriter bufWr = null;
-			try {
-				File file = new File(getApplicationContext().getFilesDir(), "SensorLog.txt");
-				if (file.exists()) {
-					// Write to new file
-					bufWr = new BufferedWriter(new FileWriter(file, true));
-
-				} else {
-					file.createNewFile();
-					Log.d(DEBUG_TAG, "New log file created");
-					// Append to existing file
-					bufWr = new BufferedWriter(new FileWriter(file, false));
-					// Write header
-					bufWr.append("");
-				}
-				// Write frame
-				bufWr.append("");
-				bufWr.flush();
-
-				new ServiceInfo(getApplicationContext()).setFileSize(file.length());
-				Log.d(DEBUG_TAG, "Added frame to log");
-			} catch (IOException ex) {
-				// TODO: useful error handling
-			} finally {
-				// Cleanup
-				if (bufWr != null) {
-					try {
-						bufWr.close();
-					} catch (IOException ex) {
-						// TODO: useful error handling
-					}
-				}
-			}
-			return null;
-		}
-	}
-
 }
