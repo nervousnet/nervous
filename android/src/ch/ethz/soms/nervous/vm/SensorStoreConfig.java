@@ -12,12 +12,42 @@ import android.content.Context;
 public class SensorStoreConfig {
 
 	private Context context;
+	/**
+	 * ID of the sensor
+	 */
 	private long sensorID;
+	/**
+	 * Last timestamp that has already been uploaded to the server
+	 */
 	private long lastUploadedTimestamp;
+	/**
+	 * First timestamp that has been recorded
+	 */
+	private long firstWrittenTimestamp;
+	/**
+	 * Last timestamp that has been recorded
+	 */
 	private long lastWrittenTimestamp;
+	public long getFirstWrittenTimestamp() {
+		return firstWrittenTimestamp;
+	}
+
+	public void setFirstWrittenTimestamp(long firstWrittenTimestamp) {
+		this.firstWrittenTimestamp = firstWrittenTimestamp;
+	}
+
+	/**
+	 * Current page number
+	 */
 	private long currentPage;
+	/**
+	 * Current write position in the pagefile
+	 */
 	private long writeOffset;
-	private long treeOffset;
+	/**
+	 * Current entry number within the page/tree
+	 */
+	private long entryNumber;
 
 	public long getSensorID() {
 		return sensorID;
@@ -59,12 +89,12 @@ public class SensorStoreConfig {
 		this.writeOffset = writeOffset;
 	}
 
-	public long getTreeOffset() {
-		return treeOffset;
+	public long getEntryNumber() {
+		return entryNumber;
 	}
 
-	public void setTreeOffset(long treeOffset) {
-		this.treeOffset = treeOffset;
+	public void setEntryNumber(long entryNumber) {
+		this.entryNumber = entryNumber;
 	}
 
 	public SensorStoreConfig(Context context, long sensorID) {
@@ -72,15 +102,16 @@ public class SensorStoreConfig {
 		boolean exists = load();
 		if (!exists) {
 			this.lastUploadedTimestamp = 0;
+			this.firstWrittenTimestamp = 0;
 			this.lastWrittenTimestamp = 0;
 			this.currentPage = 0;
 			this.writeOffset = 0;
-			this.treeOffset = 0;
+			this.entryNumber = 0;
 			store();
 		}
 	}
 
-	private boolean load() {
+	public boolean load() {
 		boolean success = true;
 		FileInputStream fis = null;
 		DataInputStream dis = null;
@@ -92,10 +123,11 @@ public class SensorStoreConfig {
 			fis = new FileInputStream(file);
 			dis = new DataInputStream(fis);
 			lastUploadedTimestamp = dis.readLong();
+			firstWrittenTimestamp = dis.readLong();
 			lastWrittenTimestamp = dis.readLong();
 			currentPage = dis.readLong();
 			writeOffset = dis.readLong();
-			treeOffset = dis.readLong();
+			entryNumber = dis.readLong();
 			dis.close();
 			fis.close();
 		} catch (IOException e) {
@@ -118,7 +150,7 @@ public class SensorStoreConfig {
 		return success;
 	}
 
-	private void store() {
+	void store() {
 		FileOutputStream fos = null;
 		DataOutputStream dos = null;
 		try {
@@ -132,7 +164,7 @@ public class SensorStoreConfig {
 			dos.writeLong(lastWrittenTimestamp);
 			dos.writeLong(currentPage);
 			dos.writeLong(writeOffset);
-			dos.writeLong(treeOffset);
+			dos.writeLong(entryNumber);
 			dos.flush();
 			fos.flush();
 			dos.close();

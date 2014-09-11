@@ -26,8 +26,10 @@ public class UploadService extends Service {
 		boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
 		boolean isWiFi = activeNetwork.getType() == ConnectivityManager.TYPE_WIFI;
 
+		// Conditions subject to change to fit app purpose and user settings
 		if (isConnected && isWiFi) {
-			new UploadServiceTask().execute();
+			UploadTask task = new UploadTask();
+			task.execute();
 		}
 
 		Log.d(DEBUG_TAG, "Service execution started");
@@ -45,13 +47,15 @@ public class UploadService extends Service {
 		// Do nothing
 	}
 
-	/**
-	 * Asynchronous task to write to the log file
-	 */
-	private class UploadServiceTask extends AsyncTask<Void, Void, Void> {
+	@Override
+	public IBinder onBind(Intent arg0) {
+		return null;
+	}
+	
+	public class UploadTask extends AsyncTask<SensorDesc, Void, Void> {
 
 		@Override
-		protected Void doInBackground(Void... params) {
+		protected Void doInBackground(SensorDesc... params) {
 			try {
 				Socket socket = new Socket("127.0.0.1", 25600);
 				OutputStream os = socket.getOutputStream();
@@ -64,13 +68,10 @@ public class UploadService extends Service {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			// Stop the service
+			stopSelf();
 			return null;
 		}
-	}
 
-	@Override
-	public IBinder onBind(Intent arg0) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

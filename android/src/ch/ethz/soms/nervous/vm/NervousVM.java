@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -21,7 +22,7 @@ public class NervousVM {
 	private Context context;
 	private UUID uuid;
 
-	private HashMap<Long, TreeMap<Long, Long>> sensorTreeMap;
+	private HashMap<Long, TreeMap<Interval, PageInterval>> sensorTreeMap;
 
 	public static synchronized NervousVM getInstance(Context context) {
 		if (nervousStorage == null) {
@@ -34,7 +35,7 @@ public class NervousVM {
 		this.context = context;
 		boolean hasSTM = loadSTM();
 		if (!hasSTM) {
-			sensorTreeMap = new HashMap<Long, TreeMap<Long, Long>>();
+			sensorTreeMap = new HashMap<Long, TreeMap<Interval, PageInterval>>();
 			writeSTM();
 		}
 		boolean hasVMConfig = loadVMConfig();
@@ -44,12 +45,10 @@ public class NervousVM {
 		}
 	}
 
-	
-	public synchronized UUID getUUID()
-	{
+	public synchronized UUID getUUID() {
 		return uuid;
 	}
-	
+
 	public synchronized void newUUID() {
 		uuid = UUID.randomUUID();
 		storeVMConfig();
@@ -134,7 +133,7 @@ public class NervousVM {
 			}
 			fis = new FileInputStream(file);
 			ois = new ObjectInputStream(fis);
-			sensorTreeMap = (HashMap<Long, TreeMap<Long, Long>>) (ois.readObject());
+			sensorTreeMap = (HashMap<Long, TreeMap<Interval, PageInterval>>) (ois.readObject());
 			ois.close();
 			fis.close();
 		} catch (IOException e) {
@@ -192,25 +191,121 @@ public class NervousVM {
 		}
 	}
 
-	public synchronized void storeSensor(SensorDesc sensorDesc) {
+	public synchronized boolean storeSensor(SensorDesc sensorDesc) {
+		boolean stmHasChanged = false;
+		boolean success = true;
 		long sensorID = sensorDesc.getSensorIdentifier();
 		SensorStoreConfig ssc = new SensorStoreConfig(context, sensorID);
+
+		TreeMap<Interval, PageInterval> treeMap = sensorTreeMap.get(sensorID);
+		if (treeMap == null) {
+			treeMap = new TreeMap<Interval, PageInterval>();
+			sensorTreeMap.put(sensorID, treeMap);
+			stmHasChanged = true;
+			ssc.setFirstWrittenTimestamp(sensorDesc.getTimestamp());
+		}
+
+		// Reject non monotonically increasing timestamps
+		if (ssc.getLastWrittenTimestamp() - sensorDesc.getTimestamp() >= 0) {
+			return false;
+		}
+
+		// Add new page if the last one is full
+		if (ssc.getEntryNumber() == 4096) {
+			ssc.setCurrentPage(ssc.getCurrentPage() + 1);
+			ssc.setEntryNumber(0);
+			ssc.setWriteOffset(0);
+
+			// Close the last interval
+			PageInterval piLast = treeMap.get(new Interval(ssc.getLastWrittenTimestamp(), ssc.getLastWrittenTimestamp()));
+			treeMap.remove(piLast.interval);
+			piLast.getInterval().setUpper(ssc.getLastWrittenTimestamp());
+			treeMap.put(piLast.getInterval(), piLast);
+
+			// Open the next interval
+			PageInterval piNext = new PageInterval(new Interval(ssc.getLastWrittenTimestamp(), Long.MAX_VALUE), ssc.getCurrentPage());
+			treeMap.put(piNext.getInterval(), piNext);
+			
+			stmHasChanged = true;
+		}
+
+		SensorStorePage ssp = new SensorStorePage(ssc.getSensorID(), ssc.getCurrentPage());
+		ssp.store(sensorDesc.toProtoSensor());
 		
-		if()
-		{
-			addPage();
+		ssc.setLastWrittenTimestamp(sensorDesc.getTimestamp());
+		ssc.store();
+		if (stmHasChanged) {
+			writeSTM();
+		}
+		return success;
+	}
+
+
+	public class PageInterval implements Serializable {
+
+		private static final long serialVersionUID = -3883324724432537835L;
+
+		private long pageNumber;
+		private Interval interval;
+
+		public long getPageNumber() {
+			return pageNumber;
+		}
+
+		public void setPageNumber(long pageNumber) {
+			this.pageNumber = pageNumber;
+		}
+
+		public Interval getInterval() {
+			return interval;
+		}
+
+		public void setInterval(Interval interval) {
+			this.interval = interval;
+		}
+
+		public PageInterval(Interval interval, long pageNumber) {
+			this.interval = interval;
+			this.pageNumber = pageNumber;
 		}
 	}
 
-	private synchronized void removePage() {
+	public class Interval implements Comparable<Interval>, Serializable {
+		private static final long serialVersionUID = 1255883524821812371L;
 
-	}
+		public Interval(long lower, long upper) {
+			this.lower = lower;
+			this.upper = upper;
+		}
 
-	private synchronized void addPage(long sensorID) {
-		store
-	}
+		private long lower;
+		private long upper;
 
-	private synchronized void addSensor() {
+		public Long getLower() {
+			return lower;
+		}
 
+		public void setLower(long lower) {
+			this.lower = lower;
+		}
+
+		public Long getUpper() {
+			return upper;
+		}
+
+		public void setUpper(long upper) {
+			this.upper = upper;
+		}
+
+		@Override
+		public int compareTo(Interval another) {
+			if (another.lower - this.lower > 0 && another.upper - this.upper <= 0) {
+				return 0;
+			} else if (another.lower - this.upper >= 0) {
+				return -1;
+			} else {
+				return 1;
+			}
+		}
 	}
 }
