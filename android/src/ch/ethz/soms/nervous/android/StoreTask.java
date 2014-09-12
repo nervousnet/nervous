@@ -1,6 +1,6 @@
-package ch.ethz.soms.nervous.vm;
+package ch.ethz.soms.nervous.android;
 
-import ch.ethz.soms.nervous.android.SensorDesc;
+import ch.ethz.soms.nervous.vm.NervousVM;
 import android.content.Context;
 import android.os.AsyncTask;
 
@@ -17,10 +17,10 @@ public class StoreTask extends AsyncTask<SensorDesc, Void, Void> {
 	protected Void doInBackground(SensorDesc... params) {
 
 		if (params != null && params.length > 0) {
-			NervousVM nervousVM = NervousVM.getInstance(context);
+			NervousVM nervousVM = NervousVM.getInstance(context.getFilesDir());
 			for(int i = 0; i < params.length; i++)
 			{
-				nervousVM.storeSensor(params[i]);
+				nervousVM.storeSensor(params[i].getTimestamp(), params[i].toProtoSensor());
 			}
 		}
 		return null;

@@ -7,11 +7,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import android.content.Context;
-
 public class SensorStoreConfig {
 
-	private Context context;
+	private File dir;
 	/**
 	 * ID of the sensor
 	 */
@@ -97,7 +95,7 @@ public class SensorStoreConfig {
 		this.entryNumber = entryNumber;
 	}
 
-	public SensorStoreConfig(Context context, long sensorID) {
+	public SensorStoreConfig(File dir, long sensorID) {
 		this.sensorID = sensorID;
 		boolean exists = load();
 		if (!exists) {
@@ -116,7 +114,7 @@ public class SensorStoreConfig {
 		FileInputStream fis = null;
 		DataInputStream dis = null;
 		try {
-			File file = new File(context.getFilesDir(), "NervousVM\\" + Long.toHexString(sensorID) + "C");
+			File file = new File(dir, "NervousVM\\" + Long.toHexString(sensorID) + "C");
 			if (!file.exists()) {
 				return false;
 			}
@@ -154,7 +152,7 @@ public class SensorStoreConfig {
 		FileOutputStream fos = null;
 		DataOutputStream dos = null;
 		try {
-			File file = new File(context.getFilesDir(), "NervousVM\\" + Long.toHexString(sensorID) + "C");
+			File file = new File(dir, "NervousVM\\" + Long.toHexString(sensorID) + "C");
 			if (!file.exists()) {
 				file.createNewFile();
 			}

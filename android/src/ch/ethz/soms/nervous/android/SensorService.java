@@ -13,7 +13,6 @@ import android.os.BatteryManager;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
-import ch.ethz.soms.nervous.vm.StoreTask;
 
 public class SensorService extends Service implements SensorEventListener {
 

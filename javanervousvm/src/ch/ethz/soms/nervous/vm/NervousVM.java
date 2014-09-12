@@ -9,30 +9,31 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import android.content.Context;
-import ch.ethz.soms.nervous.android.SensorDesc;
+import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
 
 public class NervousVM {
 
 	private static NervousVM nervousStorage;
-	private Context context;
+	private File dir;
 	private UUID uuid;
 
 	private HashMap<Long, TreeMap<Interval, PageInterval>> sensorTreeMap;
 
-	public static synchronized NervousVM getInstance(Context context) {
+	public static synchronized NervousVM getInstance(File dir) {
 		if (nervousStorage == null) {
-			nervousStorage = new NervousVM(context);
+			nervousStorage = new NervousVM(dir);
 		}
 		return nervousStorage;
 	}
 
-	public NervousVM(Context context) {
-		this.context = context;
+	public NervousVM(File dir) {
+		this.dir = dir;
 		boolean hasSTM = loadSTM();
 		if (!hasSTM) {
 			sensorTreeMap = new HashMap<Long, TreeMap<Interval, PageInterval>>();
@@ -43,6 +44,26 @@ public class NervousVM {
 			uuid = UUID.randomUUID();
 			storeVMConfig();
 		}
+	}
+
+	public synchronized List<SensorData> retrieveTuples(long sensorID, long fromTimestamp, long toTimestamp) {
+		TreeMap<Interval, PageInterval> treeMap = sensorTreeMap.get(sensorID);
+		PageInterval lower = treeMap.get(fromTimestamp);
+		PageInterval upper = treeMap.get(toTimestamp);
+		ArrayList<SensorData> sensorData = new ArrayList<SensorData>();
+		for(long i = lower.getPageNumber(); i < upper.getPageNumber(); i++)
+		{
+			SensorStorePage stp = new SensorStorePage(dir, sensorID, i);
+			List<SensorData> sensorDataFromPage = stp.retrieve(fromTimestamp,toTimestamp);
+			sensorData.addAll(sensorDataFromPage);
+		}
+		return sensorData;
+	}
+
+	public synchronized void markLastUpdloaded(long sensorID, long lastUploaded) {
+		SensorStoreConfig ssc = new SensorStoreConfig(dir, sensorID);
+		ssc.setLastUploadedTimestamp(lastUploaded);
+		ssc.store();
 	}
 
 	public synchronized UUID getUUID() {
@@ -59,7 +80,7 @@ public class NervousVM {
 		FileInputStream fis = null;
 		DataInputStream dis = null;
 		try {
-			File file = new File(context.getFilesDir(), "NervousVM\\VMC");
+			File file = new File(dir, "NervousVM\\VMC");
 			if (!file.exists()) {
 				return false;
 			}
@@ -92,7 +113,7 @@ public class NervousVM {
 		FileOutputStream fos = null;
 		DataOutputStream dos = null;
 		try {
-			File file = new File(context.getFilesDir(), "NervousVM\\VMC");
+			File file = new File(dir, "NervousVM\\VMC");
 			if (!file.exists()) {
 				file.createNewFile();
 			}
@@ -127,7 +148,7 @@ public class NervousVM {
 		FileInputStream fis = null;
 		ObjectInputStream ois = null;
 		try {
-			File file = new File(context.getFilesDir(), "NervousVM\\STM");
+			File file = new File(dir, "NervousVM\\STM");
 			if (!file.exists()) {
 				return false;
 			}
@@ -162,7 +183,7 @@ public class NervousVM {
 		FileOutputStream fos = null;
 		ObjectOutputStream oos = null;
 		try {
-			File file = new File(context.getFilesDir(), "NervousVM\\STM");
+			File file = new File(dir, "NervousVM\\STM");
 			if (!file.exists()) {
 				file.createNewFile();
 			}
@@ -191,22 +212,21 @@ public class NervousVM {
 		}
 	}
 
-	public synchronized boolean storeSensor(SensorDesc sensorDesc) {
+	public synchronized boolean storeSensor(long sensorID, SensorData sensorData) {
 		boolean stmHasChanged = false;
 		boolean success = true;
-		long sensorID = sensorDesc.getSensorIdentifier();
-		SensorStoreConfig ssc = new SensorStoreConfig(context, sensorID);
+		SensorStoreConfig ssc = new SensorStoreConfig(dir, sensorID);
 
 		TreeMap<Interval, PageInterval> treeMap = sensorTreeMap.get(sensorID);
 		if (treeMap == null) {
 			treeMap = new TreeMap<Interval, PageInterval>();
 			sensorTreeMap.put(sensorID, treeMap);
 			stmHasChanged = true;
-			ssc.setFirstWrittenTimestamp(sensorDesc.getTimestamp());
+			ssc.setFirstWrittenTimestamp(sensorData.getRecordTime());
 		}
 
 		// Reject non monotonically increasing timestamps
-		if (ssc.getLastWrittenTimestamp() - sensorDesc.getTimestamp() >= 0) {
+		if (ssc.getLastWrittenTimestamp() - sensorData.getRecordTime() >= 0) {
 			return false;
 		}
 
@@ -225,21 +245,22 @@ public class NervousVM {
 			// Open the next interval
 			PageInterval piNext = new PageInterval(new Interval(ssc.getLastWrittenTimestamp(), Long.MAX_VALUE), ssc.getCurrentPage());
 			treeMap.put(piNext.getInterval(), piNext);
-			
+
 			stmHasChanged = true;
 		}
 
-		SensorStorePage ssp = new SensorStorePage(ssc.getSensorID(), ssc.getCurrentPage());
-		ssp.store(sensorDesc.toProtoSensor());
-		
-		ssc.setLastWrittenTimestamp(sensorDesc.getTimestamp());
+		SensorStorePage ssp = new SensorStorePage(dir, ssc.getSensorID(), ssc.getCurrentPage());
+		ssp.store(sensorData, ssc.getEntryNumber());
+
+		ssc.setEntryNumber(ssc.getEntryNumber() + 1);
+
+		ssc.setLastWrittenTimestamp(sensorData.getRecordTime());
 		ssc.store();
 		if (stmHasChanged) {
 			writeSTM();
 		}
 		return success;
 	}
-
 
 	public class PageInterval implements Serializable {
 
