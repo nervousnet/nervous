@@ -16,11 +16,9 @@
     <string name="hello_world">Hello world!</string>
     <string name="If">IF</string>
     <string name="then">THEN</string>
-    <string-array name="if_part">
-        <item >Accelerometer</item>
-        <item >Battery</item>
-        <item >Gyroscope</item>
-        <item >Humidity</item>
-    </string-array>
+
+        <string name="For">for</string>
+        <color name="BlueDarker">#0099CC</color>
+        <color name="BlueLighter">#47BCE8</color>
 
 </resources>
