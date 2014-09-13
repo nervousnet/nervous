@@ -29,7 +29,7 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
-	private static final String DEBUG_TAG = "MainActivity";
+	public static final String DEBUG_TAG = "MainActivity";
 
 	private TextView textStatus;
 	private Button buttonExport;
