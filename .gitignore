@@ -24,17 +24,13 @@ desktop.ini
 /android/bin
 /android/.settings
 /android/gen
-/android/.classpath
 /javanervousvm/bin
 /javanervousvm/NervousVM
 /javanervousvm/.settings
 
 
 # Nervous Router #
-/router/router/.classpath
 /router/router/.settings
-/router/testclient/.classpath
-/router/testclient/.settings
 /router/.metadata
 /router/RemoteSystemsTempFiles
 

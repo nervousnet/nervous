@@ -56,9 +56,9 @@ public class SensorStorePage {
 
 		List<SensorData> sensorDataList = null;
 		FileInputStream fis = null;
-		LimitInputStream lis = null;
+		CountInputStream cis = null;
 		try {
-			File file = new File(dir, "NervousVM/" + Long.toHexString(sensorID) + "C");
+			File file = new File(dir, "NervousVM/" + Long.toHexString(sensorID) + "P" + Long.toHexString(currentPage));
 			if (!file.exists()) {
 				return null;
 			}
@@ -69,14 +69,14 @@ public class SensorStorePage {
 				endOffset = file.length();
 			}
 			fis = new FileInputStream(file);
-			lis = new LimitInputStream(fis, endOffset);
-			lis.skip(startOffset);
+			cis = new CountInputStream(fis);
+			cis.skip(startOffset);
 			boolean success = true;
 			sensorDataList = new ArrayList<SensorData>();
-			while (success) {
+			while (success && cis.bytesRead() <= endOffset) {
 				SensorData sensorData = null;
 				try {
-					sensorData = SensorData.parseDelimitedFrom(lis);
+					sensorData = SensorData.parseDelimitedFrom(cis);
 				} catch (IOException ex) {
 					success = false;
 				}
@@ -86,7 +86,7 @@ public class SensorStorePage {
 					success = false;
 				}
 			}
-			lis.close();
+			cis.close();
 		} catch (IOException e) {
 			sensorDataList = null;
 		} finally {
@@ -97,9 +97,9 @@ public class SensorStorePage {
 				} catch (IOException ex) {
 				}
 			}
-			if (lis != null) {
+			if (cis != null) {
 				try {
-					lis.close();
+					cis.close();
 				} catch (IOException ex) {
 				}
 			}
@@ -112,8 +112,10 @@ public class SensorStorePage {
 	}
 
 	public List<SensorData> retrieve(long fromTimestamp, long toTimestamp) {
-		long startOffset = sst.findEntry(fromTimestamp);
-		long endOffset = sst.findEntry(toTimestamp);
+		// Find x >= z
+		long startOffset = sst.findEntry(fromTimestamp, false);
+		// Find x > z and substract one
+		long endOffset = sst.findEntry(toTimestamp, true);
 		if (startOffset < 0 || endOffset < 0) {
 			return null;
 		} else {

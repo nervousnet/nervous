@@ -1,16 +1,12 @@
 package ch.ethz.soms.nervous.vm;
 
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
 public class SensorStoreTree {
 
 	// Actually not a tree. Binary search only, really.
-
-	private final static long MAX_ENTRIES = 4096;
 
 	private File dir;
 	private long sensorID;
@@ -26,9 +22,10 @@ public class SensorStoreTree {
 	 * Binary search for the next timestamp after @param timestamp
 	 * 
 	 * @param timestamp
+	 * @param mode
 	 * @return offset to start reading from in the page
 	 */
-	public long findEntry(long timestamp) {
+	public long findEntry(long timestamp, boolean mode) {
 		long fileOffset = -1;
 		RandomAccessFile raf = null;
 		try {
@@ -38,19 +35,23 @@ public class SensorStoreTree {
 			}
 			raf = new RandomAccessFile(file, "r");
 			long lowerbound = 0;
-			long upperbound = (file.length() - 16)/16;
+			long upperbound = file.length() / 16 - 1;
 			long posTimestamp = 0;
 			while (upperbound > lowerbound) {
 				long readPosition = lowerbound + ((upperbound - lowerbound) / 2);
 				raf.seek(readPosition * 16);
 				posTimestamp = raf.readLong();
 				if (posTimestamp > timestamp) {
-					upperbound = readPosition;
-				} else {
+					upperbound = readPosition - 1;
+				} else if (posTimestamp < timestamp) {
 					lowerbound = readPosition + 1;
+				} else {
+					lowerbound = readPosition;
+					upperbound = readPosition;
 				}
 			}
-			raf.seek(Math.max(0,(lowerbound-1)*16));
+			lowerbound = mode ? ((posTimestamp > timestamp) ? lowerbound -= 1 : lowerbound) : ((posTimestamp < timestamp) ? lowerbound += 1 : lowerbound);
+			raf.seek(Math.max(0, lowerbound * 16));
 			posTimestamp = raf.readLong();
 			fileOffset = raf.readLong();
 			raf.close();
