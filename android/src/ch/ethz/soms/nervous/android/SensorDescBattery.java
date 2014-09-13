@@ -59,9 +59,9 @@ public class SensorDescBattery extends SensorDesc {
 		SensorData.Builder sdb = SensorData.newBuilder();
 		sdb.setRecordTime(getTimestamp());
 		sdb.addValueFloat(getBatteryPercent());
-		sdb.addValueBool(isCharging);
-		sdb.addValueBool(isUsbCharge);
-		sdb.addValueBool(isAcCharge);
+		sdb.addValueBool(isCharging());
+		sdb.addValueBool(isUsbCharge());
+		sdb.addValueBool(isAcCharge());
 		return sdb.build();
 	}
 

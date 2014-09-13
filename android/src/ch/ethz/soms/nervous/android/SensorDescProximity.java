@@ -16,6 +16,12 @@ public class SensorDescProximity extends SensorDesc {
 		this.accuracy = accuracy;
 		this.proximity = proximity;
 	}
+	
+	public SensorDescProximity(SensorData sensorData) {
+		super(sensorData);
+		this.accuracy = sensorData.getValueInt32(0);
+		this.proximity = sensorData.getValueFloat(0);
+	}
 
 	@Override
 	public String toString() {
@@ -35,8 +41,11 @@ public class SensorDescProximity extends SensorDesc {
 
 	@Override
 	public SensorData toProtoSensor() {
-		// TODO Auto-generated method stub
-		return null;
+		SensorData.Builder sdb = SensorData.newBuilder();
+		sdb.setRecordTime(getTimestamp());
+		sdb.addValueFloat(getProximity());
+		sdb.addValueInt32(getAccuracy());
+		return sdb.build();
 	}
 
 	@Override

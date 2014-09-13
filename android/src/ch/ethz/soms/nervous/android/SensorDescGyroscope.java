@@ -1,5 +1,6 @@
 package ch.ethz.soms.nervous.android;
 
+import android.graphics.SweepGradient;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
 
 public class SensorDescGyroscope extends SensorDesc {
@@ -17,6 +18,14 @@ public class SensorDescGyroscope extends SensorDesc {
 		this.gyrX = gyrX;
 		this.gyrY = gyrY;
 		this.gyrZ = gyrZ;
+	}
+	
+	public SensorDescGyroscope(SensorData sensorData) {
+		super(sensorData);
+		this.accuracy = sensorData.getValueInt32(0);
+		this.gyrX = sensorData.getValueFloat(0);
+		this.gyrY = sensorData.getValueFloat(1);
+		this.gyrZ = sensorData.getValueFloat(2);
 	}
 
 	@Override
@@ -52,8 +61,13 @@ public class SensorDescGyroscope extends SensorDesc {
 
 	@Override
 	public SensorData toProtoSensor() {
-		// TODO Auto-generated method stub
-		return null;
+		SensorData.Builder sdb = SensorData.newBuilder();
+		sdb.setRecordTime(getTimestamp());
+		sdb.addValueFloat(getGyrX());
+		sdb.addValueFloat(getGyrY());
+		sdb.addValueFloat(getGyrZ());
+		sdb.addValueInt32(getAccuracy());
+		return sdb.build();
 	}
 
 }

@@ -6,12 +6,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-
 public class SensorStoreTree {
 
 	// Actually not a tree. Binary search only, really.
 
-	private final static long MAX_ENTRIES = 4095;
+	private final static long MAX_ENTRIES = 4096;
 
 	private File dir;
 	private long sensorID;
@@ -33,13 +32,13 @@ public class SensorStoreTree {
 		long fileOffset = -1;
 		RandomAccessFile raf = null;
 		try {
-			File file = new File(dir, "NervousVM\\" + Long.toHexString(sensorID) + "T" + Long.toHexString(currentPage));
+			File file = new File(dir, "NervousVM/" + Long.toHexString(sensorID) + "T" + Long.toHexString(currentPage));
 			if (!file.exists()) {
 				return -1;
 			}
 			raf = new RandomAccessFile(file, "r");
 			long lowerbound = 0;
-			long upperbound = MAX_ENTRIES - 1;
+			long upperbound = (file.length() - 16)/16;
 			long posTimestamp = 0;
 			while (upperbound > lowerbound) {
 				long readPosition = lowerbound + ((upperbound - lowerbound) / 2);
@@ -51,13 +50,9 @@ public class SensorStoreTree {
 					lowerbound = readPosition + 1;
 				}
 			}
-			raf.seek(lowerbound);
+			raf.seek(Math.max(0,(lowerbound-1)*16));
 			posTimestamp = raf.readLong();
-			if (posTimestamp > timestamp) {
-				fileOffset = raf.readLong();
-			} else {
-				fileOffset = -1;
-			}
+			fileOffset = raf.readLong();
 			raf.close();
 		} catch (IOException e) {
 			fileOffset = -1;
@@ -75,22 +70,11 @@ public class SensorStoreTree {
 
 	public void addEntry(long currentEntry, long timestamp, long fileOffset) {
 		long writeOffset = 16 * currentEntry;
-		FileOutputStream fos = null;
-		DataOutputStream dos = null;
 		RandomAccessFile raf = null;
 		try {
-			File file = new File(dir, "NervousVM\\" + Long.toHexString(sensorID) + "T" + Long.toHexString(currentPage));
+			File file = new File(dir, "NervousVM/" + Long.toHexString(sensorID) + "T" + Long.toHexString(currentPage));
 			if (!file.exists()) {
 				file.createNewFile();
-				fos = new FileOutputStream(file, true);
-				dos = new DataOutputStream(fos);
-				// Initialize empty structure
-				for (int i = 0; i < MAX_ENTRIES; i++) {
-					dos.writeLong(-1);
-					dos.writeLong(-1);
-				}
-				fos.flush();
-				fos.close();
 			}
 
 			raf = new RandomAccessFile(file, "rw");
@@ -102,18 +86,6 @@ public class SensorStoreTree {
 		} catch (IOException ex) {
 		} finally {
 			// Cleanup
-			if (fos != null) {
-				try {
-					fos.close();
-				} catch (IOException ex) {
-				}
-			}
-			if (dos != null) {
-				try {
-					dos.close();
-				} catch (IOException ex) {
-				}
-			}
 			if (raf != null) {
 				try {
 					raf.close();

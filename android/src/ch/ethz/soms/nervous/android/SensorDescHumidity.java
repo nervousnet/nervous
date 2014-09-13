@@ -15,6 +15,12 @@ public class SensorDescHumidity extends SensorDesc {
 		this.accuracy = accuracy;
 		this.humidity = humidity;
 	}
+	
+	public SensorDescHumidity(SensorData sensorData) {
+		super(sensorData);
+		this.accuracy = sensorData.getValueInt32(0);
+		this.humidity = sensorData.getValueFloat(0);
+	}
 
 	@Override
 	public String toString() {
@@ -34,8 +40,11 @@ public class SensorDescHumidity extends SensorDesc {
 
 	@Override
 	public SensorData toProtoSensor() {
-		// TODO Auto-generated method stub
-		return null;
+		SensorData.Builder sdb = SensorData.newBuilder();
+		sdb.setRecordTime(getTimestamp());
+		sdb.addValueFloat(getHumidity());
+		sdb.addValueInt32(getAccuracy());
+		return sdb.build();
 	}
 
 	@Override

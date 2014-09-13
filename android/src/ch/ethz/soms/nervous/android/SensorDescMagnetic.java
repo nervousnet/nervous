@@ -3,10 +3,9 @@ package ch.ethz.soms.nervous.android;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
 
 public class SensorDescMagnetic extends SensorDesc {
-	
+
 	public static final long SENSOR_ID = 0x0000000000000005;
 
-	
 	private final int accuracy;
 	private final float magX;
 	private final float magY;
@@ -18,6 +17,14 @@ public class SensorDescMagnetic extends SensorDesc {
 		this.magX = magX;
 		this.magY = magY;
 		this.magZ = magZ;
+	}
+
+	public SensorDescMagnetic(SensorData sensorData) {
+		super(sensorData);
+		this.accuracy = sensorData.getValueInt32(0);
+		this.magX = sensorData.getValueFloat(0);
+		this.magY = sensorData.getValueFloat(1);
+		this.magZ = sensorData.getValueFloat(2);
 	}
 
 	@Override
@@ -48,10 +55,15 @@ public class SensorDescMagnetic extends SensorDesc {
 
 	@Override
 	public SensorData toProtoSensor() {
-		// TODO Auto-generated method stub
-		return null;
+		SensorData.Builder sdb = SensorData.newBuilder();
+		sdb.setRecordTime(getTimestamp());
+		sdb.addValueFloat(getMagX());
+		sdb.addValueFloat(getMagY());
+		sdb.addValueFloat(getMagZ());
+		sdb.addValueInt32(getAccuracy());
+		return sdb.build();
 	}
-	
+
 	@Override
 	public long getSensorIdentifier() {
 		return SENSOR_ID;

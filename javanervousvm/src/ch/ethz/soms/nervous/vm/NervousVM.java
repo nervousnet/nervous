@@ -34,6 +34,15 @@ public class NervousVM {
 
 	public NervousVM(File dir) {
 		this.dir = dir;
+		File file = new File(dir, "NervousVM");
+
+		if (!file.exists()) {
+			try {
+				file.mkdir();
+			} catch (SecurityException se) {
+			}
+		}
+
 		boolean hasSTM = loadSTM();
 		if (!hasSTM) {
 			sensorTreeMap = new HashMap<Long, TreeMap<Interval, PageInterval>>();
@@ -46,15 +55,14 @@ public class NervousVM {
 		}
 	}
 
-	public synchronized List<SensorData> retrieveTuples(long sensorID, long fromTimestamp, long toTimestamp) {
+	public synchronized List<SensorData> retrieve(long sensorID, long fromTimestamp, long toTimestamp) {
 		TreeMap<Interval, PageInterval> treeMap = sensorTreeMap.get(sensorID);
-		PageInterval lower = treeMap.get(fromTimestamp);
-		PageInterval upper = treeMap.get(toTimestamp);
+		PageInterval lower = treeMap.get(new Interval(fromTimestamp,fromTimestamp));
+		PageInterval upper = treeMap.get(new Interval(toTimestamp, toTimestamp));
 		ArrayList<SensorData> sensorData = new ArrayList<SensorData>();
-		for(long i = lower.getPageNumber(); i < upper.getPageNumber(); i++)
-		{
+		for (long i = lower.getPageNumber(); i <= upper.getPageNumber(); i++) {
 			SensorStorePage stp = new SensorStorePage(dir, sensorID, i);
-			List<SensorData> sensorDataFromPage = stp.retrieve(fromTimestamp,toTimestamp);
+			List<SensorData> sensorDataFromPage = stp.retrieve(fromTimestamp, toTimestamp);
 			sensorData.addAll(sensorDataFromPage);
 		}
 		return sensorData;
@@ -80,7 +88,7 @@ public class NervousVM {
 		FileInputStream fis = null;
 		DataInputStream dis = null;
 		try {
-			File file = new File(dir, "NervousVM\\VMC");
+			File file = new File(dir, "NervousVM/VMC");
 			if (!file.exists()) {
 				return false;
 			}
@@ -113,7 +121,7 @@ public class NervousVM {
 		FileOutputStream fos = null;
 		DataOutputStream dos = null;
 		try {
-			File file = new File(dir, "NervousVM\\VMC");
+			File file = new File(dir, "NervousVM/VMC");
 			if (!file.exists()) {
 				file.createNewFile();
 			}
@@ -148,7 +156,7 @@ public class NervousVM {
 		FileInputStream fis = null;
 		ObjectInputStream ois = null;
 		try {
-			File file = new File(dir, "NervousVM\\STM");
+			File file = new File(dir, "NervousVM/STM");
 			if (!file.exists()) {
 				return false;
 			}
@@ -183,17 +191,15 @@ public class NervousVM {
 		FileOutputStream fos = null;
 		ObjectOutputStream oos = null;
 		try {
-			File file = new File(dir, "NervousVM\\STM");
+			File file = new File(dir, "NervousVM/STM");
 			if (!file.exists()) {
 				file.createNewFile();
 			}
-			fos = new FileOutputStream(file);
+			fos = new FileOutputStream(file,false);
 			oos = new ObjectOutputStream(fos);
 			oos.writeObject(sensorTreeMap);
 			oos.flush();
-			fos.flush();
 			oos.close();
-			fos.close();
 		} catch (IOException ex) {
 		} finally {
 			// Cleanup
@@ -220,9 +226,11 @@ public class NervousVM {
 		TreeMap<Interval, PageInterval> treeMap = sensorTreeMap.get(sensorID);
 		if (treeMap == null) {
 			treeMap = new TreeMap<Interval, PageInterval>();
+			// Open the initial interval
+			PageInterval piFirst = new PageInterval(new Interval(0,Long.MAX_VALUE), 0);
+			treeMap.put(piFirst.getInterval(), piFirst);
 			sensorTreeMap.put(sensorID, treeMap);
 			stmHasChanged = true;
-			ssc.setFirstWrittenTimestamp(sensorData.getRecordTime());
 		}
 
 		// Reject non monotonically increasing timestamps
@@ -234,14 +242,12 @@ public class NervousVM {
 		if (ssc.getEntryNumber() == 4096) {
 			ssc.setCurrentPage(ssc.getCurrentPage() + 1);
 			ssc.setEntryNumber(0);
-			ssc.setWriteOffset(0);
 
 			// Close the last interval
 			PageInterval piLast = treeMap.get(new Interval(ssc.getLastWrittenTimestamp(), ssc.getLastWrittenTimestamp()));
 			treeMap.remove(piLast.interval);
 			piLast.getInterval().setUpper(ssc.getLastWrittenTimestamp());
 			treeMap.put(piLast.getInterval(), piLast);
-
 			// Open the next interval
 			PageInterval piNext = new PageInterval(new Interval(ssc.getLastWrittenTimestamp(), Long.MAX_VALUE), ssc.getCurrentPage());
 			treeMap.put(piNext.getInterval(), piNext);
@@ -249,6 +255,8 @@ public class NervousVM {
 			stmHasChanged = true;
 		}
 
+		System.out.println("Current page: " + ssc.getCurrentPage());
+		System.out.println("Current entry: " + ssc.getEntryNumber());
 		SensorStorePage ssp = new SensorStorePage(dir, ssc.getSensorID(), ssc.getCurrentPage());
 		ssp.store(sensorData, ssc.getEntryNumber());
 
@@ -289,6 +297,12 @@ public class NervousVM {
 			this.interval = interval;
 			this.pageNumber = pageNumber;
 		}
+		
+		public String toString()
+		{
+			return interval.toString()+"->("+Long.toHexString(pageNumber)+")";
+		}
+		
 	}
 
 	public class Interval implements Comparable<Interval>, Serializable {
@@ -320,13 +334,18 @@ public class NervousVM {
 
 		@Override
 		public int compareTo(Interval another) {
-			if (another.lower - this.lower > 0 && another.upper - this.upper <= 0) {
+			if ((another.lower >= this.lower && another.upper <= this.upper) || (another.lower <= this.lower && another.upper >= this.upper)) {
 				return 0;
-			} else if (another.lower - this.upper >= 0) {
+			} else if (another.lower > this.upper) {
 				return -1;
 			} else {
 				return 1;
 			}
+		}
+		
+		public String toString()
+		{
+			return "["+String.valueOf(lower)+","+String.valueOf(upper)+"]";
 		}
 	}
 }

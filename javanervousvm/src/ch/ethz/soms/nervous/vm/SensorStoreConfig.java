@@ -13,37 +13,25 @@ public class SensorStoreConfig {
 	/**
 	 * ID of the sensor
 	 */
+	
 	private long sensorID;
 	/**
 	 * Last timestamp that has already been uploaded to the server
 	 */
+	
 	private long lastUploadedTimestamp;
-	/**
-	 * First timestamp that has been recorded
-	 */
-	private long firstWrittenTimestamp;
 	/**
 	 * Last timestamp that has been recorded
 	 */
 	private long lastWrittenTimestamp;
-	public long getFirstWrittenTimestamp() {
-		return firstWrittenTimestamp;
-	}
-
-	public void setFirstWrittenTimestamp(long firstWrittenTimestamp) {
-		this.firstWrittenTimestamp = firstWrittenTimestamp;
-	}
 
 	/**
 	 * Current page number
 	 */
 	private long currentPage;
+	
 	/**
 	 * Current write position in the pagefile
-	 */
-	private long writeOffset;
-	/**
-	 * Current entry number within the page/tree
 	 */
 	private long entryNumber;
 
@@ -79,14 +67,6 @@ public class SensorStoreConfig {
 		this.currentPage = currentPage;
 	}
 
-	public long getWriteOffset() {
-		return writeOffset;
-	}
-
-	public void setWriteOffset(long writeOffset) {
-		this.writeOffset = writeOffset;
-	}
-
 	public long getEntryNumber() {
 		return entryNumber;
 	}
@@ -100,10 +80,8 @@ public class SensorStoreConfig {
 		boolean exists = load();
 		if (!exists) {
 			this.lastUploadedTimestamp = 0;
-			this.firstWrittenTimestamp = 0;
 			this.lastWrittenTimestamp = 0;
 			this.currentPage = 0;
-			this.writeOffset = 0;
 			this.entryNumber = 0;
 			store();
 		}
@@ -114,20 +92,17 @@ public class SensorStoreConfig {
 		FileInputStream fis = null;
 		DataInputStream dis = null;
 		try {
-			File file = new File(dir, "NervousVM\\" + Long.toHexString(sensorID) + "C");
+			File file = new File(dir, "NervousVM/" + Long.toHexString(sensorID) + "C");
 			if (!file.exists()) {
 				return false;
 			}
 			fis = new FileInputStream(file);
 			dis = new DataInputStream(fis);
 			lastUploadedTimestamp = dis.readLong();
-			firstWrittenTimestamp = dis.readLong();
 			lastWrittenTimestamp = dis.readLong();
 			currentPage = dis.readLong();
-			writeOffset = dis.readLong();
 			entryNumber = dis.readLong();
 			dis.close();
-			fis.close();
 		} catch (IOException e) {
 			success = false;
 		} finally {
@@ -152,7 +127,7 @@ public class SensorStoreConfig {
 		FileOutputStream fos = null;
 		DataOutputStream dos = null;
 		try {
-			File file = new File(dir, "NervousVM\\" + Long.toHexString(sensorID) + "C");
+			File file = new File(dir, "NervousVM/" + Long.toHexString(sensorID) + "C");
 			if (!file.exists()) {
 				file.createNewFile();
 			}
@@ -161,7 +136,6 @@ public class SensorStoreConfig {
 			dos.writeLong(lastUploadedTimestamp);
 			dos.writeLong(lastWrittenTimestamp);
 			dos.writeLong(currentPage);
-			dos.writeLong(writeOffset);
 			dos.writeLong(entryNumber);
 			dos.flush();
 			fos.flush();
