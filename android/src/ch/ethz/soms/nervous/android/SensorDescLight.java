@@ -16,6 +16,12 @@ public class SensorDescLight extends SensorDesc {
 		this.accuracy = accuracy;
 		this.light = light;
 	}
+	
+	public SensorDescLight(SensorData sensorData) {
+		super(sensorData);
+		this.accuracy = sensorData.getValueInt32(0);
+		this.light = sensorData.getValueFloat(0);
+	}
 
 	@Override
 	public String toString() {
@@ -35,8 +41,11 @@ public class SensorDescLight extends SensorDesc {
 
 	@Override
 	public SensorData toProtoSensor() {
-		// TODO Auto-generated method stub
-		return null;
+		SensorData.Builder sdb = SensorData.newBuilder();
+		sdb.setRecordTime(getTimestamp());
+		sdb.addValueFloat(getLight());
+		sdb.addValueInt32(getAccuracy());
+		return sdb.build();
 	}
 	
 	@Override

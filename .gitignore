@@ -25,6 +25,10 @@ desktop.ini
 /android/.settings
 /android/gen
 /android/.classpath
+/javanervousvm/bin
+/javanervousvm/NervousVM
+/javanervousvm/.settings
+
 
 # Nervous Router #
 /router/router/.classpath
