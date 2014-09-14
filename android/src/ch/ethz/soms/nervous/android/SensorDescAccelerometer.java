@@ -4,7 +4,7 @@ import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorD
 
 public class SensorDescAccelerometer extends SensorDesc {
 	
-	public static final long SENSOR_ID = 0x0000000000000000;
+	public static final long SENSOR_ID = 0x0000000000000000L;
 	
 	private final int accuracy;
 	private final float accX;

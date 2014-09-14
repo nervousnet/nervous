@@ -85,10 +85,14 @@ public class MainActivity extends Activity {
 	public void stopSensorService() {
 		// Cancel
 		AlarmManager scheduler = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		Intent intent = new Intent(getApplicationContext(), SensorService.class);
-		PendingIntent scheduledIntent = PendingIntent.getService(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-		scheduler.cancel(scheduledIntent);
+		Intent sensorIntent = new Intent(getApplicationContext(), SensorService.class);
+		PendingIntent scheduledSensorIntent = PendingIntent.getService(getApplicationContext(), 0, sensorIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		
+		Intent uploadIntent = new Intent(getApplicationContext(), UploadService.class);
+		PendingIntent scheduledUploadIntent = PendingIntent.getService(getApplicationContext(), 0, uploadIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		
+		scheduler.cancel(scheduledSensorIntent);
+		scheduler.cancel(scheduledUploadIntent);
 
 		serviceRunning = false;
 		new ServiceInfo(getApplicationContext()).clean();

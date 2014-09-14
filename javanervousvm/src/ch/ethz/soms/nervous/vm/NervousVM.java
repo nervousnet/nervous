@@ -83,15 +83,21 @@ public class NervousVM {
 
 	public synchronized List<SensorData> retrieve(long sensorID, long fromTimestamp, long toTimestamp) {
 		TreeMap<PageInterval, PageInterval> treeMap = sensorTreeMap.get(sensorID);
-		PageInterval lower = treeMap.get(new PageInterval(new Interval(fromTimestamp, fromTimestamp), -1));
-		PageInterval upper = treeMap.get(new PageInterval(new Interval(toTimestamp, toTimestamp), -1));
-		ArrayList<SensorData> sensorData = new ArrayList<SensorData>();
-		for (long i = lower.getPageNumber(); i <= upper.getPageNumber(); i++) {
-			SensorStorePage stp = new SensorStorePage(dir, sensorID, i);
-			List<SensorData> sensorDataFromPage = stp.retrieve(fromTimestamp, toTimestamp);
-			sensorData.addAll(sensorDataFromPage);
+		if (treeMap != null) {
+			PageInterval lower = treeMap.get(new PageInterval(new Interval(fromTimestamp, fromTimestamp), -1));
+			PageInterval upper = treeMap.get(new PageInterval(new Interval(toTimestamp, toTimestamp), -1));
+			ArrayList<SensorData> sensorData = new ArrayList<SensorData>();
+			for (long i = lower.getPageNumber(); i <= upper.getPageNumber(); i++) {
+				SensorStorePage stp = new SensorStorePage(dir, sensorID, i);
+				List<SensorData> sensorDataFromPage = stp.retrieve(fromTimestamp, toTimestamp);
+				if (sensorDataFromPage != null) {
+					sensorData.addAll(sensorDataFromPage);
+				}
+			}
+			return sensorData;
+		} else {
+			return null;
 		}
-		return sensorData;
 	}
 
 	public synchronized void markLastUploaded(long sensorID, long lastUploaded) {
@@ -386,5 +392,15 @@ public class NervousVM {
 		public String toString() {
 			return "[" + String.valueOf(lower) + "," + String.valueOf(upper) + "]";
 		}
+	}
+
+	public long getLastUploadedTimestamp(long sensorID) {
+		SensorStoreConfig ssc = new SensorStoreConfig(dir, sensorID);
+		return ssc.getLastUploadedTimestamp();
+	}
+
+	public void setLastUploadedTimestamp(long sensorID, long timestamp) {
+		SensorStoreConfig ssc = new SensorStoreConfig(dir, sensorID);
+		ssc.setLastUploadedTimestamp(timestamp);
 	}
 }

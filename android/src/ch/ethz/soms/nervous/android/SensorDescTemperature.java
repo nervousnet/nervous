@@ -4,7 +4,7 @@ import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorD
 
 public class SensorDescTemperature extends SensorDesc {
 	
-	public static final long SENSOR_ID = 0x0000000000000007;
+	public static final long SENSOR_ID = 0x0000000000000007L;
 	
 	private final int accuracy;
 	private final float temperature;

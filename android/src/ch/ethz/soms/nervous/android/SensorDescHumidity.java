@@ -4,7 +4,7 @@ import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorD
 
 public class SensorDescHumidity extends SensorDesc {
 	
-	public static final long SENSOR_ID = 0x0000000000000003;
+	public static final long SENSOR_ID = 0x0000000000000003L;
 	
 	private final int accuracy;
 	private final float humidity;

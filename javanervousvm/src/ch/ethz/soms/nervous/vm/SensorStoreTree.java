@@ -50,8 +50,15 @@ public class SensorStoreTree {
 					upperbound = readPosition;
 				}
 			}
+			// Fix if only one entry exists
+			raf.seek(lowerbound * 16);
+			posTimestamp = raf.readLong();
+			raf.seek(lowerbound * 16);
+			// Value correction (highest lower and lowest higher bound)
 			lowerbound = mode ? ((posTimestamp > timestamp) ? lowerbound -= 1 : lowerbound) : ((posTimestamp < timestamp) ? lowerbound += 1 : lowerbound);
-			raf.seek(Math.max(0, lowerbound * 16));
+			// Safety border check
+			lowerbound = Math.max(0, Math.min(file.length() / 16 - 1, lowerbound));
+			raf.seek(lowerbound * 16);
 			posTimestamp = raf.readLong();
 			fileOffset = raf.readLong();
 			raf.close();

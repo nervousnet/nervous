@@ -4,7 +4,7 @@ import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorD
 
 public class SensorDescMagnetic extends SensorDesc {
 
-	public static final long SENSOR_ID = 0x0000000000000005;
+	public static final long SENSOR_ID = 0x0000000000000005L;
 
 	private final int accuracy;
 	private final float magX;

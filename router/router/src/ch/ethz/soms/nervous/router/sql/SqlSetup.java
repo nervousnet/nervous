@@ -46,16 +46,20 @@ public class SqlSetup {
 
 	public PreparedStatement getSensorInsertStatement(Connection con, long sensorId) throws SQLException {
 		List<Integer> types = sensorsHash.get(sensorId);
-		StringBuilder sb = new StringBuilder();
-		sb.append("INSERT INTO `SENSOR_" + Long.toHexString(sensorId) + "` VALUES (?,?,");
-		for (int i = 0; i < types.size() - 1; i++) {
-			sb.append("?,");
+		if (types != null) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("INSERT INTO `SENSOR_" + Long.toHexString(sensorId) + "` VALUES (?,?,");
+			for (int i = 0; i < types.size() - 1; i++) {
+				sb.append("?,");
+			}
+			if (types.size() >= 1) {
+				sb.append("?");
+			}
+			sb.append(");");
+			return con.prepareStatement(sb.toString());
+		} else {
+			return null;
 		}
-		if (types.size() >= 1) {
-			sb.append("?");
-		}
-		sb.append(");");
-		return con.prepareStatement(sb.toString());
 	}
 
 	private void setupSensorTables() {

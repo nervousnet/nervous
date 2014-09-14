@@ -4,7 +4,7 @@ import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorD
 
 public class SensorDescProximity extends SensorDesc {
 	
-	public static final long SENSOR_ID = 0x0000000000000006;
+	public static final long SENSOR_ID = 0x0000000000000006L;
 	
 	
 	private final int accuracy;
