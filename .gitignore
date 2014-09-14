@@ -25,9 +25,10 @@ desktop.ini
 /android/.settings
 /android/gen
 /javanervousvm/bin
-/javanervousvm/NervousVM
 /javanervousvm/.settings
-
+/javanervousvmtest/bin
+/javanervousvmtest/.settings
+/javanervousvmtest/NervousVM
 
 # Nervous Router #
 /router/router/.settings
