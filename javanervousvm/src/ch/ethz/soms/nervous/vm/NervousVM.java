@@ -19,11 +19,14 @@ import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorD
 
 public class NervousVM {
 
+	public final static long MAX_PAGES = 3;
+	public final static long MAX_ENTRIES = 4096;
+
 	private static NervousVM nervousStorage;
 	private File dir;
 	private UUID uuid;
 
-	private HashMap<Long, TreeMap<Interval, PageInterval>> sensorTreeMap;
+	private HashMap<Long, TreeMap<PageInterval, PageInterval>> sensorTreeMap;
 
 	public static synchronized NervousVM getInstance(File dir) {
 		if (nervousStorage == null) {
@@ -45,7 +48,7 @@ public class NervousVM {
 
 		boolean hasSTM = loadSTM();
 		if (!hasSTM) {
-			sensorTreeMap = new HashMap<Long, TreeMap<Interval, PageInterval>>();
+			sensorTreeMap = new HashMap<Long, TreeMap<PageInterval, PageInterval>>();
 			writeSTM();
 		}
 		boolean hasVMConfig = loadVMConfig();
@@ -55,10 +58,33 @@ public class NervousVM {
 		}
 	}
 
+	private synchronized boolean removeOldPages(long sensorID, long currentPage, long maxPages) {
+		boolean success = true;
+		TreeMap<PageInterval, PageInterval> treeMap = sensorTreeMap.get(sensorID);
+		for (long i = currentPage - maxPages; i >= 0; i--) {
+			PageInterval pi = treeMap.get(new PageInterval(new Interval(0, 0), i));
+			if (pi == null) {
+				break;
+			}
+			treeMap.remove(pi);
+			SensorStorePage stp = new SensorStorePage(dir, sensorID, pi.getPageNumber());
+			boolean successEvict = stp.evict();
+			success = success && successEvict;
+		}
+		PageInterval pi = treeMap.get(new PageInterval(new Interval(0, 0), currentPage - maxPages + 1));
+		// Correct so that the time interval is always from 0 to MAX_LONG in the tree
+		if (pi != null) {
+			treeMap.remove(pi);
+			pi.getInterval().setLower(0);
+			treeMap.put(pi, pi);
+		}
+		return success;
+	}
+
 	public synchronized List<SensorData> retrieve(long sensorID, long fromTimestamp, long toTimestamp) {
-		TreeMap<Interval, PageInterval> treeMap = sensorTreeMap.get(sensorID);
-		PageInterval lower = treeMap.get(new Interval(fromTimestamp,fromTimestamp));
-		PageInterval upper = treeMap.get(new Interval(toTimestamp, toTimestamp));
+		TreeMap<PageInterval, PageInterval> treeMap = sensorTreeMap.get(sensorID);
+		PageInterval lower = treeMap.get(new PageInterval(new Interval(fromTimestamp, fromTimestamp), -1));
+		PageInterval upper = treeMap.get(new PageInterval(new Interval(toTimestamp, toTimestamp), -1));
 		ArrayList<SensorData> sensorData = new ArrayList<SensorData>();
 		for (long i = lower.getPageNumber(); i <= upper.getPageNumber(); i++) {
 			SensorStorePage stp = new SensorStorePage(dir, sensorID, i);
@@ -68,7 +94,7 @@ public class NervousVM {
 		return sensorData;
 	}
 
-	public synchronized void markLastUpdloaded(long sensorID, long lastUploaded) {
+	public synchronized void markLastUploaded(long sensorID, long lastUploaded) {
 		SensorStoreConfig ssc = new SensorStoreConfig(dir, sensorID);
 		ssc.setLastUploadedTimestamp(lastUploaded);
 		ssc.store();
@@ -162,7 +188,7 @@ public class NervousVM {
 			}
 			fis = new FileInputStream(file);
 			ois = new ObjectInputStream(fis);
-			sensorTreeMap = (HashMap<Long, TreeMap<Interval, PageInterval>>) (ois.readObject());
+			sensorTreeMap = (HashMap<Long, TreeMap<PageInterval, PageInterval>>) (ois.readObject());
 			ois.close();
 			fis.close();
 		} catch (IOException e) {
@@ -195,7 +221,7 @@ public class NervousVM {
 			if (!file.exists()) {
 				file.createNewFile();
 			}
-			fos = new FileOutputStream(file,false);
+			fos = new FileOutputStream(file, false);
 			oos = new ObjectOutputStream(fos);
 			oos.writeObject(sensorTreeMap);
 			oos.flush();
@@ -223,12 +249,12 @@ public class NervousVM {
 		boolean success = true;
 		SensorStoreConfig ssc = new SensorStoreConfig(dir, sensorID);
 
-		TreeMap<Interval, PageInterval> treeMap = sensorTreeMap.get(sensorID);
+		TreeMap<PageInterval, PageInterval> treeMap = sensorTreeMap.get(sensorID);
 		if (treeMap == null) {
-			treeMap = new TreeMap<Interval, PageInterval>();
+			treeMap = new TreeMap<PageInterval, PageInterval>();
 			// Open the initial interval
-			PageInterval piFirst = new PageInterval(new Interval(0,Long.MAX_VALUE), 0);
-			treeMap.put(piFirst.getInterval(), piFirst);
+			PageInterval piFirst = new PageInterval(new Interval(0, Long.MAX_VALUE), 0);
+			treeMap.put(piFirst, piFirst);
 			sensorTreeMap.put(sensorID, treeMap);
 			stmHasChanged = true;
 		}
@@ -239,24 +265,24 @@ public class NervousVM {
 		}
 
 		// Add new page if the last one is full
-		if (ssc.getEntryNumber() == 4096) {
+		if (ssc.getEntryNumber() == MAX_ENTRIES) {
 			ssc.setCurrentPage(ssc.getCurrentPage() + 1);
 			ssc.setEntryNumber(0);
 
 			// Close the last interval
-			PageInterval piLast = treeMap.get(new Interval(ssc.getLastWrittenTimestamp(), ssc.getLastWrittenTimestamp()));
-			treeMap.remove(piLast.interval);
+			PageInterval piLast = treeMap.get(new PageInterval(new Interval(0, 0), ssc.getCurrentPage() - 1));
+			treeMap.remove(piLast);
 			piLast.getInterval().setUpper(ssc.getLastWrittenTimestamp());
-			treeMap.put(piLast.getInterval(), piLast);
+			treeMap.put(piLast, piLast);
 			// Open the next interval
-			PageInterval piNext = new PageInterval(new Interval(ssc.getLastWrittenTimestamp(), Long.MAX_VALUE), ssc.getCurrentPage());
-			treeMap.put(piNext.getInterval(), piNext);
+			PageInterval piNext = new PageInterval(new Interval(ssc.getLastWrittenTimestamp() + 1, Long.MAX_VALUE), ssc.getCurrentPage());
+			treeMap.put(piNext, piNext);
 
+			// Remove old pages
+			removeOldPages(sensorID, ssc.getCurrentPage(), MAX_PAGES);
 			stmHasChanged = true;
 		}
 
-		System.out.println("Current page: " + ssc.getCurrentPage());
-		System.out.println("Current entry: " + ssc.getEntryNumber());
 		SensorStorePage ssp = new SensorStorePage(dir, ssc.getSensorID(), ssc.getCurrentPage());
 		ssp.store(sensorData, ssc.getEntryNumber());
 
@@ -270,7 +296,7 @@ public class NervousVM {
 		return success;
 	}
 
-	public class PageInterval implements Serializable {
+	public class PageInterval implements Comparable<PageInterval>, Serializable {
 
 		private static final long serialVersionUID = -3883324724432537835L;
 
@@ -297,12 +323,26 @@ public class NervousVM {
 			this.interval = interval;
 			this.pageNumber = pageNumber;
 		}
-		
-		public String toString()
-		{
-			return interval.toString()+"->("+Long.toHexString(pageNumber)+")";
+
+		public String toString() {
+			return interval.toString() + "->(" + Long.toHexString(pageNumber) + ")";
 		}
-		
+
+		@Override
+		public int compareTo(PageInterval o) {
+			if (this.pageNumber == -1) {
+				return this.interval.compareTo(o.interval);
+			} else {
+				if (this.pageNumber > o.pageNumber) {
+					return 1;
+				} else if (this.pageNumber < o.pageNumber) {
+					return -1;
+				} else {
+					return 0;
+				}
+			}
+		}
+
 	}
 
 	public class Interval implements Comparable<Interval>, Serializable {
@@ -342,10 +382,9 @@ public class NervousVM {
 				return 1;
 			}
 		}
-		
-		public String toString()
-		{
-			return "["+String.valueOf(lower)+","+String.valueOf(upper)+"]";
+
+		public String toString() {
+			return "[" + String.valueOf(lower) + "," + String.valueOf(upper) + "]";
 		}
 	}
 }

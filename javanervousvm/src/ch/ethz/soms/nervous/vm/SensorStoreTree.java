@@ -96,4 +96,9 @@ public class SensorStoreTree {
 		}
 	}
 
+	public boolean evict() {
+		File file = new File(dir, "NervousVM/" + Long.toHexString(sensorID) + "T" + Long.toHexString(currentPage));
+		return file.delete();
+	}
+
 }

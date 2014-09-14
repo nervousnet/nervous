@@ -32,7 +32,6 @@ public class SensorStorePage {
 				file.createNewFile();
 			}
 			fileOffset = file.length();
-			System.out.println("Current entry: "+currentEntry+", offset: "+fileOffset);
 			fos = new FileOutputStream(file, true);
 			protoSensor.writeDelimitedTo(fos);
 			fos.flush();
@@ -122,5 +121,13 @@ public class SensorStorePage {
 			return read(startOffset, endOffset);
 		}
 	}
+
+	public boolean evict() {
+		File file = new File(dir, "NervousVM/" + Long.toHexString(sensorID) + "P" + Long.toHexString(currentPage));
+		boolean successEvict0 = file.delete();
+		boolean successEvict1 = sst.evict();
+		return successEvict0 && successEvict1;
+	}
+	
 
 }

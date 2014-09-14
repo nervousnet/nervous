@@ -14,9 +14,36 @@ import ch.ethz.soms.nervous.vm.NervousVM;
 public class Test {
 
 	@org.junit.Test
-	public void testStorage01() {
-		int testWith = 10000;
+	public void testPerformance() {
+		int testWith = 20000;
+
+		NervousVM nervousVM = new NervousVM(new File("."));
+
+		Long baseTime = Calendar.getInstance().getTimeInMillis();
 		
+		long start = System.currentTimeMillis();
+		for (int i = 0; i < testWith; i++) {
+			SensorData.Builder sdb = SensorData.newBuilder();
+			// Equispaced measurement plots
+			sdb.setRecordTime(baseTime - ((testWith - i) * 30000));
+			// Create some random test data
+			sdb.addValueInt32((int) (100 * Math.random()));
+			SensorData sensorData = sdb.build();
+			nervousVM.storeSensor(0, sensorData);
+		}
+		long stop = System.currentTimeMillis();
+
+		double durationAvg = stop-start;
+		durationAvg = durationAvg / testWith;
+
+		System.out.println("Average insert time: " + durationAvg + " ms");
+
+	}
+
+	@org.junit.Test
+	public void testStorage01() {
+		int testWith = 20000;
+
 		NervousVM nervousVM = new NervousVM(new File("."));
 
 		Long baseTime = Calendar.getInstance().getTimeInMillis();
@@ -28,9 +55,6 @@ public class Test {
 			// Equispaced measurement plots
 			sdb.setRecordTime(baseTime - ((testWith - i) * 30000));
 			// Create some random test data
-			sdb.addValueFloat(((float) Math.random()));
-			sdb.addValueFloat(((float) 0.f));
-			sdb.addValueFloat(((float) Math.random()));
 			sdb.addValueInt32((int) (100 * Math.random()));
 			SensorData sensorData = sdb.build();
 			input.add(sensorData);
@@ -39,7 +63,7 @@ public class Test {
 
 		List<SensorData> output = nervousVM.retrieve(0, 0, Long.MAX_VALUE);
 
-		assertEquals(input.size(),output.size());
+		assertEquals(input.size(), output.size());
 		for (int i = 0; i < input.size(); i++) {
 			try {
 				assertEquals(input.get(i).getValueInt32(0), output.get(i).getValueInt32(0));
@@ -49,20 +73,18 @@ public class Test {
 		}
 
 	}
-	
-	
+
 	@org.junit.Test
 	public void testStorage02() {
-		int testWith = 100;
-		
-		NervousVM nervousVM = new NervousVM(new File("."));
+		int testWith = 4200;
 
+		NervousVM nervousVM = new NervousVM(new File("."));
 
 		List<SensorData> input = new ArrayList<SensorData>();
 
 		for (int i = 0; i < testWith; i++) {
 			SensorData.Builder sdb = SensorData.newBuilder();
-			sdb.setRecordTime(i*2);
+			sdb.setRecordTime(i * 2);
 			sdb.addValueInt32(12345);
 			SensorData sensorData = sdb.build();
 			input.add(sensorData);
@@ -70,13 +92,13 @@ public class Test {
 		}
 
 		long lower = 11;
-		long upper = 31;
-		
+		long upper = 8197;
+
 		List<SensorData> output = nervousVM.retrieve(0, lower, upper);
 
-		for (int i = (int)lower; i <= (int)upper; i++) {
+		for (int i = (int) lower; i <= (int) upper; i++) {
 			try {
-				assertEquals((long)i, output.get(i).getRecordTime());
+				assertEquals((long) i, output.get(i).getRecordTime());
 			} catch (AssertionError ex) {
 				ex.printStackTrace();
 			}
