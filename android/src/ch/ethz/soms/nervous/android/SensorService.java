@@ -63,6 +63,7 @@ public class SensorService extends Service implements SensorEventListener, Noise
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// Noise sensor
 		sensorNoise = new NoiseSensor();
+		sensorNoise.addListener(this);
 		sensorNoise.startRecording(3000);
 		
 		// Normal android sensors

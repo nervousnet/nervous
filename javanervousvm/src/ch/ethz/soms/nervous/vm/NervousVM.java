@@ -251,55 +251,58 @@ public class NervousVM {
 	}
 
 	public synchronized boolean storeSensor(long sensorID, SensorData sensorData) {
-		boolean stmHasChanged = false;
-		boolean success = true;
-		SensorStoreConfig ssc = new SensorStoreConfig(dir, sensorID);
+		if (sensorData != null) {
+			boolean stmHasChanged = false;
+			boolean success = true;
+			SensorStoreConfig ssc = new SensorStoreConfig(dir, sensorID);
 
-		TreeMap<PageInterval, PageInterval> treeMap = sensorTreeMap.get(sensorID);
-		if (treeMap == null) {
-			treeMap = new TreeMap<PageInterval, PageInterval>();
-			// Open the initial interval
-			PageInterval piFirst = new PageInterval(new Interval(0, Long.MAX_VALUE), 0);
-			treeMap.put(piFirst, piFirst);
-			sensorTreeMap.put(sensorID, treeMap);
-			stmHasChanged = true;
+			TreeMap<PageInterval, PageInterval> treeMap = sensorTreeMap.get(sensorID);
+			if (treeMap == null) {
+				treeMap = new TreeMap<PageInterval, PageInterval>();
+				// Open the initial interval
+				PageInterval piFirst = new PageInterval(new Interval(0, Long.MAX_VALUE), 0);
+				treeMap.put(piFirst, piFirst);
+				sensorTreeMap.put(sensorID, treeMap);
+				stmHasChanged = true;
+			}
+
+			// Reject non monotonically increasing timestamps
+			if (ssc.getLastWrittenTimestamp() - sensorData.getRecordTime() >= 0) {
+				return false;
+			}
+
+			// Add new page if the last one is full
+			if (ssc.getEntryNumber() == MAX_ENTRIES) {
+				ssc.setCurrentPage(ssc.getCurrentPage() + 1);
+				ssc.setEntryNumber(0);
+
+				// Close the last interval
+				PageInterval piLast = treeMap.get(new PageInterval(new Interval(0, 0), ssc.getCurrentPage() - 1));
+				treeMap.remove(piLast);
+				piLast.getInterval().setUpper(ssc.getLastWrittenTimestamp());
+				treeMap.put(piLast, piLast);
+				// Open the next interval
+				PageInterval piNext = new PageInterval(new Interval(ssc.getLastWrittenTimestamp() + 1, Long.MAX_VALUE), ssc.getCurrentPage());
+				treeMap.put(piNext, piNext);
+
+				// Remove old pages
+				removeOldPages(sensorID, ssc.getCurrentPage(), MAX_PAGES);
+				stmHasChanged = true;
+			}
+
+			SensorStorePage ssp = new SensorStorePage(dir, ssc.getSensorID(), ssc.getCurrentPage());
+			ssp.store(sensorData, ssc.getEntryNumber());
+
+			ssc.setEntryNumber(ssc.getEntryNumber() + 1);
+
+			ssc.setLastWrittenTimestamp(sensorData.getRecordTime());
+			ssc.store();
+			if (stmHasChanged) {
+				writeSTM();
+			}
+			return success;
 		}
-
-		// Reject non monotonically increasing timestamps
-		if (ssc.getLastWrittenTimestamp() - sensorData.getRecordTime() >= 0) {
-			return false;
-		}
-
-		// Add new page if the last one is full
-		if (ssc.getEntryNumber() == MAX_ENTRIES) {
-			ssc.setCurrentPage(ssc.getCurrentPage() + 1);
-			ssc.setEntryNumber(0);
-
-			// Close the last interval
-			PageInterval piLast = treeMap.get(new PageInterval(new Interval(0, 0), ssc.getCurrentPage() - 1));
-			treeMap.remove(piLast);
-			piLast.getInterval().setUpper(ssc.getLastWrittenTimestamp());
-			treeMap.put(piLast, piLast);
-			// Open the next interval
-			PageInterval piNext = new PageInterval(new Interval(ssc.getLastWrittenTimestamp() + 1, Long.MAX_VALUE), ssc.getCurrentPage());
-			treeMap.put(piNext, piNext);
-
-			// Remove old pages
-			removeOldPages(sensorID, ssc.getCurrentPage(), MAX_PAGES);
-			stmHasChanged = true;
-		}
-
-		SensorStorePage ssp = new SensorStorePage(dir, ssc.getSensorID(), ssc.getCurrentPage());
-		ssp.store(sensorData, ssc.getEntryNumber());
-
-		ssc.setEntryNumber(ssc.getEntryNumber() + 1);
-
-		ssc.setLastWrittenTimestamp(sensorData.getRecordTime());
-		ssc.store();
-		if (stmHasChanged) {
-			writeSTM();
-		}
-		return success;
+		return false;
 	}
 
 	public class PageInterval implements Comparable<PageInterval>, Serializable {
