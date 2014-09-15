@@ -1,5 +1,6 @@
 package ch.ethz.soms.nervous.android;
 
+import ch.ethz.soms.nervous.android.sensors.SensorDesc;
 import ch.ethz.soms.nervous.vm.NervousVM;
 import android.content.Context;
 import android.os.AsyncTask;

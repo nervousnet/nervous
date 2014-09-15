@@ -2,6 +2,15 @@ package ch.ethz.soms.nervous.android;
 
 import java.util.HashSet;
 
+import ch.ethz.soms.nervous.android.sensors.SensorDesc;
+import ch.ethz.soms.nervous.android.sensors.SensorDescAccelerometer;
+import ch.ethz.soms.nervous.android.sensors.SensorDescBattery;
+import ch.ethz.soms.nervous.android.sensors.SensorDescGyroscope;
+import ch.ethz.soms.nervous.android.sensors.SensorDescHumidity;
+import ch.ethz.soms.nervous.android.sensors.SensorDescLight;
+import ch.ethz.soms.nervous.android.sensors.SensorDescMagnetic;
+import ch.ethz.soms.nervous.android.sensors.SensorDescProximity;
+import ch.ethz.soms.nervous.android.sensors.SensorDescTemperature;
 import android.app.Service;
 import android.content.Intent;
 import android.content.IntentFilter;

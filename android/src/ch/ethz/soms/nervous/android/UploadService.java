@@ -7,6 +7,7 @@ import java.net.UnknownHostException;
 import java.util.List;
 
 import ch.ethz.soms.nervous.android.SensorService.SensorBinder;
+import ch.ethz.soms.nervous.android.sensors.SensorDesc;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.Builder;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;

@@ -1,4 +1,4 @@
-package ch.ethz.soms.nervous.android;
+package ch.ethz.soms.nervous.android.sensors;
 
 import android.graphics.SweepGradient;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
