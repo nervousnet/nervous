@@ -2,6 +2,8 @@ package ch.ethz.soms.nervous.android;
 
 import java.util.HashSet;
 
+import ch.ethz.soms.nervous.android.sensors.NoiseSensor;
+import ch.ethz.soms.nervous.android.sensors.NoiseSensor.NoiseListener;
 import ch.ethz.soms.nervous.android.sensors.SensorDesc;
 import ch.ethz.soms.nervous.android.sensors.SensorDescAccelerometer;
 import ch.ethz.soms.nervous.android.sensors.SensorDescBattery;
@@ -9,6 +11,7 @@ import ch.ethz.soms.nervous.android.sensors.SensorDescGyroscope;
 import ch.ethz.soms.nervous.android.sensors.SensorDescHumidity;
 import ch.ethz.soms.nervous.android.sensors.SensorDescLight;
 import ch.ethz.soms.nervous.android.sensors.SensorDescMagnetic;
+import ch.ethz.soms.nervous.android.sensors.SensorDescNoise;
 import ch.ethz.soms.nervous.android.sensors.SensorDescProximity;
 import ch.ethz.soms.nervous.android.sensors.SensorDescTemperature;
 import android.app.Service;
@@ -23,7 +26,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-public class SensorService extends Service implements SensorEventListener {
+public class SensorService extends Service implements SensorEventListener, NoiseListener {
 
 	private static final String DEBUG_TAG = "SensorService";
 
@@ -38,6 +41,7 @@ public class SensorService extends Service implements SensorEventListener {
 	private Sensor sensorGyroscope = null;
 	private Sensor sensorTemperature = null;
 	private Sensor sensorHumidity = null;
+	private NoiseSensor sensorNoise = null;
 
 	private boolean hasAccelerometer = false;
 	private boolean hasLight = false;
@@ -57,6 +61,11 @@ public class SensorService extends Service implements SensorEventListener {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		// Noise sensor
+		sensorNoise = new NoiseSensor();
+		sensorNoise.startRecording(3000);
+		
+		// Normal android sensors
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
 		sensorAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -97,6 +106,7 @@ public class SensorService extends Service implements SensorEventListener {
 		if (hasHumidity) {
 			sensorCollected.add(SensorDescHumidity.class);
 		}
+		sensorCollected.add(SensorDescNoise.class);
 
 		IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
 
@@ -179,6 +189,20 @@ public class SensorService extends Service implements SensorEventListener {
 			break;
 		}
 
+		store(sensorDesc);
+
+	}
+
+	@Override
+	public void noiseSensorDataReady() {
+		
+		// TODO
+		SensorDesc sensorDesc = new SensorDescNoise(timestamp);
+		store(sensorDesc);
+	}
+	
+	private void store(SensorDesc sensorDesc)
+	{
 		if (sensorDesc != null) {
 			if (sensorCollected.contains(sensorDesc.getClass())) {
 				sensorCollected.remove(sensorDesc.getClass());
@@ -197,4 +221,6 @@ public class SensorService extends Service implements SensorEventListener {
 			stopSelf();
 		}
 	}
+	
+	
 }
