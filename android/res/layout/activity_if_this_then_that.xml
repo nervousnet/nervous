@@ -83,7 +83,7 @@
                 android:layout_height="match_parent"
                 android:layout_toRightOf="@id/txt_for"
                 android:background="@color/BlueDarker"
-                android:paddingLeft="5sp" />
+                android:paddingLeft="10sp" />
 
             <Spinner
                 android:id="@+id/spinner_TimeUnit"
@@ -91,26 +91,81 @@
                 android:layout_height="match_parent"
                 android:layout_toRightOf="@id/spinner_TimeValue"
                 android:background="@color/BlueDarker"
-                android:paddingLeft="5sp" />
+                android:paddingLeft="10sp" />
         </RelativeLayout>
     </LinearLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1" >
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:weightSum="4" >
 
         <TextView
             android:id="@+id/txt_HeadingTHEN"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#1C8C77"
-            android:height="0dp"
+            android:layout_weight="1"
+            android:background="@color/GreenDarker"
             android:text="@string/then"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#62c1a2"
+            android:textColor="@color/GreenLighter"
             android:textSize="50sp"
             android:textStyle="bold" />
-    </RelativeLayout>
+
+        <Spinner
+            android:id="@+id/spinner_thenStage1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/GreenDarker" />
+
+        <Spinner
+            android:id="@+id/spinner_thenStage2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/GreenDarker" />
+
+        <RelativeLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/GreenDarker"
+            android:orientation="horizontal"
+            android:weightSum="3" >
+
+            <TextView
+                android:id="@+id/txt_then_for"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/ifThisThenThatLeftPadding"
+                android:text="@string/For"
+                android:textColor="@color/GreenLighter"
+                android:textSize="28sp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/spinner_then_TimeValue"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@id/txt_then_for"
+                android:background="@color/GreenDarker"
+                android:paddingLeft="10sp" />
+
+            <Spinner
+                android:id="@+id/spinner_then_TimeUnit"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@id/spinner_then_TimeValue"
+                android:background="@color/GreenDarker"
+                android:paddingLeft="10sp" />
+        </RelativeLayout>
+    </LinearLayout>
 
 </LinearLayout>
