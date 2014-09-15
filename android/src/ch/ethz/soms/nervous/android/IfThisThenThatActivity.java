@@ -13,11 +13,15 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 public class IfThisThenThatActivity extends Activity {
 
 	private Spinner spinner_Sensor, spinner_Stage1, spinner_Stage1Part2,
 			spinner_TimeValue, spinner_TimeUnit;
+	private Spinner spinner_then_stage1, spinner_then_stage2,
+			spinner_then_TimeUnit, spinner_then_TimeValue;
+	private TextView txt_then_for;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -29,8 +33,17 @@ public class IfThisThenThatActivity extends Activity {
 		spinner_TimeValue = (Spinner) findViewById(R.id.spinner_TimeValue);
 		spinner_TimeUnit = (Spinner) findViewById(R.id.spinner_TimeUnit);
 
+		spinner_then_stage1 = (Spinner) findViewById(R.id.spinner_thenStage1);
+		spinner_then_stage2 = (Spinner) findViewById(R.id.spinner_thenStage2);
+		spinner_then_TimeUnit = (Spinner) findViewById(R.id.spinner_then_TimeUnit);
+		spinner_then_TimeValue = (Spinner) findViewById(R.id.spinner_then_TimeValue);
+		txt_then_for = (TextView) findViewById(R.id.txt_then_for);
+
 		spinner_Sensor
 				.setOnItemSelectedListener(new SensorSpinnerOnItemSelectedListener());
+		spinner_then_stage1
+				.setOnItemSelectedListener(new ThenStage1SpinnerOnItemSelectedListener());
+
 		updateAllSpinners();
 	}
 
@@ -40,12 +53,17 @@ public class IfThisThenThatActivity extends Activity {
 		updateStage1Part2Spinner();
 		updateTimeValueSpinner();
 		updateTimeUnitSpinner();
+		updateThenStage1Spinner();
+		updateThenStage2Spinner();
+		updateThenForTextView();
+		updateThenTimeValueSpinner();
+		updateThenTimeUnitSpinner();
 	}
 
 	private void updateTimeUnitSpinner() {
 		ArrayList<String> timeUnitArray = getTimeUnitArray();
-		ArrayAdapter<String> adapter_TimeUnit = new ArrayAdapter<String>(
-				this, R.layout.if_spinners, timeUnitArray);
+		ArrayAdapter<String> adapter_TimeUnit = new ArrayAdapter<String>(this,
+				R.layout.if_spinners, timeUnitArray);
 		spinner_TimeUnit.setAdapter(adapter_TimeUnit);
 	}
 
@@ -55,22 +73,36 @@ public class IfThisThenThatActivity extends Activity {
 				this, R.layout.if_spinners, timeValuesArray);
 		spinner_TimeValue.setAdapter(adapter_TimeValues);
 	}
-	
-	
 
 	private void updateStage1Part2Spinner() {
-		ArrayList<String> ifStage1Part2Array = getIfStage1Part2();
-
+		ArrayList<String> ifStage1Part2Array = getIfStage1Part2Array();
 		ArrayAdapter<String> adapter_IfStage1Part2 = new ArrayAdapter<String>(
 				this, R.layout.if_spinners, ifStage1Part2Array);
 		spinner_Stage1Part2.setAdapter(adapter_IfStage1Part2);
 	}
 
-	private void updateStage1Spinner() {
-		ArrayList<String> ifStage1Array = getIfStage1();
-		ArrayAdapter<String> adapter_IfStage1 = new ArrayAdapter<String>(this,
-				R.layout.if_spinners, ifStage1Array);
-		spinner_Stage1.setAdapter(adapter_IfStage1);
+	private ArrayList<String> getThenStage1Array() {
+		ArrayList<String> result_list = new ArrayList<String>();
+		String list[] = { "Vibrate", "Play Notification", "Flash Screen",
+				"Turn off Phone", "Start App", "Call Contact" };
+		result_list.addAll(Arrays.asList(list));
+		return result_list;
+	}
+
+	private ArrayList<String> getThenStage2Array() {
+		ArrayList<String> result_list = new ArrayList<String>();
+		String chosenThenStage1 = (String) spinner_then_stage1
+				.getSelectedItem();
+		if (chosenThenStage1.equals("Play Notification")) {
+			String list[] = { "Soft Ringing", "Heavy Ringing",
+					"Sound of the Sun", "Hats off", "Candlelight",
+					"Stars Align" };
+			result_list.addAll(Arrays.asList(list));
+		} else if (chosenThenStage1.equals("Start App")) {
+			String list[] = { "Maps", "Whatsapp", "Email", "Angry Birds" };
+			result_list.addAll(Arrays.asList(list));
+		}
+		return result_list;
 	}
 
 	private void updateSensorSpinner() {
@@ -81,7 +113,60 @@ public class IfThisThenThatActivity extends Activity {
 		spinner_Sensor.setAdapter(adapter_Sensor);
 	}
 
-	private ArrayList<String> getIfStage1() {
+	private void updateStage1Spinner() {
+		ArrayList<String> ifStage1Array = getIfStage1Array();
+		ArrayAdapter<String> adapter_IfStage1 = new ArrayAdapter<String>(this,
+				R.layout.if_spinners, ifStage1Array);
+		spinner_Stage1.setAdapter(adapter_IfStage1);
+	}
+
+	private void updateThenTimeUnitSpinner() {
+		spinner_then_TimeUnit.setVisibility(txt_then_for.getVisibility());
+		ArrayList<String> timeUnitArray = getTimeUnitArray();
+		ArrayAdapter<String> adapter_TimeUnit = new ArrayAdapter<String>(this,
+				R.layout.then_spinners, timeUnitArray);
+		spinner_then_TimeUnit.setAdapter(adapter_TimeUnit);
+	}
+
+	private void updateThenTimeValueSpinner() {
+		spinner_then_TimeValue.setVisibility(txt_then_for.getVisibility());
+		ArrayList<String> timeValuesArray = getTimeValuesArray();
+		ArrayAdapter<String> adapter_TimeValues = new ArrayAdapter<String>(
+				this, R.layout.then_spinners, timeValuesArray);
+		spinner_then_TimeValue.setAdapter(adapter_TimeValues);
+	}
+
+	private void updateThenStage1Spinner() {
+		ArrayList<String> thenStage1Array = getThenStage1Array();
+		ArrayAdapter<String> adapter_thenStage1 = new ArrayAdapter<String>(
+				this, R.layout.then_spinners, thenStage1Array);
+		spinner_then_stage1.setAdapter(adapter_thenStage1);
+	}
+
+	private void updateThenStage2Spinner() {
+		ArrayList<String> thenStage2Array = getThenStage2Array();
+		ArrayAdapter<String> adapter_thenStage2 = new ArrayAdapter<String>(
+				this, R.layout.then_spinners, thenStage2Array);
+		spinner_then_stage2.setAdapter(adapter_thenStage2);
+	}
+
+	private void updateThenForTextView() {
+		// Hide if necessary
+		ArrayList<String> hideThenForText_Array = new ArrayList<String>();
+		String hideThenForText_lsit[] = { "Start App", "Call Contact",
+				"Turn off Phone" };
+		hideThenForText_Array.addAll(Arrays.asList(hideThenForText_lsit));
+	
+		String chosenThenStage1 = (String) spinner_then_stage1
+				.getSelectedItem();
+		if (hideThenForText_Array.contains(chosenThenStage1)) {
+			txt_then_for.setVisibility(View.INVISIBLE);
+		} else {
+			txt_then_for.setVisibility(View.VISIBLE);
+		}
+	}
+
+	private ArrayList<String> getIfStage1Array() {
 
 		ArrayList<String> itemsArray = new ArrayList<String>();
 
@@ -108,7 +193,7 @@ public class IfThisThenThatActivity extends Activity {
 		return itemsArray;
 	}
 
-	private ArrayList<String> getIfStage1Part2() {
+	private ArrayList<String> getIfStage1Part2Array() {
 
 		ArrayList<String> itemsArray = new ArrayList<String>();
 		String chosenSensor = (String) spinner_Sensor.getSelectedItem();
@@ -117,7 +202,7 @@ public class IfThisThenThatActivity extends Activity {
 		}
 		if (chosenSensor.equals("Temperature")) {
 			for (int i = -20; i <= 40; i++) {
-				itemsArray.add(i + " C");
+				itemsArray.add(i + " C" + (char) 0x00B0);
 			}
 		} else if (chosenSensor.equals("Humidity")) {
 			for (int i = 0; i <= 100; i++) {
@@ -200,4 +285,20 @@ public class IfThisThenThatActivity extends Activity {
 		}
 	}
 
+	private final class ThenStage1SpinnerOnItemSelectedListener implements
+			OnItemSelectedListener {
+		@Override
+		public void onItemSelected(AdapterView<?> parent, View view,
+				int position, long id) {
+			updateThenStage2Spinner();
+			updateThenForTextView();
+			updateThenTimeValueSpinner();
+			updateThenTimeUnitSpinner();
+		}
+
+		@Override
+		public void onNothingSelected(AdapterView<?> parent) {
+
+		}
+	}
 }
