@@ -197,7 +197,7 @@ public class SensorService extends Service implements SensorEventListener, Noise
 	public void noiseSensorDataReady() {
 		
 		// TODO
-		SensorDesc sensorDesc = new SensorDescNoise(timestamp);
+		SensorDesc sensorDesc = new SensorDescNoise(0);
 		store(sensorDesc);
 	}
 	
