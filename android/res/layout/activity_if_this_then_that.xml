@@ -21,14 +21,16 @@
             android:text="@string/If"
             android:textColor="@color/BlueLighter"
             android:textSize="50sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews" />
 
         <Spinner
             android:id="@+id/spinner_Sensor"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/BlueDarker" />
+            android:background="@color/BlueDarker"
+            android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -44,7 +46,8 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:background="@color/BlueDarker" />
+                android:background="@color/BlueDarker"
+                android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews" />
 
             <Spinner
                 android:id="@+id/spinner_IfStage1_Part2"
@@ -52,7 +55,8 @@
                 android:layout_height="match_parent"
                 android:layout_toRightOf="@id/spinner_IfStage1"
                 android:background="@color/BlueDarker"
-                android:paddingLeft="10sp" />
+                android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews"
+                android:paddingLeft="@dimen/ifThisThenThat_SpaceBetweenViews" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -75,7 +79,8 @@
                 android:text="@string/For"
                 android:textColor="@color/BlueLighter"
                 android:textSize="28sp"
-                android:textStyle="bold" />
+                android:textStyle="bold" 
+                android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews"/>
 
             <Spinner
                 android:id="@+id/spinner_TimeValue"
@@ -83,7 +88,8 @@
                 android:layout_height="match_parent"
                 android:layout_toRightOf="@id/txt_for"
                 android:background="@color/BlueDarker"
-                android:paddingLeft="10sp" />
+                android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews"
+                android:paddingLeft="@dimen/ifThisThenThat_SpaceBetweenViews" />
 
             <Spinner
                 android:id="@+id/spinner_TimeUnit"
@@ -91,7 +97,8 @@
                 android:layout_height="match_parent"
                 android:layout_toRightOf="@id/spinner_TimeValue"
                 android:background="@color/BlueDarker"
-                android:paddingLeft="10sp" />
+                android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews"
+                android:paddingLeft="@dimen/ifThisThenThat_SpaceBetweenViews" />
         </RelativeLayout>
     </LinearLayout>
 
@@ -119,14 +126,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/GreenDarker" />
+            android:background="@color/GreenDarker"
+            android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews" />
 
         <Spinner
             android:id="@+id/spinner_thenStage2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/GreenDarker" />
+            android:background="@color/GreenDarker"
+            android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews" />
 
         <RelativeLayout
             android:id="@+id/linearLayout2"
@@ -156,7 +165,8 @@
                 android:layout_height="match_parent"
                 android:layout_toRightOf="@id/txt_then_for"
                 android:background="@color/GreenDarker"
-                android:paddingLeft="10sp" />
+                android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews"
+                android:paddingLeft="@dimen/ifThisThenThat_SpaceBetweenViews" />
 
             <Spinner
                 android:id="@+id/spinner_then_TimeUnit"
@@ -164,7 +174,8 @@
                 android:layout_height="match_parent"
                 android:layout_toRightOf="@id/spinner_then_TimeValue"
                 android:background="@color/GreenDarker"
-                android:paddingLeft="10sp" />
+                android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews"
+                android:paddingLeft="@dimen/ifThisThenThat_SpaceBetweenViews" />
         </RelativeLayout>
     </LinearLayout>
 

@@ -101,6 +101,9 @@ public class IfThisThenThatActivity extends Activity {
 		} else if (chosenThenStage1.equals("Start App")) {
 			String list[] = { "Maps", "Whatsapp", "Email", "Angry Birds" };
 			result_list.addAll(Arrays.asList(list));
+		} else if (chosenThenStage1.equals("Call Contact")) {
+			String list[] = { "Select Contact"};
+			result_list.addAll(Arrays.asList(list));
 		}
 		return result_list;
 	}
