@@ -18,11 +18,11 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@color/BlueDarker"
+            android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews"
             android:text="@string/If"
             android:textColor="@color/BlueLighter"
             android:textSize="50sp"
-            android:textStyle="bold"
-            android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews" />
+            android:textStyle="bold" />
 
         <Spinner
             android:id="@+id/spinner_Sensor"
@@ -75,12 +75,12 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:gravity="center_vertical"
+                android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews"
                 android:paddingLeft="@dimen/ifThisThenThatLeftPadding"
                 android:text="@string/For"
                 android:textColor="@color/BlueLighter"
                 android:textSize="28sp"
-                android:textStyle="bold" 
-                android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews"/>
+                android:textStyle="bold" />
 
             <Spinner
                 android:id="@+id/spinner_TimeValue"
@@ -88,6 +88,7 @@
                 android:layout_height="match_parent"
                 android:layout_toRightOf="@id/txt_for"
                 android:background="@color/BlueDarker"
+                android:gravity="center"
                 android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews"
                 android:paddingLeft="@dimen/ifThisThenThat_SpaceBetweenViews" />
 
