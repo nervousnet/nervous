@@ -23,4 +23,6 @@
     <color name="GreenDarker">#1C8C77</color>
     <color name="GreenLighter">#62c1a2</color>
 
+    <string name="title_activity_sensor_logging_toggle">SensorLoggingToggleActivity</string>
+
 </resources>

@@ -237,10 +237,13 @@ public class MainActivity extends Activity {
 			Intent intent = new Intent(this, IfThisThenThatActivity.class);
 			startActivity(intent);
 			break;
+		case R.id.menu_SensorLoggingToggle:
+			Intent intent2 = new Intent(this,SensorLoggingToggleActivity.class);
+			startActivity(intent2);
+			break;
 		default:
 			break;
 		}
-		// TODO Auto-generated method stub
 		return super.onOptionsItemSelected(item);
 	}
 

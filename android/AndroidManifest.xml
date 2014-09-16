@@ -11,7 +11,8 @@
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="20" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -32,15 +33,19 @@
         <service
             android:name=".SensorService"
             android:enabled="true" />
-
         <service
             android:name=".UploadService"
             android:enabled="true" />
-        
+
         <activity
             android:name=".IfThisThenThatActivity"
-            android:label="@string/title_activity_if_this_then_that" 
-            android:theme="@android:style/Theme.NoTitleBar">
+            android:label="@string/title_activity_if_this_then_that"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+        <activity
+            android:name=".SensorLoggingToggleActivity"
+            android:label="@string/title_activity_sensor_logging_toggle"
+            android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
     </application>
 

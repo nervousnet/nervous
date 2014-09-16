@@ -1,5 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item android:id="@+id/menu_IfThisThenThat" android:title="If This Then That"></item>
+    <item android:id="@+id/menu_SensorLoggingToggle" android:title="Sensor Logging Toggle"></item>
 
 
 </menu>
