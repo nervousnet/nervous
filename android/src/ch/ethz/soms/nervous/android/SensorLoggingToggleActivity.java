@@ -1,6 +1,5 @@
 package ch.ethz.soms.nervous.android;
 
-import android.R.drawable;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -104,6 +103,8 @@ public class SensorLoggingToggleActivity extends Activity {
 					} else {
 						imageView_Log.setImageResource(R.raw.img_log_off);
 						imageView_Log.setTag(R.raw.img_log_off);
+						imageView_Share.setImageResource(R.raw.img_share_off);
+						imageView_Share.setTag(R.raw.img_share_off);
 					}
 				}
 			});
@@ -115,6 +116,8 @@ public class SensorLoggingToggleActivity extends Activity {
 					if ((Integer) imageView_Share.getTag() == R.raw.img_share_off) {
 						imageView_Share.setImageResource(R.raw.img_share_on);
 						imageView_Share.setTag(R.raw.img_share_on);
+						imageView_Log.setImageResource(R.raw.img_log_on);
+						imageView_Log.setTag(R.raw.img_log_on);
 					} else {
 						imageView_Share.setImageResource(R.raw.img_share_off);
 						imageView_Share.setTag(R.raw.img_share_off);
