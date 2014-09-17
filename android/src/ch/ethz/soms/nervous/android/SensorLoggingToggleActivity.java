@@ -3,10 +3,7 @@ package ch.ethz.soms.nervous.android;
 import android.R.drawable;
 import android.app.Activity;
 import android.os.Bundle;
-import android.text.AndroidCharacter;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -26,14 +23,16 @@ public class SensorLoggingToggleActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_sensor_logging_toggle);
 
-		final String[] sensorNames = { "Accelerometer", "Gyroscope", "Battery",
-				"Microphone" };
+		final String[] sensorNames = getSensorNames();
+		int numOfSensors = sensorNames.length;
 
-		int[] images_log = { drawable.ic_lock_lock,
-				drawable.ic_lock_idle_charging, drawable.ic_lock_power_off,
-				drawable.ic_lock_lock };
-		int[] images_share = { drawable.ic_input_add, drawable.ic_input_add,
-				drawable.ic_input_delete, drawable.ic_input_get };
+		Integer[] images_log = new Integer[numOfSensors];
+		Integer[] images_share = new Integer[numOfSensors];
+		for (int i = 0; i < numOfSensors; i++) {
+			images_log[i] = R.raw.img_log_on;
+			images_share[i] = R.raw.img_share_on;
+		}
+
 		CustomListAdapter adapter = new CustomListAdapter(
 				SensorLoggingToggleActivity.this, sensorNames, images_log,
 				images_share);
@@ -52,19 +51,26 @@ public class SensorLoggingToggleActivity extends Activity {
 
 	}
 
+	private String[] getSensorNames() {
+		String[] sensorList = { "Accelerometer", "Light", "Temperature",
+				"Humidity", "Gyroscope", "Light", "Proximity", "Battery",
+				"Atm. Pressure", "Altitude", "Sound Level" };
+		return sensorList;
+	}
+
 	public class CustomListAdapter extends ArrayAdapter<String> {
 		private final Activity context;
 		String[] sensorName;
-		private final int[] image_log, image_share;
+		private final Integer[] image_share, image_log;
 
 		public CustomListAdapter(Activity context, String[] i_sensorName,
-				int[] i_image_log, int[] i_image_share) {
+				Integer[] images_log, Integer[] images_share) {
 			super(context, R.layout.sensor_logging_toggle_listitem,
 					i_sensorName);
 			this.context = context;
 			this.sensorName = i_sensorName;
-			this.image_log = i_image_log;
-			this.image_share = i_image_share;
+			this.image_log = images_log;
+			this.image_share = images_share;
 
 		}
 
@@ -77,17 +83,42 @@ public class SensorLoggingToggleActivity extends Activity {
 					.findViewById(R.id.txt_SensorItem);
 			final ImageView imageView_Log = (ImageView) rowView
 					.findViewById(R.id.img_log);
-			ImageView imageView_Share = (ImageView) rowView
+			final ImageView imageView_Share = (ImageView) rowView
 					.findViewById(R.id.img_share);
 			txtTitle.setText(sensorName[position]);
 			imageView_Log.setImageResource(image_log[position]);
 			imageView_Share.setImageResource(image_share[position]);
 
+			// Anroid cannot access getImageResource. It needs to be stored in a
+			// tag
+			imageView_Log.setTag(image_log[position]);
+			imageView_Share.setTag(image_share[position]);
+
 			imageView_Log.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
-					imageView_Log.setImageResource(drawable.ic_dialog_info);
+					if ((Integer) imageView_Log.getTag() == R.raw.img_log_off) {
+						imageView_Log.setImageResource(R.raw.img_log_on);
+						imageView_Log.setTag(R.raw.img_log_on);
+					} else {
+						imageView_Log.setImageResource(R.raw.img_log_off);
+						imageView_Log.setTag(R.raw.img_log_off);
+					}
+				}
+			});
+
+			imageView_Share.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					if ((Integer) imageView_Share.getTag() == R.raw.img_share_off) {
+						imageView_Share.setImageResource(R.raw.img_share_on);
+						imageView_Share.setTag(R.raw.img_share_on);
+					} else {
+						imageView_Share.setImageResource(R.raw.img_share_off);
+						imageView_Share.setTag(R.raw.img_share_off);
+					}
 				}
 			});
 			return rowView;
