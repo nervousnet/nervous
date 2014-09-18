@@ -31,7 +31,7 @@ public class NoiseSensor {
 		listenerList.add(listener);
 	}
 
-	public void dataReady(double spl) {
+	public void dataReady(double rms, double spl) {
 		for (NoiseListener listener : listenerList) {
 			listener.noiseSensorDataReady();
 		}
@@ -66,17 +66,27 @@ public class NoiseSensor {
 			double rms = 0.0;
 
 			for (int i = 0; i < buflen; i++) {
-				rms = rms + ((int) (buffer[i]) * (int) (buffer[i]));
+				rms = rms + Math.abs(buffer[i]);
 			}
-			rms = Math.sqrt(rms / buflen);
+			rms = rms / buflen;
 
-			// See http://de.wikipedia.org/wiki/Schalldruckpegel
-			double gain = 2500.0 / Math.pow(10.0, 90.0 / 20.0);
+			// See for the pressure formula: http://de.wikipedia.org/wiki/Schalldruckpegel
+			// See http://www.reddit.com/r/androiddev/comments/14bnrp/how_to_find_microphone_modelspec_of_android_device/
+			// See "Android 4.0 compability definition guideline", chapter 5.3
+			// Basically devices are required to conform to the equation:
+			// --------- 20.d * Math.log10(gain * 2500) == 90.d
+			// Thus deriving
+			// --------- gain = Math.pow(10.0, 90.0 / 20.0) / 2500.0
+			// and
+			// --------- spl = 20.d * Math.log10(gain * rms);
+			// (This is as close as we can get to absolute sound pressure levels (spl). The accuracy depends on how close the device is to Googles requirements.)
+			//
+			double gain = Math.pow(10.0, 90.0 / 20.0) / 2500.0;
 			spl = 20.d * Math.log10(gain * rms);
 
 			// Pass data to listeners
-			// Data: total noise level (spl in dB)
-			dataReady(spl);
+			// Data: PCM RMS raw value, total noise level (spl in dB), more to come... //TODO
+			dataReady(rms, spl);
 			return null;
 		}
 	}
