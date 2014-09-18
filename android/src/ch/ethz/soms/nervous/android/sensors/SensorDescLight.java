@@ -23,14 +23,6 @@ public class SensorDescLight extends SensorDesc {
 		this.light = sensorData.getValueFloat(0);
 	}
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(String.valueOf(getTimestamp()) + ";lightAccuracy;" + String.valueOf(accuracy) + "\n");
-		sb.append(String.valueOf(getTimestamp()) + ";light;" + String.valueOf(light) + "\n");
-		return sb.toString();
-	}
-
 	public int getAccuracy() {
 		return accuracy;
 	}

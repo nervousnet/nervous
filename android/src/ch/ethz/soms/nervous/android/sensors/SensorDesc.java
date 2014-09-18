@@ -5,8 +5,6 @@ import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorD
 public abstract class SensorDesc {
 		
 	private final long timestamp;
-
-	public abstract String toString();
 	
 	public SensorDesc(final long timestamp)
 	{

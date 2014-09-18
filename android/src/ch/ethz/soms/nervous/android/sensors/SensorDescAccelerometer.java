@@ -27,16 +27,6 @@ public class SensorDescAccelerometer extends SensorDesc {
 		this.accZ = sensorData.getValueFloat(2);
 	}
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(String.valueOf(getTimestamp()) + ";accAccuracy;" + String.valueOf(accuracy) + "\n");
-		sb.append(String.valueOf(getTimestamp()) + ";accX;" + String.valueOf(accX) + "\n");
-		sb.append(String.valueOf(getTimestamp()) + ";accY;" + String.valueOf(accY) + "\n");
-		sb.append(String.valueOf(getTimestamp()) + ";accZ;" + String.valueOf(accZ) + "\n");
-		return sb.toString();
-	}
-
 	public int getAccuracy() {
 		return accuracy;
 	}

@@ -28,16 +28,6 @@ public class SensorDescGyroscope extends SensorDesc {
 		this.gyrZ = sensorData.getValueFloat(2);
 	}
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(String.valueOf(getTimestamp()) + ";gyrAccuracy;" + String.valueOf(accuracy) + "\n");
-		sb.append(String.valueOf(getTimestamp()) + ";gyrX;" + String.valueOf(gyrX) + "\n");
-		sb.append(String.valueOf(getTimestamp()) + ";gyrY;" + String.valueOf(gyrY) + "\n");
-		sb.append(String.valueOf(getTimestamp()) + ";gyrZ;" + String.valueOf(gyrZ) + "\n");
-		return sb.toString();
-	}
-
 	public int getAccuracy() {
 		return accuracy;
 	}

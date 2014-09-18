@@ -21,15 +21,7 @@ public class SensorDescTemperature extends SensorDesc {
 		this.accuracy = sensorData.getValueInt32(0);
 		this.temperature = sensorData.getValueFloat(0);
 	}
-
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(String.valueOf(getTimestamp()) + ";tempAccuracy;" + String.valueOf(accuracy) + "\n");
-		sb.append(String.valueOf(getTimestamp()) + ";temp;" + String.valueOf(temperature) + "\n");
-		return sb.toString();
-	}
-
+	
 	public int getAccuracy() {
 		return accuracy;
 	}

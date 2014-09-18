@@ -26,17 +26,6 @@ public class SensorDescBattery extends SensorDesc {
 		this.isUsbCharge = sensorData.getValueBool(1);
 		this.isAcCharge = sensorData.getValueBool(2);
 	}
-	
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(String.valueOf(getTimestamp()) + ";batteryPercent;" + String.valueOf(batteryPercent) + "\n");
-		sb.append(String.valueOf(getTimestamp()) + ";isCharging;" + String.valueOf(isCharging ? 1 : 0) + "\n");
-		sb.append(String.valueOf(getTimestamp()) + ";isUsbCharge;" + String.valueOf(isUsbCharge ? 1 : 0) + "\n");
-		sb.append(String.valueOf(getTimestamp()) + ";isAcCharge;" + String.valueOf(isAcCharge ? 1 : 0) + "\n");
-		return sb.toString();
-	}
-
 
 	public float getBatteryPercent() {
 		return batteryPercent;

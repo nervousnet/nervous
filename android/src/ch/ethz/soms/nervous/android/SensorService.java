@@ -64,7 +64,7 @@ public class SensorService extends Service implements SensorEventListener, Noise
 		// Noise sensor
 		sensorNoise = new NoiseSensor();
 		sensorNoise.addListener(this);
-		sensorNoise.startRecording(3000);
+		sensorNoise.startRecording(1000);
 		
 		// Normal android sensors
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -195,10 +195,8 @@ public class SensorService extends Service implements SensorEventListener, Noise
 	}
 
 	@Override
-	public void noiseSensorDataReady() {
-		
-		// TODO
-		SensorDesc sensorDesc = new SensorDescNoise(0);
+	public void noiseSensorDataReady(long timestamp, float rms, float spl, float[] bands) {
+		SensorDesc sensorDesc = new SensorDescNoise(timestamp, rms, spl, bands);
 		store(sensorDesc);
 	}
 	

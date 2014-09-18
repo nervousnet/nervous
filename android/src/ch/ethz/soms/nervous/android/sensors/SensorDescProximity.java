@@ -23,14 +23,6 @@ public class SensorDescProximity extends SensorDesc {
 		this.proximity = sensorData.getValueFloat(0);
 	}
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(String.valueOf(getTimestamp()) + ";proxAccuracy;" + String.valueOf(accuracy) + "\n");
-		sb.append(String.valueOf(getTimestamp()) + ";prox;" + String.valueOf(proximity) + "\n");
-		return sb.toString();
-	}
-
 	public int getAccuracy() {
 		return accuracy;
 	}

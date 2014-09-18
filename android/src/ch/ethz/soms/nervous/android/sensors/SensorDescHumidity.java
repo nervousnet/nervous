@@ -22,14 +22,6 @@ public class SensorDescHumidity extends SensorDesc {
 		this.humidity = sensorData.getValueFloat(0);
 	}
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(String.valueOf(getTimestamp()) + ";humidAccuracy;" + String.valueOf(accuracy) + "\n");
-		sb.append(String.valueOf(getTimestamp()) + ";humid;" + String.valueOf(humidity) + "\n");
-		return sb.toString();
-	}
-
 	public int getAccuracy() {
 		return accuracy;
 	}
