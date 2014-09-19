@@ -17,19 +17,22 @@ import android.os.Environment;
 
 import java.io.BufferedWriter;
 import java.io.File;
-
 import java.io.FileWriter;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.io.FileInputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import ch.ethz.soms.nervous.android.sensors.SensorDescBattery;
+import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
+import ch.ethz.soms.nervous.vm.NervousVM;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
-	public static final String DEBUG_TAG = "MainActivity";
+	public static final String DEBUG_TAG = "NERVOUS_DEBUG";
 
 	private TextView textStatus;
 	private Button buttonExport;
@@ -66,7 +69,7 @@ public class MainActivity extends Activity {
 		PendingIntent scheduledUploadIntent = PendingIntent.getService(getApplicationContext(), 0, uploadIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		// 30 seconds
-		long sensorInterval = 30 * 1000;
+		long sensorInterval = 1 * 1000;
 		
 		// 60 seconds
 		long uploadInterval = 60 * 1000;
@@ -241,10 +244,26 @@ public class MainActivity extends Activity {
 			Intent intent2 = new Intent(this,SensorLoggingToggleActivity.class);
 			startActivity(intent2);
 			break;
+		case R.id.menu_TestQuery:
+			minBattery(1,Long.MAX_VALUE);
+			break;
 		default:
 			break;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	private void minBattery(long i, long j) {
+		NervousVM nervousVm =  NervousVM.getInstance(getFilesDir());
+		List<SensorData> list = nervousVm.retrieve(SensorDescBattery.SENSOR_ID, i, j);
+		Log.d(DEBUG_TAG, "size: " + list.size());
+		for (SensorData sensorData : list) {
+			SensorDescBattery sensDesc = new SensorDescBattery(sensorData);
+			Log.d(DEBUG_TAG, "Bat Percent: " + sensDesc.getBatteryPercent());
+			Log.d(DEBUG_TAG, "Bat TImestamp: " + sensDesc.getTimestamp());
+		}
+		
+		
 	}
 
 }
