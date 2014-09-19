@@ -69,10 +69,10 @@ public final class SqlConnection {
 		ConnectionFactory cf = new DriverManagerConnectionFactory("jdbc:mysql://" + hostname + ":" + port + "/" + database, username, password);
 		PoolableConnectionFactory pcf = new PoolableConnectionFactory(cf, null);
 
-		ObjectPool<PoolableConnection> connPool = new GenericObjectPool<>(pcf);
+		ObjectPool<PoolableConnection> connPool = new GenericObjectPool<PoolableConnection>(pcf);
 		
 		pcf.setPool(connPool);
-		PoolingDataSource<PoolableConnection> dataSource = new PoolingDataSource<>(connPool);
+		PoolingDataSource<PoolableConnection> dataSource = new PoolingDataSource<PoolableConnection>(connPool);
 		return dataSource;
 	}
 
