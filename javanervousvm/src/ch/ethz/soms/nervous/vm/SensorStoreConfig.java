@@ -76,6 +76,7 @@ public class SensorStoreConfig {
 	}
 
 	public SensorStoreConfig(File dir, long sensorID) {
+		this.dir = dir;
 		this.sensorID = sensorID;
 		boolean exists = load();
 		if (!exists) {
