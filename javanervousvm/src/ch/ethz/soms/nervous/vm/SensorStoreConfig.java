@@ -92,7 +92,7 @@ public class SensorStoreConfig {
 		FileInputStream fis = null;
 		DataInputStream dis = null;
 		try {
-			File file = new File(dir, "NervousVM/" + Long.toHexString(sensorID) + "C");
+			File file = new File(dir, "NervousVM/" + Long.toHexString(sensorID) + "G");
 			if (!file.exists()) {
 				return false;
 			}
@@ -127,7 +127,7 @@ public class SensorStoreConfig {
 		FileOutputStream fos = null;
 		DataOutputStream dos = null;
 		try {
-			File file = new File(dir, "NervousVM/" + Long.toHexString(sensorID) + "C");
+			File file = new File(dir, "NervousVM/" + Long.toHexString(sensorID) + "G");
 			if (!file.exists()) {
 				file.createNewFile();
 			}
@@ -142,6 +142,7 @@ public class SensorStoreConfig {
 			dos.close();
 			fos.close();
 		} catch (IOException ex) {
+			System.out.println(ex.getMessage());
 		} finally {
 			// Cleanup
 			if (fos != null) {
