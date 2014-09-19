@@ -102,7 +102,7 @@ public class IfThisThenThatActivity extends Activity {
 			String list[] = { "Maps", "Whatsapp", "Email", "Angry Birds" };
 			result_list.addAll(Arrays.asList(list));
 		} else if (chosenThenStage1.equals("Call Contact")) {
-			String list[] = { "Select Contact"};
+			String list[] = { "Select Contact" };
 			result_list.addAll(Arrays.asList(list));
 		}
 		return result_list;
@@ -159,7 +159,7 @@ public class IfThisThenThatActivity extends Activity {
 		String hideThenForText_lsit[] = { "Start App", "Call Contact",
 				"Turn off Phone" };
 		hideThenForText_Array.addAll(Arrays.asList(hideThenForText_lsit));
-	
+
 		String chosenThenStage1 = (String) spinner_then_stage1
 				.getSelectedItem();
 		if (hideThenForText_Array.contains(chosenThenStage1)) {
