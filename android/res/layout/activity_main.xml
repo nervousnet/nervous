@@ -12,18 +12,12 @@
             android:id="@+id/togglebutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/text_status"
+            android:layout_alignParentTop="true"
+            android:layout_alignRight="@+id/text_status"
             android:onClick="onToggleClicked"
             android:textOff="@string/service_off"
             android:textOn="@string/service_on" />
-
-        <Button
-            android:id="@+id/button_export"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/text_status"
-            android:layout_marginLeft="17dp"
-            android:layout_toRightOf="@+id/togglebutton"
-            android:text="@string/export" />
 
         <TextView
             android:id="@+id/text_status"

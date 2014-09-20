@@ -32,7 +32,7 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
-	public static final String DEBUG_TAG = "NERVOUS_DEBUG";
+	public static final String DEBUG_TAG = "MainActivity";
 
 	private TextView textStatus;
 	private Button buttonExport;
@@ -48,8 +48,6 @@ public class MainActivity extends Activity {
 		textStatus = (TextView) findViewById(R.id.text_status);
 		buttonExport = (Button) findViewById(R.id.button_export);
 		buttonOnOff = (ToggleButton) findViewById(R.id.togglebutton);
-
-		buttonExport.setOnClickListener(export_handler);
 	}
 
 	@Override
