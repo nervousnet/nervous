@@ -11,6 +11,80 @@
     <item
         android:id="@+id/menu_TestQuery"
         android:title="Test Query">
+        <menu>
+            <item
+                android:id="@+id/menu_Battery"
+                android:title="Battery">
+                <menu>
+                    <item
+                        android:id="@+id/menu_TestQuery_Battery_MinBattery"
+                        android:title="Min Battery"/>
+                    <item
+                        android:id="@+id/menu_TestQuery_Battery_MaxBattery"
+                        android:title="Max Battery"/>
+                </menu>
+            </item>
+            <item
+                android:id="@+id/menu_Accelerometer"
+                android:title="Accelerometer">
+                <menu>
+                    <item
+                        android:id="@+id/menu_TestQuery_Accelerometer_MinAccelerometer"
+                        android:title="Min Accerometer"/>
+                    <item
+                        android:id="@+id/menu_TestQuery_Accelerometer_MaxAccelerometer"
+                        android:title="Max Accerometer"/>
+                </menu>
+            </item>
+            <item
+                android:id="@+id/menu_Gyroscope"
+                android:title="Gyroscope">
+                <menu>
+                    <item
+                        android:id="@+id/menu_TestQuery_Gyroscope_MinGyroscope"
+                        android:title="Min Gyroscope"/>
+                    <item
+                        android:id="@+id/menu_TestQuery_Gyroscope_MaxGyroscope"
+                        android:title="Max Gyroscope"/>
+                </menu>
+            </item>
+            <item
+                android:id="@+id/menu_Light"
+                android:title="Light">
+                <menu>
+                    <item
+                        android:id="@+id/menu_TestQuery_Light_MinLight"
+                        android:title="Min Light"/>
+                    <item
+                        android:id="@+id/menu_TestQuery_Light_MaxLight"
+                        android:title="Max Light"/>
+                </menu>
+            </item>
+            <item
+                android:id="@+id/menu_Proximity"
+                android:title="Proximity">
+                <menu>
+                    <item
+                        android:id="@+id/menu_TestQuery_Proximity_MinProx"
+                        android:title="Min Prox"/>
+                    <item
+                        android:id="@+id/menu_TestQuery_Proximity_MaxProx"
+                        android:title="Max Prox"/>
+                </menu>
+            </item>
+            <item
+                android:id="@+id/menu_SoundLevel"
+                android:title="Sound Level">
+                <menu>
+                    <item
+                        android:id="@+id/menu_TestQuery_SoundLevel_MinSoundLevel"
+                        android:title="Min Sound Level"/>
+                    <item
+                        android:id="@+id/menu_TestQuery_SoundLevel_MaxSoundLevel"
+                        android:title="Max Sound Level"/>
+                </menu>
+            </item>
+        </menu>
     </item>
 
 </menu>
