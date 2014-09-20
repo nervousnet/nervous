@@ -6,6 +6,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,13 +19,16 @@ import android.os.Environment;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.io.FileInputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import ch.ethz.soms.nervous.android.sensors.SensorDescAccelerometer;
 import ch.ethz.soms.nervous.android.sensors.SensorDescBattery;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
 import ch.ethz.soms.nervous.vm.NervousVM;
@@ -73,7 +77,7 @@ public class MainActivity extends Activity {
 				PendingIntent.FLAG_UPDATE_CURRENT);
 
 		// 30 seconds
-		long sensorInterval = 30 * 1000;
+		long sensorInterval = 2 * 1000;
 
 		// 60 seconds
 		long uploadInterval = 60 * 1000;
@@ -270,8 +274,53 @@ public class MainActivity extends Activity {
 			Intent intent2 = new Intent(this, SensorLoggingToggleActivity.class);
 			startActivity(intent2);
 			break;
-		case R.id.menu_TestQuery:
-			minBattery(1,Long.MAX_VALUE);
+		case R.id.menu_TestQuery_Battery_MinBattery:
+			SensorDescBattery minBattSensDesc = SensorQueries.minBattery(1,
+					Long.MAX_VALUE, getFilesDir());
+			if (minBattSensDesc != null) {
+				toast_to_Screen("Minimum Battery: "
+						+ minBattSensDesc.getBatteryPercent() + "\nat "
+						+ getDate(minBattSensDesc.getTimestamp()));
+			} else {
+				toast_to_Screen("No Data Found");
+			}
+			break;
+		case R.id.menu_TestQuery_Battery_MaxBattery:
+			SensorDescBattery maxBattSensDesc = SensorQueries.maxBattery(1,
+					Long.MAX_VALUE, getFilesDir());
+			if (maxBattSensDesc != null) {
+				toast_to_Screen("Maximum Battery: "
+						+ maxBattSensDesc.getBatteryPercent() + "\nat "
+						+ getDate(maxBattSensDesc.getTimestamp()));
+			} else {
+				toast_to_Screen("No Data Found");
+			}
+			break;
+		case R.id.menu_TestQuery_Accelerometer_MaxAccelerometer:
+			SensorDescAccelerometer maxAccSensDesc = SensorQueries
+					.maxAccelerometerAverage(1, Long.MAX_VALUE, getFilesDir());
+			if (maxAccSensDesc != null) {
+				toast_to_Screen("Maximum Accelerometer Average: \n x:"
+						+ maxAccSensDesc.getAccX() + "\ny: "
+						+ maxAccSensDesc.getAccY() + "\nz: "
+						+ maxAccSensDesc.getAccZ() + "\nDate: "
+						+ getDate(maxAccSensDesc.getTimestamp()));
+			} else {
+				toast_to_Screen("No Data Found");
+			}
+			break;
+		case R.id.menu_TestQuery_Accelerometer_MinAccelerometer:
+			SensorDescAccelerometer minAccSensDesc = SensorQueries
+			.minAccelerometerAverage(1, Long.MAX_VALUE, getFilesDir());
+			if (minAccSensDesc != null) {
+				toast_to_Screen("Minimum Accelerometer Average: \n x:"
+						+ minAccSensDesc.getAccX() + "\ny: "
+						+ minAccSensDesc.getAccY() + "\nz: "
+						+ minAccSensDesc.getAccZ() + "\nDate: "
+						+ getDate(minAccSensDesc.getTimestamp()));
+			} else {
+				toast_to_Screen("No Data Found");
+			}
 			break;
 		default:
 			break;
@@ -279,17 +328,15 @@ public class MainActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	private void minBattery(long i, long j) {
-		NervousVM nervousVm = NervousVM.getInstance(getFilesDir());
-		List<SensorData> list = nervousVm.retrieve(SensorDescBattery.SENSOR_ID,
-				i, j);
-		Log.d(DEBUG_TAG, "size: " + list.size());
-		for (SensorData sensorData : list) {
-			SensorDescBattery sensDesc = new SensorDescBattery(sensorData);
-			Log.d(DEBUG_TAG, "Bat Percent: " + sensDesc.getBatteryPercent());
-			Log.d(DEBUG_TAG, "Bat TImestamp: " + sensDesc.getTimestamp());
-		}
+	private String getDate(long time) {
+		Calendar cal = Calendar.getInstance(Locale.ENGLISH);
+		cal.setTimeInMillis(time);
+		String date = DateFormat.format("dd-MM-yyyy hh:mm:ss", cal).toString();
+		return date;
+	}
 
+	private void toast_to_Screen(String msg) {
+		Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
 	}
 
 }
