@@ -39,7 +39,6 @@ public class MainActivity extends Activity {
 	public static final String DEBUG_TAG = "MainActivity";
 
 	private TextView textStatus;
-	private Button buttonExport;
 	private ToggleButton buttonOnOff;
 
 	private boolean serviceRunning;
@@ -50,7 +49,6 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 
 		textStatus = (TextView) findViewById(R.id.text_status);
-		buttonExport = (Button) findViewById(R.id.button_export);
 		buttonOnOff = (ToggleButton) findViewById(R.id.togglebutton);
 	}
 
@@ -77,7 +75,7 @@ public class MainActivity extends Activity {
 				PendingIntent.FLAG_UPDATE_CURRENT);
 
 		// 30 seconds
-		long sensorInterval = 2 * 1000;
+		long sensorInterval = 30 * 1000;
 
 		// 60 seconds
 		long uploadInterval = 60 * 1000;
@@ -129,103 +127,6 @@ public class MainActivity extends Activity {
 		}
 
 	}
-
-	View.OnClickListener export_handler = new View.OnClickListener() {
-
-		public void onClick(View v) {
-
-			String state = Environment.getExternalStorageState();
-
-			if (Environment.MEDIA_MOUNTED.equals(state)) {
-				Log.d(DEBUG_TAG, "SD card detected");
-
-				stopSensorService();
-
-				Log.d(DEBUG_TAG, "stopSensorService for file transfer");
-
-				long TS = System.currentTimeMillis();
-				StringBuilder stringBuilder = new StringBuilder();
-
-				stringBuilder.append(TS);
-				stringBuilder.append(".txt");
-
-				String file_name = stringBuilder.toString();
-				Log.d(DEBUG_TAG, file_name);
-				Log.d(DEBUG_TAG, "file_name assigned to time");
-
-				String sdCard = Environment.getExternalStorageDirectory()
-						.getAbsolutePath();
-
-				File dir = new File(sdCard + "/nervous");
-				dir.mkdirs();
-				File file_ext = new File(dir, file_name);
-
-				Log.d(DEBUG_TAG, "store location of new file");
-
-				try {
-					file_ext.createNewFile();
-					Log.d(DEBUG_TAG, "Create file with file_name");
-
-					File file = getBaseContext().getFileStreamPath(
-							"SensorLog.txt");
-
-					if (file.exists()) {
-						Log.d(DEBUG_TAG, "SensorLog.txt exists");
-						FileInputStream read_file = openFileInput("SensorLog.txt");
-
-						Log.d(DEBUG_TAG,
-								"created Sensorlog.txt file obj read_file");
-
-						InputStreamReader inputStreamReader = new InputStreamReader(
-								read_file);
-						BufferedReader bufferedReader = new BufferedReader(
-								inputStreamReader);
-						StringBuilder sb = new StringBuilder();
-
-						sb.append("Timestamp of export to SD : " + TS + "\n");
-						String line;
-						while ((line = bufferedReader.readLine()) != null) {
-							sb.append(line);
-						}
-						BufferedWriter bufWr = null;
-
-						bufWr = new BufferedWriter(new FileWriter(file_ext,
-								false));
-
-						bufWr.append(sb.toString());
-						inputStreamReader.close();
-						bufWr.close();
-						read_file.close();
-
-						getApplicationContext().deleteFile("SensorLog.txt");
-						Log.d(DEBUG_TAG, "deleted sensorLog.txt");
-
-					}
-					Log.d(DEBUG_TAG, "done with file transfer");
-
-				}
-
-				catch (Exception e) {
-
-					e.printStackTrace();
-				}
-
-				if (new ServiceInfo(getApplicationContext()).serviceIsRunning()) {
-					startSensorService();
-				}
-				Log.d(DEBUG_TAG, "startSensorService for file transfer");
-
-			} else
-
-			{
-				Log.d(DEBUG_TAG,
-						"No external storage detected(cannot copy file)");
-				Toast.makeText(getApplicationContext(), "No external storage",
-						Toast.LENGTH_LONG).show();
-
-			}
-		}
-	};
 
 	public void updateServiceInfo() {
 

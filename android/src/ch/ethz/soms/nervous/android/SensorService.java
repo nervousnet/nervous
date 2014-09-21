@@ -1,7 +1,10 @@
 package ch.ethz.soms.nervous.android;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
+import ch.ethz.soms.nervous.android.sensors.BatterySensor;
+import ch.ethz.soms.nervous.android.sensors.BatterySensor.BatteryListener;
 import ch.ethz.soms.nervous.android.sensors.NoiseSensor;
 import ch.ethz.soms.nervous.android.sensors.NoiseSensor.NoiseListener;
 import ch.ethz.soms.nervous.android.sensors.SensorDesc;
@@ -12,6 +15,7 @@ import ch.ethz.soms.nervous.android.sensors.SensorDescHumidity;
 import ch.ethz.soms.nervous.android.sensors.SensorDescLight;
 import ch.ethz.soms.nervous.android.sensors.SensorDescMagnetic;
 import ch.ethz.soms.nervous.android.sensors.SensorDescNoise;
+import ch.ethz.soms.nervous.android.sensors.SensorDescPressure;
 import ch.ethz.soms.nervous.android.sensors.SensorDescProximity;
 import ch.ethz.soms.nervous.android.sensors.SensorDescTemperature;
 import android.app.Service;
@@ -26,32 +30,50 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-public class SensorService extends Service implements SensorEventListener, NoiseListener {
+public class SensorService extends Service implements SensorEventListener, NoiseListener, BatteryListener {
 
 	private static final String DEBUG_TAG = "SensorService";
 
 	private final IBinder mBinder = new SensorBinder();
 	private SensorManager sensorManager = null;
 
-	private Intent batteryStatus = null;
+	private SensorConfiguration sensorConfiguration;
+	private int serviceRound = 0;
+
 	private Sensor sensorAccelerometer = null;
+	private BatterySensor sensorBattery = null;
 	private Sensor sensorLight = null;
 	private Sensor sensorMagnet = null;
 	private Sensor sensorProximity = null;
 	private Sensor sensorGyroscope = null;
 	private Sensor sensorTemperature = null;
 	private Sensor sensorHumidity = null;
+	private Sensor sensorPressure = null;
 	private NoiseSensor sensorNoise = null;
 
+	private SensorCollectStatus scAccelerometer = null;
+	private SensorCollectStatus scBattery = null;
+	private SensorCollectStatus scLight = null;
+	private SensorCollectStatus scMagnet = null;
+	private SensorCollectStatus scProximity = null;
+	private SensorCollectStatus scGyroscope = null;
+	private SensorCollectStatus scTemperature = null;
+	private SensorCollectStatus scHumidity = null;
+	private SensorCollectStatus scPressure = null;
+	private SensorCollectStatus scNoise = null;
+
 	private boolean hasAccelerometer = false;
+	private boolean hasBattery = false;
 	private boolean hasLight = false;
 	private boolean hasMagnet = false;
 	private boolean hasProximity = false;
 	private boolean hasGyroscope = false;
 	private boolean hasTemperature = false;
 	private boolean hasHumidity = false;
+	private boolean hasPressure = false;
+	private boolean hasNoise = false;
 
-	private HashSet<Class<? extends SensorDesc>> sensorCollected;
+	private HashMap<Class<? extends SensorDesc>, SensorCollectStatus> sensorCollected;
 
 	public class SensorBinder extends Binder {
 		SensorService getService() {
@@ -61,11 +83,47 @@ public class SensorService extends Service implements SensorEventListener, Noise
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+
+		sensorConfiguration = SensorConfiguration.getInstance(getApplicationContext());
+		serviceRound = sensorConfiguration.getServiceRound();
+		sensorConfiguration.increaseServiceRound();
+
+		scAccelerometer = sensorConfiguration.getInitialSensorCollectStatus(SensorDescAccelerometer.SENSOR_ID, serviceRound);
+		scBattery = sensorConfiguration.getInitialSensorCollectStatus(SensorDescBattery.SENSOR_ID, serviceRound);
+		scLight = sensorConfiguration.getInitialSensorCollectStatus(SensorDescLight.SENSOR_ID, serviceRound);
+		scMagnet = sensorConfiguration.getInitialSensorCollectStatus(SensorDescMagnetic.SENSOR_ID, serviceRound);
+		scProximity = sensorConfiguration.getInitialSensorCollectStatus(SensorDescProximity.SENSOR_ID, serviceRound);
+		scGyroscope = sensorConfiguration.getInitialSensorCollectStatus(SensorDescGyroscope.SENSOR_ID, serviceRound);
+		scTemperature = sensorConfiguration.getInitialSensorCollectStatus(SensorDescTemperature.SENSOR_ID, serviceRound);
+		scHumidity = sensorConfiguration.getInitialSensorCollectStatus(SensorDescHumidity.SENSOR_ID, serviceRound);
+		scPressure = sensorConfiguration.getInitialSensorCollectStatus(SensorDescPressure.SENSOR_ID, serviceRound);
+		scNoise = sensorConfiguration.getInitialSensorCollectStatus(SensorDescNoise.SENSOR_ID, serviceRound);
+
+		hasAccelerometer = scAccelerometer.isCollect(serviceRound);
+		hasBattery = scAccelerometer.isCollect(serviceRound);
+		hasLight = scAccelerometer.isCollect(serviceRound);
+		hasMagnet = scAccelerometer.isCollect(serviceRound);
+		hasProximity = scAccelerometer.isCollect(serviceRound);
+		hasGyroscope = scAccelerometer.isCollect(serviceRound);
+		hasTemperature = scAccelerometer.isCollect(serviceRound);
+		hasHumidity = scAccelerometer.isCollect(serviceRound);
+		hasPressure = scAccelerometer.isCollect(serviceRound);
+		hasNoise = scAccelerometer.isCollect(serviceRound);
+
 		// Noise sensor
 		sensorNoise = new NoiseSensor();
 		sensorNoise.addListener(this);
-		sensorNoise.startRecording(1000);
-		
+		// Noise sensor doesn't really make sense with less than 250ms
+		sensorNoise.startRecording(Math.max(scNoise.getMeasureDuration(), 250));
+
+		// Battery sensor
+		sensorBattery = new BatterySensor(getApplicationContext());
+		sensorBattery.addListener(this);
+		sensorBattery.start();
+
+		// Connectivity sensor
+		// TODO
+
 		// Normal android sensors
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
@@ -76,6 +134,7 @@ public class SensorService extends Service implements SensorEventListener, Noise
 		sensorGyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 		sensorTemperature = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
 		sensorHumidity = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
+		sensorPressure = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
 
 		hasAccelerometer = sensorManager.registerListener(this, sensorAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
 		hasLight = sensorManager.registerListener(this, sensorLight, SensorManager.SENSOR_DELAY_NORMAL);
@@ -84,48 +143,39 @@ public class SensorService extends Service implements SensorEventListener, Noise
 		hasGyroscope = sensorManager.registerListener(this, sensorGyroscope, SensorManager.SENSOR_DELAY_NORMAL);
 		hasTemperature = sensorManager.registerListener(this, sensorTemperature, SensorManager.SENSOR_DELAY_NORMAL);
 		hasHumidity = sensorManager.registerListener(this, sensorHumidity, SensorManager.SENSOR_DELAY_NORMAL);
+		hasPressure = sensorManager.registerListener(this, sensorPressure, SensorManager.SENSOR_DELAY_NORMAL);
 
-		sensorCollected = new HashSet<Class<? extends SensorDesc>>();
+		sensorCollected = new HashMap<Class<? extends SensorDesc>, SensorCollectStatus>();
 		if (hasAccelerometer) {
-			sensorCollected.add(SensorDescAccelerometer.class);
+			sensorCollected.put(SensorDescAccelerometer.class, scAccelerometer);
 		}
 		if (hasLight) {
-			sensorCollected.add(SensorDescLight.class);
+			sensorCollected.put(SensorDescLight.class, scLight);
 		}
 		if (hasMagnet) {
-			sensorCollected.add(SensorDescMagnetic.class);
+			sensorCollected.put(SensorDescMagnetic.class, scMagnet);
 		}
 		if (hasProximity) {
-			sensorCollected.add(SensorDescProximity.class);
+			sensorCollected.put(SensorDescProximity.class, scProximity);
 		}
 		if (hasGyroscope) {
-			sensorCollected.add(SensorDescGyroscope.class);
+			sensorCollected.put(SensorDescGyroscope.class, scGyroscope);
 		}
 		if (hasTemperature) {
-			sensorCollected.add(SensorDescTemperature.class);
+			sensorCollected.put(SensorDescTemperature.class, scTemperature);
 		}
 		if (hasHumidity) {
-			sensorCollected.add(SensorDescHumidity.class);
+			sensorCollected.put(SensorDescHumidity.class, scHumidity);
 		}
-		sensorCollected.add(SensorDescNoise.class);
-
-		IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-
-		batteryStatus = getApplicationContext().registerReceiver(null, ifilter);
-		int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-		int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-		int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
-		boolean isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING || status == BatteryManager.BATTERY_STATUS_FULL;
-		int chargePlug = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
-		boolean usbCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_USB;
-		boolean acCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_AC;
-		float batteryPct = level / (float) scale;
-
-		long timestamp = System.currentTimeMillis();
-		SensorDescBattery sensorDescBattey = new SensorDescBattery(timestamp, batteryPct, isCharging, usbCharge, acCharge);
-		SensorDesc sensorDesc = sensorDescBattey;
-		Log.d(DEBUG_TAG, "Battery data collected");
-		new StoreTask(getApplicationContext()).execute(sensorDesc);
+		if (hasPressure) {
+			sensorCollected.put(SensorDescPressure.class, scPressure);
+		}
+		if (hasNoise) {
+			sensorCollected.put(SensorDescNoise.class, scNoise);
+		}
+		if (hasBattery) {
+			sensorCollected.put(SensorDescBattery.class, scBattery);
+		}
 
 		Log.d(DEBUG_TAG, "Service execution started");
 		return START_STICKY;
@@ -161,37 +211,40 @@ public class SensorService extends Service implements SensorEventListener, Noise
 
 		switch (sensor.getType()) {
 		case Sensor.TYPE_LIGHT:
-			sensorDesc = new SensorDescLight(timestamp, event.accuracy, event.values[0]);
+			sensorDesc = new SensorDescLight(timestamp, event.values[0]);
 			Log.d(DEBUG_TAG, "Light data collected");
 			break;
 		case Sensor.TYPE_PROXIMITY:
-			sensorDesc = new SensorDescProximity(timestamp, event.accuracy, event.values[0]);
+			sensorDesc = new SensorDescProximity(timestamp, event.values[0]);
 			Log.d(DEBUG_TAG, "Proximity data collected");
 			break;
 		case Sensor.TYPE_ACCELEROMETER:
-			sensorDesc = new SensorDescAccelerometer(timestamp, event.accuracy, event.values[0], event.values[1], event.values[2]);
+			sensorDesc = new SensorDescAccelerometer(timestamp, event.values[0], event.values[1], event.values[2]);
 			Log.d(DEBUG_TAG, "Accelerometer data collected");
 			break;
 		case Sensor.TYPE_MAGNETIC_FIELD:
-			sensorDesc = new SensorDescMagnetic(timestamp, event.accuracy, event.values[0], event.values[1], event.values[2]);
+			sensorDesc = new SensorDescMagnetic(timestamp, event.values[0], event.values[1], event.values[2]);
 			Log.d(DEBUG_TAG, "Magnetic data collected");
 			break;
 		case Sensor.TYPE_GYROSCOPE:
-			sensorDesc = new SensorDescGyroscope(timestamp, event.accuracy, event.values[0], event.values[1], event.values[2]);
+			sensorDesc = new SensorDescGyroscope(timestamp, event.values[0], event.values[1], event.values[2]);
 			Log.d(DEBUG_TAG, "Gyroscope data collected");
 			break;
 		case Sensor.TYPE_AMBIENT_TEMPERATURE:
-			sensorDesc = new SensorDescTemperature(timestamp, event.accuracy, event.values[0]);
+			sensorDesc = new SensorDescTemperature(timestamp, event.values[0]);
 			Log.d(DEBUG_TAG, "Temperature data collected");
 			break;
 		case Sensor.TYPE_RELATIVE_HUMIDITY:
-			sensorDesc = new SensorDescHumidity(timestamp, event.accuracy, event.values[0]);
+			sensorDesc = new SensorDescHumidity(timestamp, event.values[0]);
 			Log.d(DEBUG_TAG, "Humidity data collected");
+			break;
+		case Sensor.TYPE_PRESSURE:
+			sensorDesc = new SensorDescProximity(timestamp, event.values[0]);
+			Log.d(DEBUG_TAG, "Pressure data collected");
 			break;
 		}
 
 		store(sensorDesc);
-
 	}
 
 	@Override
@@ -199,12 +252,25 @@ public class SensorService extends Service implements SensorEventListener, Noise
 		SensorDesc sensorDesc = new SensorDescNoise(timestamp, rms, spl, bands);
 		store(sensorDesc);
 	}
-	
-	private void store(SensorDesc sensorDesc)
-	{
+
+	@Override
+	public void batterySensorDataReady(long timestamp, float batteryPercent, boolean isCharging, boolean isUsbCharge, boolean isAcCharge) {
+		SensorDesc sensorDesc = new SensorDescBattery(timestamp, batteryPercent, isCharging, isUsbCharge, isAcCharge);
+		store(sensorDesc);
+	}
+
+	private void store(SensorDesc sensorDesc) {
 		if (sensorDesc != null) {
-			if (sensorCollected.contains(sensorDesc.getClass())) {
-				sensorCollected.remove(sensorDesc.getClass());
+			SensorCollectStatus scs = sensorCollected.get(sensorDesc.getClass());
+			if (scs != null) {
+				// Collected new data of this type, count it
+				scs.increaseCollectAmount();
+				// Enough collected, remove from list
+				if (scs.isDone(System.currentTimeMillis())) {
+					sensorCollected.remove(sensorDesc.getClass());
+					// Remove from listener list
+					unregisterSensor(sensorDesc);
+				}
 				new StoreTask(getApplicationContext()).execute(sensorDesc);
 			}
 		}
@@ -220,6 +286,25 @@ public class SensorService extends Service implements SensorEventListener, Noise
 			stopSelf();
 		}
 	}
-	
-	
+
+	private void unregisterSensor(SensorDesc sensorDesc) {
+		if (sensorDesc.getSensorIdentifier() == SensorDescAccelerometer.SENSOR_ID) {
+			sensorManager.unregisterListener(this, sensorAccelerometer);
+		} else if (sensorDesc.getSensorIdentifier() == SensorDescPressure.SENSOR_ID) {
+			sensorManager.unregisterListener(this, sensorPressure);
+		} else if (sensorDesc.getSensorIdentifier() == SensorDescGyroscope.SENSOR_ID) {
+			sensorManager.unregisterListener(this, sensorGyroscope);
+		} else if (sensorDesc.getSensorIdentifier() == SensorDescHumidity.SENSOR_ID) {
+			sensorManager.unregisterListener(this, sensorHumidity);
+		} else if (sensorDesc.getSensorIdentifier() == SensorDescLight.SENSOR_ID) {
+			sensorManager.unregisterListener(this, sensorLight);
+		} else if (sensorDesc.getSensorIdentifier() == SensorDescMagnetic.SENSOR_ID) {
+			sensorManager.unregisterListener(this, sensorMagnet);
+		} else if (sensorDesc.getSensorIdentifier() == SensorDescProximity.SENSOR_ID) {
+			sensorManager.unregisterListener(this, sensorProximity);
+		} else if (sensorDesc.getSensorIdentifier() == SensorDescTemperature.SENSOR_ID) {
+			sensorManager.unregisterListener(this, sensorTemperature);
+		}
+	}
+
 }

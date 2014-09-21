@@ -32,28 +32,20 @@ public class SensorLoggingToggleActivity extends Activity {
 			images_share[i] = R.raw.img_share_on;
 		}
 
-		CustomListAdapter adapter = new CustomListAdapter(
-				SensorLoggingToggleActivity.this, sensorNames, images_log,
-				images_share);
+		CustomListAdapter adapter = new CustomListAdapter(SensorLoggingToggleActivity.this, sensorNames, images_log, images_share);
 		list_SensorLoggingToggle = (ListView) findViewById(R.id.list_SensorLoggingToggle);
 		list_SensorLoggingToggle.setAdapter(adapter);
-		list_SensorLoggingToggle
-				.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-					@Override
-					public void onItemClick(AdapterView<?> parent, View view,
-							int position, long id) {
-						Toast.makeText(SensorLoggingToggleActivity.this,
-								"You Clicked at " + sensorNames[position],
-								Toast.LENGTH_SHORT).show();
-					}
-				});
+		list_SensorLoggingToggle.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				Toast.makeText(SensorLoggingToggleActivity.this, "You Clicked at " + sensorNames[position], Toast.LENGTH_SHORT).show();
+			}
+		});
 
 	}
 
 	private String[] getSensorNames() {
-		String[] sensorList = { "Accelerometer", "Light", "Temperature",
-				"Humidity", "Gyroscope", "Light", "Proximity", "Battery",
-				"Atm. Pressure", "Altitude", "Sound Level" };
+		String[] sensorList = { "Accelerometer", "Light", "Temperature", "Humidity", "Gyroscope", "Proximity", "Battery", "Atm. Pressure", "Magnetic", "Noise" };
 		return sensorList;
 	}
 
@@ -62,10 +54,8 @@ public class SensorLoggingToggleActivity extends Activity {
 		String[] sensorName;
 		private final Integer[] image_share, image_log;
 
-		public CustomListAdapter(Activity context, String[] i_sensorName,
-				Integer[] images_log, Integer[] images_share) {
-			super(context, R.layout.sensor_logging_toggle_listitem,
-					i_sensorName);
+		public CustomListAdapter(Activity context, String[] i_sensorName, Integer[] images_log, Integer[] images_share) {
+			super(context, R.layout.sensor_logging_toggle_listitem, i_sensorName);
 			this.context = context;
 			this.sensorName = i_sensorName;
 			this.image_log = images_log;
@@ -76,14 +66,10 @@ public class SensorLoggingToggleActivity extends Activity {
 		@Override
 		public View getView(int position, View view, ViewGroup parent) {
 			LayoutInflater inflater = context.getLayoutInflater();
-			View rowView = inflater.inflate(
-					R.layout.sensor_logging_toggle_listitem, null, true);
-			TextView txtTitle = (TextView) rowView
-					.findViewById(R.id.txt_SensorItem);
-			final ImageView imageView_Log = (ImageView) rowView
-					.findViewById(R.id.img_log);
-			final ImageView imageView_Share = (ImageView) rowView
-					.findViewById(R.id.img_share);
+			View rowView = inflater.inflate(R.layout.sensor_logging_toggle_listitem, null, true);
+			TextView txtTitle = (TextView) rowView.findViewById(R.id.txt_SensorItem);
+			final ImageView imageView_Log = (ImageView) rowView.findViewById(R.id.img_log);
+			final ImageView imageView_Share = (ImageView) rowView.findViewById(R.id.img_share);
 			txtTitle.setText(sensorName[position]);
 			imageView_Log.setImageResource(image_log[position]);
 			imageView_Share.setImageResource(image_share[position]);

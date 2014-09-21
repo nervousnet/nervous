@@ -7,14 +7,12 @@ public class SensorDescGyroscope extends SensorDesc {
 	
 	public static final long SENSOR_ID = 0x0000000000000002L;
 	
-	private final int accuracy;
 	private final float gyrX;
 	private final float gyrY;
 	private final float gyrZ;
 
-	public SensorDescGyroscope(final long timestamp, final int accuracy, final float gyrX, final float gyrY, final float gyrZ) {
+	public SensorDescGyroscope(final long timestamp, final float gyrX, final float gyrY, final float gyrZ) {
 		super(timestamp);
-		this.accuracy = accuracy;
 		this.gyrX = gyrX;
 		this.gyrY = gyrY;
 		this.gyrZ = gyrZ;
@@ -22,14 +20,9 @@ public class SensorDescGyroscope extends SensorDesc {
 	
 	public SensorDescGyroscope(SensorData sensorData) {
 		super(sensorData);
-		this.accuracy = sensorData.getValueInt32(0);
 		this.gyrX = sensorData.getValueFloat(0);
 		this.gyrY = sensorData.getValueFloat(1);
 		this.gyrZ = sensorData.getValueFloat(2);
-	}
-
-	public int getAccuracy() {
-		return accuracy;
 	}
 
 	public float getGyrX() {
@@ -56,7 +49,6 @@ public class SensorDescGyroscope extends SensorDesc {
 		sdb.addValueFloat(getGyrX());
 		sdb.addValueFloat(getGyrY());
 		sdb.addValueFloat(getGyrZ());
-		sdb.addValueInt32(getAccuracy());
 		return sdb.build();
 	}
 

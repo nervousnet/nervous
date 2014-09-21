@@ -10,7 +10,7 @@ public class SensorDescNoise extends SensorDesc {
 	float spl;
 	float[] bands;
 
-	public SensorDescNoise(long timestamp, float rms, float spl, float[] bands) {
+	public SensorDescNoise(final long timestamp, final float rms, final float spl, final float[] bands) {
 		super(timestamp);
 		this.rms = rms;
 		this.spl = spl;
