@@ -77,7 +77,7 @@ public class MainActivity extends Activity {
 				PendingIntent.FLAG_UPDATE_CURRENT);
 
 		// 30 seconds
-		long sensorInterval = 2 * 1000;
+		long sensorInterval = 30 * 1000;
 
 		// 60 seconds
 		long uploadInterval = 60 * 1000;
