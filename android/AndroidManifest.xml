@@ -43,7 +43,7 @@
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
-            android:name=".SensorLoggingToggleActivity"
+            android:name=".SensorSettingsActivity"
             android:label="@string/title_activity_sensor_logging_toggle"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
