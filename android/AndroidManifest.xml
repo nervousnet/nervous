@@ -43,8 +43,13 @@
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
-            android:name=".SensorSettingsActivity"
+            android:name=".SensorLoggingToggleActivity"
             android:label="@string/title_activity_sensor_logging_toggle"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+                <activity
+            android:name=".SettingsActivity"
+            android:label="SettingsTest"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
     </application>

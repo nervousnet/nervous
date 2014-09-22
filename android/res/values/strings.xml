@@ -18,11 +18,6 @@
     <string name="then">THEN</string>
     <string name="For">for</string>
 
-    <color name="BlueDarker">#0099CC</color>
-    <color name="BlueLighter">#47BCE8</color>
-    <color name="GreenDarker">#1C8C77</color>
-    <color name="GreenLighter">#62c1a2</color>
-
     <string name="title_activity_sensor_logging_toggle">SensorLoggingToggleActivity</string>
 
 </resources>

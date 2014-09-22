@@ -13,7 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SensorSettingsActivity extends Activity {
+public class SensorLoggingToggleActivity extends Activity {
 
 	ListView listSensorLoggingToggle;
 
@@ -32,13 +32,13 @@ public class SensorSettingsActivity extends Activity {
 			images_share[i] = R.raw.img_share_on;
 		}
 
-		CustomListAdapter adapter = new CustomListAdapter(SensorSettingsActivity.this, sensorNames, images_log, images_share);
+		CustomListAdapter adapter = new CustomListAdapter(SensorLoggingToggleActivity.this, sensorNames, images_log, images_share);
 		listSensorLoggingToggle = (ListView) findViewById(R.id.list_SensorLoggingToggle);
 		listSensorLoggingToggle.setAdapter(adapter);
 		listSensorLoggingToggle.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				Toast.makeText(SensorSettingsActivity.this, "You Clicked at " + sensorNames[position], Toast.LENGTH_SHORT).show();
+				Toast.makeText(SensorLoggingToggleActivity.this, "You Clicked at " + sensorNames[position], Toast.LENGTH_SHORT).show();
 			}
 		});
 
