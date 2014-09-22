@@ -141,7 +141,7 @@ public class MainActivity extends Activity {
 			startActivity(intent);
 			break;
 		case R.id.menu_SensorLoggingToggle:
-			intent = new Intent(this, SensorSettingsActivity.class);
+			intent = new Intent(this, SensorLoggingToggleActivity.class);
 			startActivity(intent);
 			break;
 		case R.id.menu_TestQuery_Battery_MinBattery:
