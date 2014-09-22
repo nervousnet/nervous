@@ -192,6 +192,10 @@ public class MainActivity extends Activity {
 				toastToScreen("No Data Found");
 			}
 			break;
+		case R.id.menu_settings:
+			intent = new Intent(this, SettingsActivity.class);
+			startActivity(intent);
+			break;
 		default:
 			break;
 		}
