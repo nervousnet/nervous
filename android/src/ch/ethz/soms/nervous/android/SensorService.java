@@ -11,8 +11,8 @@ import android.hardware.SensorManager;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
-import ch.ethz.soms.nervous.android.sensors.BLEBeaconSensor;
-import ch.ethz.soms.nervous.android.sensors.BLEBeaconSensor.BLEListener;
+import ch.ethz.soms.nervous.android.sensors.BLESensor;
+import ch.ethz.soms.nervous.android.sensors.BLESensor.BLEListener;
 import ch.ethz.soms.nervous.android.sensors.BatterySensor;
 import ch.ethz.soms.nervous.android.sensors.BatterySensor.BatteryListener;
 import ch.ethz.soms.nervous.android.sensors.NoiseSensor;
@@ -50,7 +50,7 @@ public class SensorService extends Service implements SensorEventListener, Noise
 	private Sensor sensorHumidity = null;
 	private Sensor sensorPressure = null;
 	private NoiseSensor sensorNoise = null;
-	private BLEBeaconSensor sensorBLEBeacon = null;
+	private BLESensor sensorBLEBeacon = null;
 
 	private SensorCollectStatus scAccelerometer = null;
 	private SensorCollectStatus scBattery = null;
@@ -130,7 +130,7 @@ public class SensorService extends Service implements SensorEventListener, Noise
 		// TODO
 
 		// BLE sensor
-		sensorBLEBeacon = new BLEBeaconSensor(getApplicationContext());
+		sensorBLEBeacon = new BLESensor(getApplicationContext());
 		sensorBLEBeacon.addListener(this);
 		sensorBLEBeacon.startScanning(Math.max(scBLEBeacon.getMeasureDuration(), 2000));
 
