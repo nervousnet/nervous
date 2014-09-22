@@ -1,6 +1,7 @@
 package ch.ethz.soms.nervous.android;
 
 import java.util.HashMap;
+import java.util.List;
 
 import android.app.Service;
 import android.content.Intent;
@@ -11,8 +12,9 @@ import android.hardware.SensorManager;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+import ch.ethz.soms.nervous.android.sensors.BLEBeaconRecord;
 import ch.ethz.soms.nervous.android.sensors.BLESensor;
-import ch.ethz.soms.nervous.android.sensors.BLESensor.BLEListener;
+import ch.ethz.soms.nervous.android.sensors.BLESensor.BLEBeaconListener;
 import ch.ethz.soms.nervous.android.sensors.BatterySensor;
 import ch.ethz.soms.nervous.android.sensors.BatterySensor.BatteryListener;
 import ch.ethz.soms.nervous.android.sensors.NoiseSensor;
@@ -30,7 +32,7 @@ import ch.ethz.soms.nervous.android.sensors.SensorDescPressure;
 import ch.ethz.soms.nervous.android.sensors.SensorDescProximity;
 import ch.ethz.soms.nervous.android.sensors.SensorDescTemperature;
 
-public class SensorService extends Service implements SensorEventListener, NoiseListener, BatteryListener, BLEListener {
+public class SensorService extends Service implements SensorEventListener, NoiseListener, BatteryListener, BLEBeaconListener {
 
 	private static final String DEBUG_TAG = "SensorService";
 
@@ -273,8 +275,15 @@ public class SensorService extends Service implements SensorEventListener, Noise
 	}
 
 	@Override
-	public void bleSensorDataReady() {
-		// TODO, loop, multi-result possible
+	public void bleSensorDataReady(List<BLEBeaconRecord> beaconRecordList) {
+		if (beaconRecordList != null && beaconRecordList.size() > 0) {
+			for (BLEBeaconRecord bbr : beaconRecordList) {
+				SensorDesc sensorDesc = new SensorDescBLEBeacon(bbr.getTokenDetectTime(), bbr.getRssi(), bbr.getMac(), bbr.getAdvertisement().getMostSignificantBits(), bbr.getAdvertisement().getLeastSignificantBits(), bbr.getUuid().getMostSignificantBits(), bbr.getUuid().getLeastSignificantBits(), bbr.getMajor(), bbr.getMinor(), bbr.getTxpower());
+				store(sensorDesc);
+			}
+		}
+		// Kick this sensor out anyways as it is possible to retrieve no data at all after the measurement interval
+		sensorCollected.remove(SensorDescBLEBeacon.class);
 	}
 
 	private synchronized void store(SensorDesc sensorDesc) {

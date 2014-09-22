@@ -19,7 +19,7 @@ public class BLEBeaconRecord {
 	private int minor;
 	private int txpower;
 
-	BLEBeaconRecord(long tokenDetectTime, BluetoothDevice device, int rssi, byte[] scanRecord) {
+	public BLEBeaconRecord(long tokenDetectTime, BluetoothDevice device, int rssi, byte[] scanRecord) {
 		this.tokenDetectTime = tokenDetectTime;
 		this.bluetoothDevice = device;
 		this.rssi = rssi;
@@ -28,7 +28,7 @@ public class BLEBeaconRecord {
 		// Parsing
 		this.mac = UnsignedArithmetic.stringMacToLong(device.getAddress());
 		this.advertisement = UnsignedArithmetic.toUUIDBigEndian(scanRecord, 0, 8);
-		this.uuid = UnsignedArithmetic.toUUIDLittleEndian(scanRecord, 9, 24);
+		this.uuid = UnsignedArithmetic.toUUIDBigEndian(scanRecord, 9, 24);
 		this.major = (UnsignedArithmetic.upcastToInt(scanRecord[26]) << 8) | (UnsignedArithmetic.upcastToInt(scanRecord[25]));
 		this.minor = (UnsignedArithmetic.upcastToInt(scanRecord[28]) << 8) | (UnsignedArithmetic.upcastToInt(scanRecord[27]));
 		this.txpower = scanRecord[29];

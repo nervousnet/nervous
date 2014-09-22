@@ -37,7 +37,7 @@ public class UnsignedArithmetic {
 	public static UUID toUUIDLittleEndian(byte[] data, int start, int stop) {
 		long msb = 0x0000000000000000L;
 		long lsb = 0x0000000000000000L;
-		int size = stop - start;
+		int size = stop - start + 1;
 		int msbsize = size - 8;
 		int lsbsize = 8;
 		for (int i = 0; i < msbsize; i++) {
@@ -52,7 +52,7 @@ public class UnsignedArithmetic {
 	public static UUID toUUIDBigEndian(byte[] data, int start, int stop) {
 		long msb = 0x0000000000000000L;
 		long lsb = 0x0000000000000000L;
-		int size = stop - start;
+		int size = stop - start + 1;
 		int msbsize = size - 8;
 		int lsbsize = 8;
 		for (int i = 0; i < msbsize; i++) {

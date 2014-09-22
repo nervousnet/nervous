@@ -26,13 +26,13 @@ public class BLESensor {
 	private BluetoothAdapter bluetoothAdapter;
 	private long lastDetectedTime;
 
-	private List<BLEListener> listenerList = new ArrayList<BLEListener>();
+	private List<BLEBeaconListener> listenerList = new ArrayList<BLEBeaconListener>();
 
-	public interface BLEListener {
-		public void bleSensorDataReady();
+	public interface BLEBeaconListener {
+		public void bleSensorDataReady(List<BLEBeaconRecord> beaconRecordList);
 	}
 
-	public void addListener(BLEListener listener) {
+	public void addListener(BLEBeaconListener listener) {
 		listenerList.add(listener);
 	}
 
@@ -43,27 +43,33 @@ public class BLESensor {
 		lastDetectedTime = 0;
 	}
 
-	private void dataReady() {
-		for (BLEListener listener : listenerList) {
-			listener.bleSensorDataReady();
+	private void dataReady(List<BLEBeaconRecord> beaconRecordList) {
+		for (BLEBeaconListener listener : listenerList) {
+			listener.bleSensorDataReady(beaconRecordList);
 		}
 	}
 
 	public class BLETask extends AsyncTask<Long, Void, Void> {
 
-		private LinkedList<BLEBeaconRecord> leDevices;
+		private LinkedList<BLEBeaconRecord> beaconRecordList;
 
 		private BluetoothAdapter.LeScanCallback leScanCallback = new BluetoothAdapter.LeScanCallback() {
 			@Override
 			public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
-				long detectionTime = System.currentTimeMillis();
-				if (lastDetectedTime >= detectionTime) {
-					detectionTime = lastDetectedTime + 1;
-				}
-				leDevices.add(new BLEBeaconRecord(detectionTime, device, rssi, scanRecord));
-				lastDetectedTime = detectionTime;
+				addBLEBeaconRecord(device, rssi, scanRecord);
 			}
 		};
+		
+		// Add some thread safety
+		private synchronized void addBLEBeaconRecord(BluetoothDevice device, int rssi, byte[] scanRecord)
+		{
+			long detectionTime = System.currentTimeMillis();
+			if (lastDetectedTime >= detectionTime) {
+				detectionTime = lastDetectedTime + 1;
+			}
+			beaconRecordList.add(new BLEBeaconRecord(detectionTime, device, rssi, scanRecord));
+			lastDetectedTime = detectionTime;
+		}
 
 		// Currently unused (for iBeacons)
 		private final BluetoothGattCallback gattCallback = new BluetoothGattCallback() {
@@ -91,7 +97,7 @@ public class BLESensor {
 
 		@Override
 		protected Void doInBackground(Long... params) {
-			leDevices = new LinkedList<BLEBeaconRecord>();
+			beaconRecordList = new LinkedList<BLEBeaconRecord>();
 			scanLeDevice(params[0]);
 			return null;
 		}
@@ -107,7 +113,7 @@ public class BLESensor {
 
 		@Override
 		public void onPostExecute(Void params) {
-			dataReady();
+			dataReady(beaconRecordList);
 		}
 
 	}
