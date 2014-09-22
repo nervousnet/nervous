@@ -6,6 +6,7 @@ import java.util.List;
 import android.util.Log;
 import ch.ethz.soms.nervous.android.sensors.SensorDescAccelerometer;
 import ch.ethz.soms.nervous.android.sensors.SensorDescBattery;
+import ch.ethz.soms.nervous.android.sensors.SensorDescLight;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
 import ch.ethz.soms.nervous.vm.NervousVM;
 
@@ -83,12 +84,13 @@ public class SensorQueries {
 		return maxAccSensDesc;
 
 	}
+
 	static SensorDescAccelerometer minAccelerometerAverage(long i, long j,
 			File file) {
 		NervousVM nervousVm = NervousVM.getInstance(file);
 		List<SensorData> list = nervousVm.retrieve(
 				SensorDescAccelerometer.SENSOR_ID, i, j);
-		
+
 		if (list == null) {
 			return null;
 		}
@@ -98,7 +100,7 @@ public class SensorQueries {
 		for (SensorData sensorData : list) {
 			SensorDescAccelerometer sensDesc = new SensorDescAccelerometer(
 					sensorData);
-			
+
 			float x = Math.abs(sensDesc.getAccX());
 			float y = Math.abs(sensDesc.getAccY());
 			float z = Math.abs(sensDesc.getAccZ());
@@ -109,7 +111,47 @@ public class SensorQueries {
 			}
 		}
 		return minAccSensDesc;
-		
+
 	}
 
+	static SensorDescLight maxLight(long i, long j, File file) {
+		NervousVM nervousVm = NervousVM.getInstance(file);
+		List<SensorData> list = nervousVm.retrieve(SensorDescLight.SENSOR_ID,
+				i, j);
+
+		if (list == null) {
+			return null;
+		}
+		Log.d(MainActivity.DEBUG_TAG, "size: " + list.size());
+		SensorDescLight maxLightSensDesc = new SensorDescLight(0,
+				Float.MIN_VALUE);
+		for (SensorData sensorData : list) {
+			SensorDescLight sensDesc = new SensorDescLight(sensorData);
+			if (sensDesc.getLight() > maxLightSensDesc.getLight()) {
+				maxLightSensDesc = sensDesc;
+			}
+		}
+		return maxLightSensDesc;
+
+	}
+	static SensorDescLight minLight(long i, long j, File file) {
+		NervousVM nervousVm = NervousVM.getInstance(file);
+		List<SensorData> list = nervousVm.retrieve(SensorDescLight.SENSOR_ID,
+				i, j);
+		
+		if (list == null) {
+			return null;
+		}
+		Log.d(MainActivity.DEBUG_TAG, "size: " + list.size());
+		SensorDescLight minLightSensDesc = new SensorDescLight(0,
+				Float.MAX_VALUE);
+		for (SensorData sensorData : list) {
+			SensorDescLight sensDesc = new SensorDescLight(sensorData);
+			if (sensDesc.getLight() < minLightSensDesc.getLight()) {
+				minLightSensDesc = sensDesc;
+			}
+		}
+		return minLightSensDesc;
+		
+	}
 }

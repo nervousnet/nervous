@@ -11,27 +11,17 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.ToggleButton;
-import android.os.Environment;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.io.FileInputStream;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 
 import ch.ethz.soms.nervous.android.sensors.SensorDescAccelerometer;
 import ch.ethz.soms.nervous.android.sensors.SensorDescBattery;
-import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
-import ch.ethz.soms.nervous.vm.NervousVM;
+import ch.ethz.soms.nervous.android.sensors.SensorDescLight;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
@@ -210,9 +200,29 @@ public class MainActivity extends Activity {
 				toast_to_Screen("No Data Found");
 			}
 			break;
+		case R.id.menu_TestQuery_Light_MaxLight:
+			SensorDescLight maxLightSensDesc = SensorQueries.maxLight(1,
+					Long.MAX_VALUE, getFilesDir());
+			if (maxLightSensDesc != null) {
+				toast_to_Screen("Maximum Light: " + maxLightSensDesc.getLight()
+						+ "\nDate: " + getDate(maxLightSensDesc.getTimestamp()));
+			} else {
+				toast_to_Screen("No Data Found");
+			}
+			break;
+		case R.id.menu_TestQuery_Light_MinLight:
+			SensorDescLight minLightSensDesc = SensorQueries.minLight(1,
+					Long.MAX_VALUE, getFilesDir());
+			if (minLightSensDesc != null) {
+				toast_to_Screen("Minimum Light: " + minLightSensDesc.getLight()
+						+ "\nDate: " + getDate(minLightSensDesc.getTimestamp()));
+			} else {
+				toast_to_Screen("No Data Found");
+			}
+			break;
 		case R.id.menu_TestQuery_Accelerometer_MinAccelerometer:
 			SensorDescAccelerometer minAccSensDesc = SensorQueries
-			.minAccelerometerAverage(1, Long.MAX_VALUE, getFilesDir());
+					.minAccelerometerAverage(1, Long.MAX_VALUE, getFilesDir());
 			if (minAccSensDesc != null) {
 				toast_to_Screen("Minimum Accelerometer Average: \n x:"
 						+ minAccSensDesc.getAccX() + "\ny: "
