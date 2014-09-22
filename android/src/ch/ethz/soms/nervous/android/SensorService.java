@@ -1,14 +1,25 @@
 package ch.ethz.soms.nervous.android;
 
 import java.util.HashMap;
-import java.util.HashSet;
 
+import android.app.Service;
+import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.os.Binder;
+import android.os.IBinder;
+import android.util.Log;
+import ch.ethz.soms.nervous.android.sensors.BLEBeaconSensor;
+import ch.ethz.soms.nervous.android.sensors.BLEBeaconSensor.BLEListener;
 import ch.ethz.soms.nervous.android.sensors.BatterySensor;
 import ch.ethz.soms.nervous.android.sensors.BatterySensor.BatteryListener;
 import ch.ethz.soms.nervous.android.sensors.NoiseSensor;
 import ch.ethz.soms.nervous.android.sensors.NoiseSensor.NoiseListener;
 import ch.ethz.soms.nervous.android.sensors.SensorDesc;
 import ch.ethz.soms.nervous.android.sensors.SensorDescAccelerometer;
+import ch.ethz.soms.nervous.android.sensors.SensorDescBLEBeacon;
 import ch.ethz.soms.nervous.android.sensors.SensorDescBattery;
 import ch.ethz.soms.nervous.android.sensors.SensorDescGyroscope;
 import ch.ethz.soms.nervous.android.sensors.SensorDescHumidity;
@@ -18,19 +29,8 @@ import ch.ethz.soms.nervous.android.sensors.SensorDescNoise;
 import ch.ethz.soms.nervous.android.sensors.SensorDescPressure;
 import ch.ethz.soms.nervous.android.sensors.SensorDescProximity;
 import ch.ethz.soms.nervous.android.sensors.SensorDescTemperature;
-import android.app.Service;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.os.BatteryManager;
-import android.os.Binder;
-import android.os.IBinder;
-import android.util.Log;
 
-public class SensorService extends Service implements SensorEventListener, NoiseListener, BatteryListener {
+public class SensorService extends Service implements SensorEventListener, NoiseListener, BatteryListener, BLEListener {
 
 	private static final String DEBUG_TAG = "SensorService";
 
@@ -50,6 +50,7 @@ public class SensorService extends Service implements SensorEventListener, Noise
 	private Sensor sensorHumidity = null;
 	private Sensor sensorPressure = null;
 	private NoiseSensor sensorNoise = null;
+	private BLEBeaconSensor sensorBLEBeacon = null;
 
 	private SensorCollectStatus scAccelerometer = null;
 	private SensorCollectStatus scBattery = null;
@@ -61,6 +62,7 @@ public class SensorService extends Service implements SensorEventListener, Noise
 	private SensorCollectStatus scHumidity = null;
 	private SensorCollectStatus scPressure = null;
 	private SensorCollectStatus scNoise = null;
+	private SensorCollectStatus scBLEBeacon = null;
 
 	private boolean hasAccelerometer = false;
 	private boolean hasBattery = false;
@@ -72,6 +74,7 @@ public class SensorService extends Service implements SensorEventListener, Noise
 	private boolean hasHumidity = false;
 	private boolean hasPressure = false;
 	private boolean hasNoise = false;
+	private boolean hasBLEBeacon = false;
 
 	private HashMap<Class<? extends SensorDesc>, SensorCollectStatus> sensorCollected;
 
@@ -98,6 +101,7 @@ public class SensorService extends Service implements SensorEventListener, Noise
 		scHumidity = sensorConfiguration.getInitialSensorCollectStatus(SensorDescHumidity.SENSOR_ID, serviceRound);
 		scPressure = sensorConfiguration.getInitialSensorCollectStatus(SensorDescPressure.SENSOR_ID, serviceRound);
 		scNoise = sensorConfiguration.getInitialSensorCollectStatus(SensorDescNoise.SENSOR_ID, serviceRound);
+		scBLEBeacon = sensorConfiguration.getInitialSensorCollectStatus(SensorDescBLEBeacon.SENSOR_ID, serviceRound);
 
 		hasAccelerometer = scAccelerometer.isCollect(serviceRound);
 		hasBattery = scAccelerometer.isCollect(serviceRound);
@@ -109,6 +113,7 @@ public class SensorService extends Service implements SensorEventListener, Noise
 		hasHumidity = scAccelerometer.isCollect(serviceRound);
 		hasPressure = scAccelerometer.isCollect(serviceRound);
 		hasNoise = scAccelerometer.isCollect(serviceRound);
+		hasBLEBeacon = scBLEBeacon.isCollect(serviceRound);
 
 		// Noise sensor
 		sensorNoise = new NoiseSensor();
@@ -123,6 +128,11 @@ public class SensorService extends Service implements SensorEventListener, Noise
 
 		// Connectivity sensor
 		// TODO
+
+		// BLE sensor
+		sensorBLEBeacon = new BLEBeaconSensor(getApplicationContext());
+		sensorBLEBeacon.addListener(this);
+		sensorBLEBeacon.startScanning(Math.max(scBLEBeacon.getMeasureDuration(), 2000));
 
 		// Normal android sensors
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -175,6 +185,9 @@ public class SensorService extends Service implements SensorEventListener, Noise
 		}
 		if (hasBattery) {
 			sensorCollected.put(SensorDescBattery.class, scBattery);
+		}
+		if (hasBLEBeacon) {
+			sensorCollected.put(SensorDescBLEBeacon.class, scBLEBeacon);
 		}
 
 		Log.d(DEBUG_TAG, "Service execution started");
@@ -259,19 +272,28 @@ public class SensorService extends Service implements SensorEventListener, Noise
 		store(sensorDesc);
 	}
 
-	private void store(SensorDesc sensorDesc) {
+	@Override
+	public void bleSensorDataReady() {
+		// TODO, loop, multi-result possible
+	}
+
+	private synchronized void store(SensorDesc sensorDesc) {
 		if (sensorDesc != null) {
 			SensorCollectStatus scs = sensorCollected.get(sensorDesc.getClass());
 			if (scs != null) {
-				// Collected new data of this type, count it
-				scs.increaseCollectAmount();
-				// Enough collected, remove from list
-				if (scs.isDone(System.currentTimeMillis())) {
+				if (!scs.isDone(System.currentTimeMillis())) {
+					// Collected new data of this type, count it
+					scs.increaseCollectAmount();
+					// Enough collected, remove from list
+					if (scs.isDone(System.currentTimeMillis())) {
+						sensorCollected.remove(sensorDesc.getClass());
+						// Remove from listener list
+						unregisterSensor(sensorDesc);
+					}
+					new StoreTask(getApplicationContext()).execute(sensorDesc);
+				} else {
 					sensorCollected.remove(sensorDesc.getClass());
-					// Remove from listener list
-					unregisterSensor(sensorDesc);
 				}
-				new StoreTask(getApplicationContext()).execute(sensorDesc);
 			}
 		}
 

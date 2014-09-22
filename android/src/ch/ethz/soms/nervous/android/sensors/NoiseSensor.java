@@ -42,6 +42,10 @@ public class NoiseSensor {
 	}
 
 	public class AudioTask extends AsyncTask<Long, Void, Void> {
+		private long recordTime;
+		private float rms;
+		private float spl;
+		private float[] bands;
 
 		@Override
 		protected Void doInBackground(Long... params) {
@@ -122,9 +126,18 @@ public class NoiseSensor {
 
 			// Pass data to listeners
 			// Data: PCM RMS raw value, total noise level (spl in dB), log structured frequency bands
-			dataReady(recordTime, (float) rms, (float) spl, bands);
+			this.recordTime = recordTime;
+			this.rms = (float) rms;
+			this.spl = (float) spl;
+			this.bands = bands;
 			return null;
 		}
+
+		@Override
+		public void onPostExecute(Void params) {
+			dataReady(recordTime, rms, spl, bands);
+		}
+
 	}
 
 	public void startRecording(long duration) {
