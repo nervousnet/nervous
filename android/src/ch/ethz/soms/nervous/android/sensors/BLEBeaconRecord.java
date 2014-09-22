@@ -29,8 +29,8 @@ public class BLEBeaconRecord {
 		this.mac = UnsignedArithmetic.stringMacToLong(device.getAddress());
 		this.advertisement = UnsignedArithmetic.toUUIDBigEndian(scanRecord, 0, 8);
 		this.uuid = UnsignedArithmetic.toUUIDBigEndian(scanRecord, 9, 24);
-		this.major = (UnsignedArithmetic.upcastToInt(scanRecord[26]) << 8) | (UnsignedArithmetic.upcastToInt(scanRecord[25]));
-		this.minor = (UnsignedArithmetic.upcastToInt(scanRecord[28]) << 8) | (UnsignedArithmetic.upcastToInt(scanRecord[27]));
+		this.major = (UnsignedArithmetic.upcastToInt(scanRecord[25]) << 8) | (UnsignedArithmetic.upcastToInt(scanRecord[26]));
+		this.minor = (UnsignedArithmetic.upcastToInt(scanRecord[27]) << 8) | (UnsignedArithmetic.upcastToInt(scanRecord[28]));
 		this.txpower = scanRecord[29];
 	}
 	
