@@ -19,9 +19,15 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesAccelerometer;
+import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesBattery;
+import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesLight;
+import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesProximity;
+import ch.ethz.soms.nervous.android.sensors.SensorDesc;
 import ch.ethz.soms.nervous.android.sensors.SensorDescAccelerometer;
 import ch.ethz.soms.nervous.android.sensors.SensorDescBattery;
 import ch.ethz.soms.nervous.android.sensors.SensorDescLight;
+import ch.ethz.soms.nervous.android.sensors.SensorDescProximity;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
@@ -52,11 +58,17 @@ public class MainActivity extends Activity {
 
 		// Schedule
 		AlarmManager scheduler = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		Intent sensorIntent = new Intent(getApplicationContext(), SensorService.class);
-		PendingIntent scheduledSensorIntent = PendingIntent.getService(getApplicationContext(), 0, sensorIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		Intent sensorIntent = new Intent(getApplicationContext(),
+				SensorService.class);
+		PendingIntent scheduledSensorIntent = PendingIntent.getService(
+				getApplicationContext(), 0, sensorIntent,
+				PendingIntent.FLAG_UPDATE_CURRENT);
 
-		Intent uploadIntent = new Intent(getApplicationContext(), UploadService.class);
-		PendingIntent scheduledUploadIntent = PendingIntent.getService(getApplicationContext(), 0, uploadIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		Intent uploadIntent = new Intent(getApplicationContext(),
+				UploadService.class);
+		PendingIntent scheduledUploadIntent = PendingIntent.getService(
+				getApplicationContext(), 0, uploadIntent,
+				PendingIntent.FLAG_UPDATE_CURRENT);
 
 		// 30 seconds
 		long sensorInterval = 30 * 1000;
@@ -64,9 +76,13 @@ public class MainActivity extends Activity {
 		// 60 seconds
 		long uploadInterval = 60 * 1000;
 
-		scheduler.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), sensorInterval, scheduledSensorIntent);
+		scheduler.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+				System.currentTimeMillis(), sensorInterval,
+				scheduledSensorIntent);
 
-		scheduler.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), uploadInterval, scheduledUploadIntent);
+		scheduler.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+				System.currentTimeMillis(), uploadInterval,
+				scheduledUploadIntent);
 
 		serviceRunning = true;
 		new ServiceInfo(getApplicationContext()).clean();
@@ -77,11 +93,17 @@ public class MainActivity extends Activity {
 	public void stopSensorService() {
 		// Cancel
 		AlarmManager scheduler = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		Intent sensorIntent = new Intent(getApplicationContext(), SensorService.class);
-		PendingIntent scheduledSensorIntent = PendingIntent.getService(getApplicationContext(), 0, sensorIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		Intent sensorIntent = new Intent(getApplicationContext(),
+				SensorService.class);
+		PendingIntent scheduledSensorIntent = PendingIntent.getService(
+				getApplicationContext(), 0, sensorIntent,
+				PendingIntent.FLAG_UPDATE_CURRENT);
 
-		Intent uploadIntent = new Intent(getApplicationContext(), UploadService.class);
-		PendingIntent scheduledUploadIntent = PendingIntent.getService(getApplicationContext(), 0, uploadIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		Intent uploadIntent = new Intent(getApplicationContext(),
+				UploadService.class);
+		PendingIntent scheduledUploadIntent = PendingIntent.getService(
+				getApplicationContext(), 0, uploadIntent,
+				PendingIntent.FLAG_UPDATE_CURRENT);
 
 		scheduler.cancel(scheduledSensorIntent);
 		scheduler.cancel(scheduledUploadIntent);
@@ -111,7 +133,12 @@ public class MainActivity extends Activity {
 		new Timer().schedule(new TimerTask() {
 			@Override
 			public void run() {
-				final StringBuilder strBuf = new StringBuilder("Service started. \nStarted at: " + info.getTimeOfFirstFrame() + " \nFrames gathered: " + info.getAmountOfFrames() + "\nFile size: " + info.getFileSize() + " Bytes");
+				final StringBuilder strBuf = new StringBuilder(
+						"Service started. \nStarted at: "
+								+ info.getTimeOfFirstFrame()
+								+ " \nFrames gathered: "
+								+ info.getAmountOfFrames() + "\nFile size: "
+								+ info.getFileSize() + " Bytes");
 				if (!serviceRunning) {
 					strBuf.append("\n\nService stopped.");
 				}
@@ -145,52 +172,28 @@ public class MainActivity extends Activity {
 			startActivity(intent);
 			break;
 		case R.id.menu_TestQuery_Battery_MinBattery:
-			SensorDescBattery minBattSensDesc = SensorQueries.minBattery(1, Long.MAX_VALUE, getFilesDir());
-			if (minBattSensDesc != null) {
-				toastToScreen("Minimum Battery: " + minBattSensDesc.getBatteryPercent() + "\nat " + getDate(minBattSensDesc.getTimestamp()));
-			} else {
-				toastToScreen("No Data Found");
-			}
+			minBattery();
 			break;
 		case R.id.menu_TestQuery_Battery_MaxBattery:
-			SensorDescBattery maxBattSensDesc = SensorQueries.maxBattery(1, Long.MAX_VALUE, getFilesDir());
-			if (maxBattSensDesc != null) {
-				toastToScreen("Maximum Battery: " + maxBattSensDesc.getBatteryPercent() + "\nat " + getDate(maxBattSensDesc.getTimestamp()));
-			} else {
-				toastToScreen("No Data Found");
-			}
-			break;
-		case R.id.menu_TestQuery_Accelerometer_MaxAccelerometer:
-			SensorDescAccelerometer maxAccSensDesc = SensorQueries.maxAccelerometerAverage(1, Long.MAX_VALUE, getFilesDir());
-			if (maxAccSensDesc != null) {
-				toastToScreen("Maximum Accelerometer Average: \n x:" + maxAccSensDesc.getAccX() + "\ny: " + maxAccSensDesc.getAccY() + "\nz: " + maxAccSensDesc.getAccZ() + "\nDate: " + getDate(maxAccSensDesc.getTimestamp()));
-			} else {
-				toastToScreen("No Data Found");
-			}
+			maxBattery();
 			break;
 		case R.id.menu_TestQuery_Light_MaxLight:
-			SensorDescLight maxLightSensDesc = SensorQueries.maxLight(1, Long.MAX_VALUE, getFilesDir());
-			if (maxLightSensDesc != null) {
-				toastToScreen("Maximum Light: " + maxLightSensDesc.getLight() + "\nDate: " + getDate(maxLightSensDesc.getTimestamp()));
-			} else {
-				toastToScreen("No Data Found");
-			}
+			maxLight();
 			break;
 		case R.id.menu_TestQuery_Light_MinLight:
-			SensorDescLight minLightSensDesc = SensorQueries.minLight(1, Long.MAX_VALUE, getFilesDir());
-			if (minLightSensDesc != null) {
-				toastToScreen("Minimum Light: " + minLightSensDesc.getLight() + "\nDate: " + getDate(minLightSensDesc.getTimestamp()));
-			} else {
-				toastToScreen("No Data Found");
-			}
+			minLight();
 			break;
-		case R.id.menu_TestQuery_Accelerometer_MinAccelerometer:
-			SensorDescAccelerometer minAccSensDesc = SensorQueries.minAccelerometerAverage(1, Long.MAX_VALUE, getFilesDir());
-			if (minAccSensDesc != null) {
-				toastToScreen("Minimum Accelerometer Average: \n x:" + minAccSensDesc.getAccX() + "\ny: " + minAccSensDesc.getAccY() + "\nz: " + minAccSensDesc.getAccZ() + "\nDate: " + getDate(minAccSensDesc.getTimestamp()));
-			} else {
-				toastToScreen("No Data Found");
-			}
+		case R.id.menu_TestQuery_Accelerometer_MaxAccAverage:
+			maxAverageAccelerometer();
+			break;
+		case R.id.menu_TestQuery_Accelerometer_MinAccAverage:
+			minAverageAccelerometer();
+			break;
+		case R.id.menu_TestQuery_Proximity_MaxProx:
+			maxProximity();
+			break;
+		case R.id.menu_TestQuery_Proximity_MinProx:
+			minProximity();
 			break;
 		case R.id.menu_settings:
 			intent = new Intent(this, SettingsActivity.class);
@@ -200,6 +203,110 @@ public class MainActivity extends Activity {
 			break;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	private void minLight() {
+		SensorQueriesLight sensorQ_Light2 = new SensorQueriesLight(1,
+				Long.MAX_VALUE, getFilesDir());
+		if (sensorQ_Light2.containsReadings()) {
+			SensorDescLight minLightDesc = sensorQ_Light2.getMinValue();
+			toastToScreen("Minimum Light: " + minLightDesc.getLight() + "\nat "
+					+ getDate(minLightDesc.getTimestamp()));
+		} else {
+			toastToScreen("No Data Found");
+		}
+	}
+
+	private void maxLight() {
+		SensorQueriesLight sensorQ_Light = new SensorQueriesLight(1,
+				Long.MAX_VALUE, getFilesDir());
+		if (sensorQ_Light.containsReadings()) {
+			SensorDescLight maxLightDesc = sensorQ_Light.getMaxValue();
+			toastToScreen("Maximum Light: " + maxLightDesc.getLight() + "\nat "
+					+ getDate(maxLightDesc.getTimestamp()));
+		} else {
+			toastToScreen("No Data Found");
+		}
+	}
+
+	private void minProximity() {
+		SensorQueriesProximity sensorQ_Proximity = new SensorQueriesProximity(
+				1, Long.MAX_VALUE, getFilesDir());
+		if (sensorQ_Proximity.containsReadings()) {
+			SensorDescProximity minProxDesc = sensorQ_Proximity.getMinValue();
+			toastToScreen("Minimum Proximity: " + minProxDesc.getProximity()
+					+ "\nat " + getDate(minProxDesc.getTimestamp()));
+		} else {
+			toastToScreen("No Data Found");
+		}
+	}
+
+	private void maxProximity() {
+		SensorQueriesProximity sensorQ_Prox = new SensorQueriesProximity(1,
+				Long.MAX_VALUE, getFilesDir());
+		if (sensorQ_Prox.containsReadings()) {
+			SensorDescProximity maxProxDesc = sensorQ_Prox.getMaxValue();
+			toastToScreen("Maximum Prox: " + maxProxDesc.getProximity()
+					+ "\nat " + getDate(maxProxDesc.getTimestamp()));
+		} else {
+			toastToScreen("No Data Found");
+		}
+	}
+
+	private void maxAverageAccelerometer() {
+		SensorQueriesAccelerometer sensorQ_Accel = new SensorQueriesAccelerometer(
+				1, Long.MAX_VALUE, getFilesDir());
+		if (sensorQ_Accel.containsReadings()) {
+			SensorDescAccelerometer maxAccAverageSensDesc = sensorQ_Accel
+					.getMaxAverageValue();
+			toastToScreen("Maximum Accelerometer Average: \n x:"
+					+ maxAccAverageSensDesc.getAccX() + "\ny: "
+					+ maxAccAverageSensDesc.getAccY() + "\nz: "
+					+ maxAccAverageSensDesc.getAccZ() + "\nDate: "
+					+ getDate(maxAccAverageSensDesc.getTimestamp()));
+		} else {
+			toastToScreen("No Data Found");
+		}
+	}
+
+	private void minAverageAccelerometer() {
+		SensorQueriesAccelerometer sensorQ_Accel = new SensorQueriesAccelerometer(
+				1, Long.MAX_VALUE, getFilesDir());
+		if (sensorQ_Accel.containsReadings()) {
+			SensorDescAccelerometer minAccAverageSensDesc = sensorQ_Accel
+					.getMinAverageValue();
+			toastToScreen("Minimum Accelerometer Average: \n x:"
+					+ minAccAverageSensDesc.getAccX() + "\ny: "
+					+ minAccAverageSensDesc.getAccY() + "\nz: "
+					+ minAccAverageSensDesc.getAccZ() + "\nDate: "
+					+ getDate(minAccAverageSensDesc.getTimestamp()));
+		} else {
+			toastToScreen("No Data Found");
+		}
+	}
+
+	private void maxBattery() {
+		SensorQueriesBattery sensorQ_Batteries2 = new SensorQueriesBattery(1,
+				Long.MAX_VALUE, getFilesDir());
+		if (sensorQ_Batteries2.containsReadings()) {
+			SensorDescBattery maxBatDesc = sensorQ_Batteries2.getMaxValue();
+			toastToScreen("Max Battery: " + maxBatDesc.getBatteryPercent()
+					+ "\nat " + getDate(maxBatDesc.getTimestamp()));
+		} else {
+			toastToScreen("No Data Found");
+		}
+	}
+
+	private void minBattery() {
+		SensorQueriesBattery sensorQ_Batteries = new SensorQueriesBattery(1,
+				Long.MAX_VALUE, getFilesDir());
+		if (sensorQ_Batteries.containsReadings()) {
+			SensorDescBattery minBatDesc = sensorQ_Batteries.getMinValue();
+			toastToScreen("Minimum Battery: " + minBatDesc.getBatteryPercent()
+					+ "\nat " + getDate(minBatDesc.getTimestamp()));
+		} else {
+			toastToScreen("No Data Found");
+		}
 	}
 
 	private String getDate(long time) {

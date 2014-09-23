@@ -1,4 +1,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
     <item
         android:id="@+id/menu_settings"
         android:title="Settings">
@@ -16,6 +17,18 @@
         android:title="Test Query">
         <menu>
             <item
+                android:id="@+id/menu_Accelerometer"
+                android:title="Accelerometer">
+                <menu>
+                    <item
+                        android:id="@+id/menu_TestQuery_Accelerometer_MinAccAverage"
+                        android:title="Min Accerometer Average"/>
+                    <item
+                        android:id="@+id/menu_TestQuery_Accelerometer_MaxAccAverage"
+                        android:title="Max Accerometer Average"/>
+                </menu>
+            </item>
+            <item
                 android:id="@+id/menu_Battery"
                 android:title="Battery">
                 <menu>
@@ -25,18 +38,6 @@
                     <item
                         android:id="@+id/menu_TestQuery_Battery_MaxBattery"
                         android:title="Max Battery"/>
-                </menu>
-            </item>
-            <item
-                android:id="@+id/menu_Accelerometer"
-                android:title="Accelerometer">
-                <menu>
-                    <item
-                        android:id="@+id/menu_TestQuery_Accelerometer_MinAccelerometer"
-                        android:title="Min Accerometer"/>
-                    <item
-                        android:id="@+id/menu_TestQuery_Accelerometer_MaxAccelerometer"
-                        android:title="Max Accerometer"/>
                 </menu>
             </item>
             <item
