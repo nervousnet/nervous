@@ -162,9 +162,7 @@ public class NervousVM {
 			dos.writeLong(uuid.getMostSignificantBits());
 			dos.writeLong(uuid.getLeastSignificantBits());
 			dos.flush();
-			fos.flush();
 			dos.close();
-			fos.close();
 		} catch (IOException ex) {
 		} finally {
 			// Cleanup
@@ -196,7 +194,6 @@ public class NervousVM {
 			ois = new ObjectInputStream(fis);
 			sensorTreeMap = (HashMap<Long, TreeMap<PageInterval, PageInterval>>) (ois.readObject());
 			ois.close();
-			fis.close();
 		} catch (IOException e) {
 			success = false;
 		} catch (ClassNotFoundException e) {
