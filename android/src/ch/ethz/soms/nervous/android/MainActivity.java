@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -23,11 +25,11 @@ import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesAccelerometer;
 import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesBattery;
 import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesLight;
 import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesProximity;
-import ch.ethz.soms.nervous.android.sensors.SensorDesc;
 import ch.ethz.soms.nervous.android.sensors.SensorDescAccelerometer;
 import ch.ethz.soms.nervous.android.sensors.SensorDescBattery;
 import ch.ethz.soms.nervous.android.sensors.SensorDescLight;
 import ch.ethz.soms.nervous.android.sensors.SensorDescProximity;
+import ch.ethz.soms.nervous.android.test.PerformanceTestTask;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
@@ -36,6 +38,7 @@ public class MainActivity extends Activity {
 
 	private TextView textStatus;
 	private ToggleButton buttonOnOff;
+	private Button buttonPerfTest;
 
 	private boolean serviceRunning;
 
@@ -46,6 +49,14 @@ public class MainActivity extends Activity {
 
 		textStatus = (TextView) findViewById(R.id.text_status);
 		buttonOnOff = (ToggleButton) findViewById(R.id.togglebutton);
+		buttonPerfTest = (Button) findViewById(R.id.perftestbutton);
+		
+		buttonPerfTest.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				new PerformanceTestTask(getApplicationContext()).execute();
+			}
+		});
 	}
 
 	@Override

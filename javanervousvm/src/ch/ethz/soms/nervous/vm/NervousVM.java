@@ -61,22 +61,29 @@ public class NervousVM {
 	private synchronized boolean removeOldPages(long sensorID, long currentPage, long maxPages) {
 		boolean success = true;
 		TreeMap<PageInterval, PageInterval> treeMap = sensorTreeMap.get(sensorID);
-		for (long i = currentPage - maxPages; i >= 0; i--) {
-			PageInterval pi = treeMap.get(new PageInterval(new Interval(0, 0), i));
-			if (pi == null) {
-				break;
+		if (treeMap != null) {
+			for (long i = currentPage - maxPages; i >= 0; i--) {
+				PageInterval pi = treeMap.get(new PageInterval(new Interval(0, 0), i));
+				if (pi == null) {
+					break;
+				}
+				treeMap.remove(pi);
+				SensorStorePage stp = new SensorStorePage(dir, sensorID, pi.getPageNumber());
+				boolean successEvict = stp.evict();
+				success = success && successEvict;
 			}
-			treeMap.remove(pi);
-			SensorStorePage stp = new SensorStorePage(dir, sensorID, pi.getPageNumber());
-			boolean successEvict = stp.evict();
-			success = success && successEvict;
-		}
-		PageInterval pi = treeMap.get(new PageInterval(new Interval(0, 0), currentPage - maxPages + 1));
-		// Correct so that the time interval is always from 0 to MAX_LONG in the tree
-		if (pi != null) {
-			treeMap.remove(pi);
-			pi.getInterval().setLower(0);
-			treeMap.put(pi, pi);
+			if (maxPages == 0) {
+				// All removed, delete sensor as a whole
+				sensorTreeMap.remove(sensorID);
+			} else {
+				PageInterval pi = treeMap.get(new PageInterval(new Interval(0, 0), currentPage - maxPages + 1));
+				// Correct so that the time interval is always from 0 to MAX_LONG in the tree
+				if (pi != null) {
+					treeMap.remove(pi);
+					pi.getInterval().setLower(0);
+					treeMap.put(pi, pi);
+				}
+			}
 		}
 		return success;
 	}
@@ -402,5 +409,22 @@ public class NervousVM {
 	public void setLastUploadedTimestamp(long sensorID, long timestamp) {
 		SensorStoreConfig ssc = new SensorStoreConfig(dir, sensorID);
 		ssc.setLastUploadedTimestamp(timestamp);
+	}
+
+	public void deleteSensor(long sensorID) {
+		SensorStoreConfig ssc = new SensorStoreConfig(dir, sensorID);
+		removeOldPages(sensorID, ssc.getCurrentPage(), 0);
+		ssc.delete();
+	}
+
+	public long[] getSensorStorageSize(long sensorID) {
+		long[] size = { 0, 0 };
+		SensorStoreConfig ssc = new SensorStoreConfig(dir, sensorID);
+		for (int i = 0; i < MAX_PAGES; i++) {
+			SensorStorePage ssp = new SensorStorePage(dir, sensorID, ssc.getCurrentPage());
+			size[0] += ssp.getStoreSize();
+			size[1] += ssp.getIndexSize();
+		}
+		return size;
 	}
 }

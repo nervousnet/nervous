@@ -123,11 +123,26 @@ public class SensorStorePage {
 	}
 
 	public boolean evict() {
+		boolean successEvict0 = true;
 		File file = new File(dir, "NervousVM/" + Long.toHexString(sensorID) + "P" + Long.toHexString(currentPage));
-		boolean successEvict0 = file.delete();
+		if (file.exists()) {
+			successEvict0 = file.delete();
+		}
 		boolean successEvict1 = sst.evict();
 		return successEvict0 && successEvict1;
 	}
-	
+
+	public long getStoreSize() {
+		File file = new File(dir, "NervousVM/" + Long.toHexString(sensorID) + "P" + Long.toHexString(currentPage));
+		if (file.exists()) {
+			return file.length();
+		} else {
+			return 0;
+		}
+	}
+
+	public long getIndexSize() {
+		return sst.getSize();
+	}
 
 }

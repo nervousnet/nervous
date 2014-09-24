@@ -19,14 +19,21 @@
             android:textOff="@string/service_off"
             android:textOn="@string/service_on" />
 
+        <Button
+            android:id="@+id/perftestbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/togglebutton"
+            android:layout_alignRight="@+id/togglebutton"
+            android:layout_below="@+id/togglebutton"
+            android:text="VM performance test" />
+
         <TextView
             android:id="@+id/text_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/togglebutton"
-            android:layout_marginTop="17dp"
+            android:layout_below="@+id/perftestbutton"
+            android:layout_centerHorizontal="true"
             android:text="@string/loadingStatus" />
-
 
 </RelativeLayout>

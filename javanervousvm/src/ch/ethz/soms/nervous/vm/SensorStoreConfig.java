@@ -13,12 +13,12 @@ public class SensorStoreConfig {
 	/**
 	 * ID of the sensor
 	 */
-	
+
 	private long sensorID;
 	/**
 	 * Last timestamp that has already been uploaded to the server
 	 */
-	
+
 	private long lastUploadedTimestamp;
 	/**
 	 * Last timestamp that has been recorded
@@ -29,7 +29,7 @@ public class SensorStoreConfig {
 	 * Current page number
 	 */
 	private long currentPage;
-	
+
 	/**
 	 * Current write position in the pagefile
 	 */
@@ -158,6 +158,13 @@ public class SensorStoreConfig {
 				} catch (IOException ex) {
 				}
 			}
+		}
+	}
+
+	public void delete() {
+		File file = new File(dir, "NervousVM/" + Long.toHexString(sensorID) + "G");
+		if (file.exists()) {
+			file.delete();
 		}
 	}
 }
