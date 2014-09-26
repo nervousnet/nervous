@@ -1,14 +1,16 @@
 package ch.ethz.soms.nervous.android.sensorQueries;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import android.util.Log;
 import ch.ethz.soms.nervous.android.MainActivity;
+import ch.ethz.soms.nervous.android.sensors.SensorDesc;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
 import ch.ethz.soms.nervous.vm.NervousVM;
 
-public abstract class SensorQueries {
+public abstract class SensorQueries<G extends SensorDesc> {
 	static List<SensorData> list;
 
 	abstract long getSensorId();
@@ -28,4 +30,6 @@ public abstract class SensorQueries {
 			return true;
 		}
 	}
+	
+	public abstract ArrayList<G> getSensorDescriptorList();
 }
