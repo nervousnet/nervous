@@ -1,11 +1,14 @@
 package ch.ethz.soms.nervous.android.sensorQueries;
 
 import java.io.File;
+import java.util.ArrayList;
+
 import ch.ethz.soms.nervous.android.sensors.SensorDesc;
 import ch.ethz.soms.nervous.android.sensors.SensorDescLight;
+import ch.ethz.soms.nervous.android.sensors.SensorDescProximity;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
 
-public class SensorQueriesLight extends SensorQueries {
+public class SensorQueriesLight extends SensorQueries<SensorDescLight> {
 
 	@Override
 	long getSensorId() {
@@ -42,4 +45,14 @@ public class SensorQueriesLight extends SensorQueries {
 		}
 		return minLightSensDesc;
 	}
+	
+	@Override
+	public ArrayList<SensorDescLight> getSensorDescriptorList() {
+		ArrayList<SensorDescLight> descList = new ArrayList<SensorDescLight>();
+		for (SensorData sensorData : list) {
+			descList.add(new SensorDescLight(sensorData));
+		}
+		return descList;
+	}
+	
 }

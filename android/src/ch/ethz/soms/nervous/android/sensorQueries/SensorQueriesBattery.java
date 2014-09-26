@@ -1,13 +1,15 @@
 package ch.ethz.soms.nervous.android.sensorQueries;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import ch.ethz.soms.nervous.android.sensors.SensorDesc;
 import ch.ethz.soms.nervous.android.sensors.SensorDescBattery;
+import ch.ethz.soms.nervous.android.sensors.SensorDescProximity;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
 
-public class SensorQueriesBattery extends SensorQueries {
+public class SensorQueriesBattery extends SensorQueries<SensorDescBattery> {
 
 	@Override
 	long getSensorId() {
@@ -22,6 +24,7 @@ public class SensorQueriesBattery extends SensorQueries {
 	public SensorDescBattery getMaxValue() {
 		SensorDescBattery maxBattSensDesc = new SensorDescBattery(0,
 				Float.MIN_VALUE, false, false, false);
+		
 		for (SensorData sensorData : list) {
 			SensorDescBattery sensDesc = new SensorDescBattery(sensorData);
 			if (sensDesc.getBatteryPercent() > maxBattSensDesc
@@ -44,4 +47,17 @@ public class SensorQueriesBattery extends SensorQueries {
 		}
 		return minBattSensDesc;
 	}
+	
+	
+	@Override
+	public ArrayList<SensorDescBattery> getSensorDescriptorList() {
+		ArrayList<SensorDescBattery> descList = new ArrayList<SensorDescBattery>();
+		for (SensorData sensorData : list) {
+			descList.add(new SensorDescBattery(sensorData));
+		}
+		return descList;
+	}
+	
+	
+	
 }
