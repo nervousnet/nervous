@@ -7,10 +7,10 @@
     <serverPort>25600</serverPort>
     <serverThreads>15</serverThreads>
     <sqlHostname>localhost</sqlHostname>
-    <sqlPassword></sqlPassword>
+    <sqlPassword>1234</sqlPassword>
     <sqlPort>3306</sqlPort>
-    <sqlUsername>nervous1</sqlUsername>
-    <sqlDatabase>nervous1</sqlDatabase>
+    <sqlUsername>nervous</sqlUsername>
+    <sqlDatabase>nervous</sqlDatabase>
     <sqlsensors>
         <sensor>
             <sensorName>Accelerometer</sensorName>
@@ -18,20 +18,58 @@
             <attributes>
                 <attribute>
                     <name>X</name>
-                    <type>3</type>
+                    <type>FLOAT</type>
                 </attribute>
                 <attribute>
                     <name>Y</name>
-                    <type>3</type>
+                    <type>FLOAT</type>
                 </attribute>
                 <attribute>
                     <name>Z</name>
-                    <type>3</type>
+                    <type>FLOAT</type>
+                </attribute>
+            </attributes>
+        </sensor>
+		<sensor>
+            <sensorName>BLEBeacon</sensorName>
+            <sensorID>B</sensorID>
+            <attributes>
+                <attribute>
+                    <name>mac</name>
+                    <type>INT64</type>
                 </attribute>
                 <attribute>
-                    <name>Accuracy</name>
-                    <type>1</type>
+                    <name>advertisementMSB</name>
+                    <type>INT64</type>
                 </attribute>
+                <attribute>
+                    <name>advertisementLSB</name>
+                    <type>INT64</type>
+                </attribute>
+                <attribute>
+                    <name>bleuuidMSB</name>
+                    <type>INT64</type>
+                </attribute>
+				<attribute>
+					<name>bleuuidLSB</name>
+					<type>INT64</type>
+				</attribute>
+				<attribute>
+					<name>rssi</name>
+					<type>INT32</type>
+				</attribute>
+				<attribute>
+					<name>major</name>
+					<type>INT32</type>
+				</attribute>
+				<attribute>
+					<name>minor</name>
+					<type>INT32</type>
+				</attribute>
+				<attribute>
+					<name>txpower</name>
+					<type>INT32</type>
+				</attribute>
             </attributes>
         </sensor>
     </sqlsensors>

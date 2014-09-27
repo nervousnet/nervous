@@ -5,12 +5,14 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import ch.ethz.soms.nervous.xml.HexIdAdapter;
 
 public class SqlSensorConfiguration {
 
 	private String sensorName;
+	
 	private Long sensorID;
 
 	public SqlSensorConfiguration() {
@@ -38,6 +40,7 @@ public class SqlSensorConfiguration {
 		this.sensorName = sensorName;
 	}
 
+	@XmlJavaTypeAdapter(type=long.class, value=HexIdAdapter.class)
 	public Long getSensorID() {
 		return sensorID;
 	}
