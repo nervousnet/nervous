@@ -6,7 +6,6 @@ public class SensorDescBLEBeacon extends SensorDesc {
 
 	public static final long SENSOR_ID = 0x000000000000000BL;
 
-	private long timestamp;
 	private int rssi;
 	private long mac;
 	private long advertisementMSB;
@@ -46,10 +45,6 @@ public class SensorDescBLEBeacon extends SensorDesc {
 	@Override
 	public long getSensorIdentifier() {
 		return SENSOR_ID;
-	}
-
-	public long getTimestamp() {
-		return timestamp;
 	}
 
 	public long getMac() {

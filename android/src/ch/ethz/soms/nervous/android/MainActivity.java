@@ -82,10 +82,10 @@ public class MainActivity extends Activity {
 				PendingIntent.FLAG_UPDATE_CURRENT);
 
 		// 30 seconds
-		long sensorInterval = 30 * 1000;
+		long sensorInterval = 10 * 1000;
 
 		// 60 seconds
-		long uploadInterval = 60 * 1000;
+		long uploadInterval = 30 * 1000;
 
 		scheduler.setInexactRepeating(AlarmManager.RTC_WAKEUP,
 				System.currentTimeMillis(), sensorInterval,
