@@ -1,5 +1,7 @@
 package ch.ethz.soms.nervous.xml;
 
+import java.math.BigInteger;
+
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 public class HexIdAdapter extends XmlAdapter<String, Long> {
@@ -11,7 +13,7 @@ public class HexIdAdapter extends XmlAdapter<String, Long> {
 
 	@Override
 	public Long unmarshal(String v) throws Exception {
-		return Long.parseUnsignedLong(v, 16);
+		return new BigInteger(v, 16).longValue();
 	}
 
 }
