@@ -5,7 +5,7 @@
     <logPath>log.txt</logPath>
     <logWriteVerbosity>15</logWriteVerbosity>
     <serverPort>25600</serverPort>
-    <serverThreads>15</serverThreads>
+    <serverThreads>2</serverThreads>
     <sqlHostname>localhost</sqlHostname>
     <sqlPassword>1234</sqlPassword>
     <sqlPort>3306</sqlPort>

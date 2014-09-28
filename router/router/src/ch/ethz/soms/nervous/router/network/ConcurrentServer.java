@@ -44,7 +44,11 @@ public class ConcurrentServer implements Runnable {
 				success = false;
 			}
 			if (success) {
-				this.threadPool.execute(factory.createWorker(csocket));
+				try {
+					this.threadPool.execute(factory.createWorker(csocket));
+				} catch (Exception e) {
+					Log.getInstance().append(Log.FLAG_ERROR, "Threadpool execution failure");
+				}
 			}
 		}
 		threadPool.shutdown();

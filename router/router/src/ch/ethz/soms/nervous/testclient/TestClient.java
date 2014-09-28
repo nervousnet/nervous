@@ -13,8 +13,8 @@ public class TestClient {
 
 	public static final long HUUID = 0x11223344;
 	public static final long LUUID = 0x55667788;
-	public static final long SENSOR_ID = 0;			// Currently accelerometer
-	public static final int VALUE_COUNT = 100;
+	public static final long SENSOR_ID = 0; // Currently accelerometer
+	public static final int VALUE_COUNT = 10;
 
 	public static void main(String args[]) {
 
@@ -22,19 +22,18 @@ public class TestClient {
 		sub.setHuuid(HUUID);
 		sub.setLuuid(LUUID);
 		sub.setSensorId(SENSOR_ID);
-		
+
 		Long baseTime = Calendar.getInstance().getTimeInMillis();
 
 		for (int i = 0; i < VALUE_COUNT; i++) {
 			SensorData.Builder sdb = SensorData.newBuilder();
 			// Equispaced measurement plots
-			sdb.setRecordTime(baseTime-((VALUE_COUNT-i)*30000));
+			sdb.setRecordTime(baseTime + i);
 			// Create some random test data
 			sdb.addValueFloat(((float) Math.random()));
 			sdb.addValueFloat(((float) 0.f));
 			sdb.addValueFloat(((float) Math.random()));
-			sdb.addValueInt32((int) (100 * Math.random()));
-			
+
 			sub.addSensorValues(sdb.build());
 		}
 
@@ -42,6 +41,7 @@ public class TestClient {
 		SensorUpload sensorupload = sub.build();
 
 		// Upload test
+
 		try {
 			Socket socket = new Socket("127.0.0.1", 25600);
 			OutputStream os = socket.getOutputStream();

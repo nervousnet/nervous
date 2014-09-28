@@ -6,12 +6,10 @@ import java.net.Socket;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
 import ch.ethz.soms.nervous.router.sql.SqlSetup;
@@ -21,12 +19,11 @@ import ch.ethz.soms.nervous.router.utils.UUID;
 public class SimpleUploadWorker extends ConcurrentSocketWorker {
 
 	Connection connection;
-	Socket socket;
 	SqlSetup sqlse;
 
 	public SimpleUploadWorker(Socket socket, Connection connection, SqlSetup sqlse) {
+		super(socket);
 		this.connection = connection;
-		this.socket = socket;
 		this.sqlse = sqlse;
 	}
 
@@ -35,8 +32,9 @@ public class SimpleUploadWorker extends ConcurrentSocketWorker {
 		InputStream is;
 		try {
 			is = socket.getInputStream();
-
-			while (!socket.isClosed()) {
+			boolean connected = true;
+			while (connected) {
+				connected &= !socket.isClosed();
 				try {
 					// Parse
 					SensorUpload su = SensorUpload.parseDelimitedFrom(is);
@@ -117,13 +115,28 @@ public class SimpleUploadWorker extends ConcurrentSocketWorker {
 						} catch (SQLException e) {
 							Log.getInstance().append(Log.FLAG_WARNING, "Submitting sensor data chunk to database failed");
 						}
+					} else {
+						connected = false;
 					}
 				} catch (IOException e) {
 					Log.getInstance().append(Log.FLAG_WARNING, "Parsing protobuf SensorUpload failed");
+					connected = false;
 				}
 			}
-		} catch (IOException e1) {
+		} catch (IOException e) {
 			Log.getInstance().append(Log.FLAG_WARNING, "Opening data stream from socket failed");
+		} catch (Exception e) {
+			Log.getInstance().append(Log.FLAG_WARNING, "Generic error");
+		} finally {
+			cleanup();
+		}
+	}
+
+	protected void cleanup() {
+		super.cleanup();
+		try {
+			connection.close();
+		} catch (SQLException e) {
 		}
 	}
 }
