@@ -409,6 +409,7 @@ public class NervousVM {
 	public void setLastUploadedTimestamp(long sensorID, long timestamp) {
 		SensorStoreConfig ssc = new SensorStoreConfig(dir, sensorID);
 		ssc.setLastUploadedTimestamp(timestamp);
+		ssc.store();
 	}
 
 	public void deleteSensor(long sensorID) {

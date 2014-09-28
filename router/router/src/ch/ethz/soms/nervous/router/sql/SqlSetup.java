@@ -48,7 +48,7 @@ public class SqlSetup {
 		List<Integer> types = sensorsHash.get(sensorId);
 		if (types != null) {
 			StringBuilder sb = new StringBuilder();
-			sb.append("INSERT INTO `SENSOR_" + Long.toHexString(sensorId) + "` VALUES (?,?,");
+			sb.append("INSERT INTO `SENSOR_" + Long.toHexString(sensorId) + "` VALUES (DEFAULT,?,?,");
 			for (int i = 0; i < types.size() - 1; i++) {
 				sb.append("?,");
 			}
@@ -67,6 +67,7 @@ public class SqlSetup {
 			List<Integer> types = new ArrayList<Integer>(sensor.getAttributes().size());
 			StringBuilder sb = new StringBuilder();
 			sb.append("CREATE TABLE IF NOT EXISTS `" + config.getSqlDatabase() + "`.`SENSOR_" + Long.toHexString(sensor.getSensorID()) + "` (\n");
+			sb.append("`RecordID` INT NOT NULL UNIQUE AUTO_INCREMENT,\n");
 			sb.append("`UUID` BINARY(16) NOT NULL,\n");
 			sb.append("`RecordTime` BIGINT UNSIGNED NOT NULL,\n");
 			for (SqlSensorAttribute attribute : sensor.getAttributes()) {
@@ -97,14 +98,34 @@ public class SqlSetup {
 				}
 				sb.append("`" + attribute.getName() + "` " + sqlType + " NOT NULL,\n");
 			}
-			sb.append("PRIMARY KEY (`UUID`, `RecordTime`));");
-			String command = sb.toString();
+			sb.append("PRIMARY KEY (`RecordID`));");
 			try {
+				String command = sb.toString();
 				Statement stmt = con.createStatement();
 				stmt.execute(command);
 				stmt.close();
 			} catch (SQLException e) {
 				Log.getInstance().append(Log.FLAG_ERROR, "Error setting up a sensor table (" + sensor.getSensorName() + ")");
+			}
+			sb = new StringBuilder();
+			sb.append("CREATE INDEX `idx_SENSOR_" + Long.toHexString(sensor.getSensorID()) + "_UUID` ON `" + config.getSqlDatabase() + "`.`SENSOR_" + Long.toHexString(sensor.getSensorID()) + "` (`UUID`);");
+			try {
+				String command = sb.toString();
+				Statement stmt = con.createStatement();
+				stmt.execute(command);
+				stmt.close();
+			} catch (SQLException e) {
+				Log.getInstance().append(Log.FLAG_WARNING, "Error setting up a sensor table (" + sensor.getSensorName() + ") index. Index might already exist.");
+			}
+			sb = new StringBuilder();
+			sb.append("CREATE INDEX `idx_SENSOR_" + Long.toHexString(sensor.getSensorID()) + "_RecordTime` ON `" + config.getSqlDatabase() + "`.`SENSOR_" + Long.toHexString(sensor.getSensorID()) + "` (`RecordTime`);");
+			try {
+				String command = sb.toString();
+				Statement stmt = con.createStatement();
+				stmt.execute(command);
+				stmt.close();
+			} catch (SQLException e) {
+				Log.getInstance().append(Log.FLAG_WARNING, "Error setting up a sensor table (" + sensor.getSensorName() + ") index. Index might already exist.");
 			}
 			sensorsHash.put(sensor.getSensorID(), types);
 		}
@@ -113,16 +134,37 @@ public class SqlSetup {
 	private void setupTransactionTable() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("CREATE TABLE IF NOT EXISTS `" + config.getSqlDatabase() + "`.`Transact` (\n");
+		sb.append("`RecordID` INT NOT NULL UNIQUE AUTO_INCREMENT,\n");
 		sb.append("`UUID` BINARY(16) NOT NULL,\n");
 		sb.append("`UploadTime` BIGINT UNSIGNED NOT NULL,\n");
-		sb.append("PRIMARY KEY (`UUID`, `UploadTime`));");
-		String command = sb.toString();
+		sb.append("PRIMARY KEY (`RecordID`));\n");
 		try {
+			String command = sb.toString();
 			Statement stmt = con.createStatement();
 			stmt.execute(command);
 			stmt.close();
 		} catch (SQLException e) {
 			Log.getInstance().append(Log.FLAG_ERROR, "Error setting up the transaction table");
+		}
+		sb = new StringBuilder();
+		sb.append("CREATE INDEX `idx_Transact_UUID` ON `" + config.getSqlDatabase() + "`.`Transact` (`UUID`);\n");
+		try {
+			String command = sb.toString();
+			Statement stmt = con.createStatement();
+			stmt.execute(command);
+			stmt.close();
+		} catch (SQLException e) {
+			Log.getInstance().append(Log.FLAG_WARNING, "Error setting up the transaction table index. Index might already exist.");
+		}
+		sb = new StringBuilder();
+		sb.append("CREATE INDEX `idx_Transact_UploadTime` ON `" + config.getSqlDatabase() + "`.`Transact` (`UploadTime`);");
+		try {
+			String command = sb.toString();
+			Statement stmt = con.createStatement();
+			stmt.execute(command);
+			stmt.close();
+		} catch (SQLException e) {
+			Log.getInstance().append(Log.FLAG_WARNING, "Error setting up the transaction table index. Index might already exist.");
 		}
 	}
 
