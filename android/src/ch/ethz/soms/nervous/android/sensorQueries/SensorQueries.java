@@ -33,3 +33,19 @@ public abstract class SensorQueries<G extends SensorDesc> {
 	
 	public abstract ArrayList<G> getSensorDescriptorList();
 }
+
+/* Todo:
+ * average
+ * median
+ * max
+ * min
+ * top-k
+ * count
+ * sum
+ * sum squares
+ * standard deviation
+ * variance
+ * root mean square error
+ * correlation coefficient
+ * k-means clustering
+ *  */

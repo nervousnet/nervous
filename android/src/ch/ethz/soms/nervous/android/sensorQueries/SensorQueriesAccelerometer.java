@@ -3,10 +3,7 @@ package ch.ethz.soms.nervous.android.sensorQueries;
 import java.io.File;
 import java.util.ArrayList;
 
-import ch.ethz.soms.nervous.android.sensors.SensorDesc;
 import ch.ethz.soms.nervous.android.sensors.SensorDescAccelerometer;
-import ch.ethz.soms.nervous.android.sensors.SensorDescLight;
-import ch.ethz.soms.nervous.android.sensors.SensorDescProximity;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
 
 public class SensorQueriesAccelerometer extends SensorQueries<SensorDescAccelerometer> {
