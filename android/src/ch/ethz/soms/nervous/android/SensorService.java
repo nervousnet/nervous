@@ -3,6 +3,7 @@ package ch.ethz.soms.nervous.android;
 import java.util.HashMap;
 import java.util.List;
 
+import android.app.NativeActivity;
 import android.app.Service;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -17,12 +18,15 @@ import ch.ethz.soms.nervous.android.sensors.BLESensor;
 import ch.ethz.soms.nervous.android.sensors.BLESensor.BLEBeaconListener;
 import ch.ethz.soms.nervous.android.sensors.BatterySensor;
 import ch.ethz.soms.nervous.android.sensors.BatterySensor.BatteryListener;
+import ch.ethz.soms.nervous.android.sensors.ConnectivitySensor;
+import ch.ethz.soms.nervous.android.sensors.ConnectivitySensor.ConnectivityListener;
 import ch.ethz.soms.nervous.android.sensors.NoiseSensor;
 import ch.ethz.soms.nervous.android.sensors.NoiseSensor.NoiseListener;
 import ch.ethz.soms.nervous.android.sensors.SensorDesc;
 import ch.ethz.soms.nervous.android.sensors.SensorDescAccelerometer;
 import ch.ethz.soms.nervous.android.sensors.SensorDescBLEBeacon;
 import ch.ethz.soms.nervous.android.sensors.SensorDescBattery;
+import ch.ethz.soms.nervous.android.sensors.SensorDescConnectivity;
 import ch.ethz.soms.nervous.android.sensors.SensorDescGyroscope;
 import ch.ethz.soms.nervous.android.sensors.SensorDescHumidity;
 import ch.ethz.soms.nervous.android.sensors.SensorDescLight;
@@ -32,7 +36,7 @@ import ch.ethz.soms.nervous.android.sensors.SensorDescPressure;
 import ch.ethz.soms.nervous.android.sensors.SensorDescProximity;
 import ch.ethz.soms.nervous.android.sensors.SensorDescTemperature;
 
-public class SensorService extends Service implements SensorEventListener, NoiseListener, BatteryListener, BLEBeaconListener {
+public class SensorService extends Service implements SensorEventListener, NoiseListener, BatteryListener, BLEBeaconListener, ConnectivityListener {
 
 	private static final String DEBUG_TAG = "SensorService";
 
@@ -44,6 +48,7 @@ public class SensorService extends Service implements SensorEventListener, Noise
 
 	private Sensor sensorAccelerometer = null;
 	private BatterySensor sensorBattery = null;
+	private ConnectivitySensor sensorConnectivity = null;
 	private Sensor sensorLight = null;
 	private Sensor sensorMagnet = null;
 	private Sensor sensorProximity = null;
@@ -65,6 +70,7 @@ public class SensorService extends Service implements SensorEventListener, Noise
 	private SensorCollectStatus scPressure = null;
 	private SensorCollectStatus scNoise = null;
 	private SensorCollectStatus scBLEBeacon = null;
+	private SensorCollectStatus scConnectivity = null;
 
 	private boolean hasAccelerometer = false;
 	private boolean hasBattery = false;
@@ -77,6 +83,7 @@ public class SensorService extends Service implements SensorEventListener, Noise
 	private boolean hasPressure = false;
 	private boolean hasNoise = false;
 	private boolean hasBLEBeacon = false;
+	private boolean hasConnectivity = false;
 
 	private HashMap<Class<? extends SensorDesc>, SensorCollectStatus> sensorCollected;
 
@@ -104,6 +111,7 @@ public class SensorService extends Service implements SensorEventListener, Noise
 		scPressure = sensorConfiguration.getInitialSensorCollectStatus(SensorDescPressure.SENSOR_ID, serviceRound);
 		scNoise = sensorConfiguration.getInitialSensorCollectStatus(SensorDescNoise.SENSOR_ID, serviceRound);
 		scBLEBeacon = sensorConfiguration.getInitialSensorCollectStatus(SensorDescBLEBeacon.SENSOR_ID, serviceRound);
+		scConnectivity = sensorConfiguration.getInitialSensorCollectStatus(SensorDescConnectivity.SENSOR_ID, serviceRound);
 
 		hasAccelerometer = scAccelerometer.isCollect(serviceRound);
 		hasBattery = scAccelerometer.isCollect(serviceRound);
@@ -116,6 +124,7 @@ public class SensorService extends Service implements SensorEventListener, Noise
 		hasPressure = scAccelerometer.isCollect(serviceRound);
 		hasNoise = scAccelerometer.isCollect(serviceRound);
 		hasBLEBeacon = scBLEBeacon.isCollect(serviceRound);
+		hasConnectivity = scConnectivity.isCollect(serviceRound);
 
 		// Noise sensor
 		sensorNoise = new NoiseSensor();
@@ -129,8 +138,10 @@ public class SensorService extends Service implements SensorEventListener, Noise
 		sensorBattery.start();
 
 		// Connectivity sensor
-		// TODO
-
+		sensorConnectivity = new ConnectivitySensor(getApplicationContext());
+		sensorConnectivity.addListener(this);
+		sensorConnectivity.start();
+		
 		// BLE sensor
 		sensorBLEBeacon = new BLESensor(getApplicationContext());
 		sensorBLEBeacon.addListener(this);
@@ -336,6 +347,12 @@ public class SensorService extends Service implements SensorEventListener, Noise
 		} else if (sensorDesc.getSensorIdentifier() == SensorDescTemperature.SENSOR_ID) {
 			sensorManager.unregisterListener(this, sensorTemperature);
 		}
+	}
+
+	@Override
+	public void connectivitySensorDataReady(long timestamp, boolean isConnected, int networkType, boolean isRoaming) {
+		SensorDesc sensorDesc = new SensorDescConnectivity(timestamp, isConnected, networkType, isRoaming);
+		store(sensorDesc);
 	}
 
 }

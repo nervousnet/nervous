@@ -40,8 +40,6 @@ public class UploadService extends Service {
 		ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 		boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-		boolean isWiFi = activeNetwork.getType() == ConnectivityManager.TYPE_WIFI;
-		boolean isMobile = activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE;
 
 		// Conditions subject to change to fit app purpose and user settings
 		if (isConnected) {
