@@ -38,6 +38,12 @@
                     <item
                         android:id="@+id/menu_TestQuery_Battery_MaxBattery"
                         android:title="Max Battery"/>
+                    <item
+                        android:id="@+id/menu_TestQuery_Battery_Top10"
+                        android:title="Top 10 Battery"/>
+                    <item
+                        android:id="@+id/menu_TestQuery_Battery_Bottom10"
+                        android:title="Bottom 10 Battery"/>
                 </menu>
             </item>
             <item
@@ -62,6 +68,12 @@
                     <item
                         android:id="@+id/menu_TestQuery_Light_MaxLight"
                         android:title="Max Light"/>
+                    <item
+                        android:id="@+id/menu_TestQuery_Light_Top10Light"
+                        android:title="Top 10 Light"/>
+                    <item
+                        android:id="@+id/menu_TestQuery_Light_Bottom10Light"
+                        android:title="Bottom 10 Light"/>
                 </menu>
             </item>
             <item
@@ -74,6 +86,12 @@
                     <item
                         android:id="@+id/menu_TestQuery_Proximity_MaxProx"
                         android:title="Max Prox"/>
+                    <item
+                        android:id="@+id/menu_TestQuery_Proximity_Top10Prox"
+                        android:title="Top 10 Prox"/>
+                    <item
+                        android:id="@+id/menu_TestQuery_Proximity_Bottom10Prox"
+                        android:title="Bottom 10 Prox"/>
                 </menu>
             </item>
             <item

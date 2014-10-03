@@ -2,18 +2,17 @@ package ch.ethz.soms.nervous.android.sensors;
 
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
 
-public class SensorDescLight extends SensorDesc {
-	
+public class SensorDescLight extends SensorSingleValueDesc {
+
 	public static final long SENSOR_ID = 0x0000000000000004L;
 
 	private final float light;
-
 
 	public SensorDescLight(final long timestamp, final float light) {
 		super(timestamp);
 		this.light = light;
 	}
-	
+
 	public SensorDescLight(SensorData sensorData) {
 		super(sensorData);
 		this.light = sensorData.getValueFloat(0);
@@ -30,11 +29,15 @@ public class SensorDescLight extends SensorDesc {
 		sdb.addValueFloat(getLight());
 		return sdb.build();
 	}
-	
+
 	@Override
 	public long getSensorIdentifier() {
 		return SENSOR_ID;
 	}
 
+	@Override
+	public float getValue() {
+		return light;
+	}
 
 }

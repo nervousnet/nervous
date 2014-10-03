@@ -6,6 +6,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.text.InputFilter.LengthFilter;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
@@ -16,6 +17,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Timer;
@@ -50,7 +52,7 @@ public class MainActivity extends Activity {
 		textStatus = (TextView) findViewById(R.id.text_status);
 		buttonOnOff = (ToggleButton) findViewById(R.id.togglebutton);
 		buttonPerfTest = (Button) findViewById(R.id.perftestbutton);
-		
+
 		buttonPerfTest.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -185,6 +187,12 @@ public class MainActivity extends Activity {
 		case R.id.menu_TestQuery_Battery_MinBattery:
 			minBattery();
 			break;
+		case R.id.menu_TestQuery_Battery_Bottom10:
+			bottom10Battery();
+			break;
+		case R.id.menu_TestQuery_Battery_Top10:
+			top10Battery();
+			break;
 		case R.id.menu_TestQuery_Battery_MaxBattery:
 			maxBattery();
 			break;
@@ -193,6 +201,12 @@ public class MainActivity extends Activity {
 			break;
 		case R.id.menu_TestQuery_Light_MinLight:
 			minLight();
+			break;
+		case R.id.menu_TestQuery_Light_Top10Light:
+			top10Light();
+			break;
+		case R.id.menu_TestQuery_Light_Bottom10Light:
+			bottom10Light();
 			break;
 		case R.id.menu_TestQuery_Accelerometer_MaxAccAverage:
 			maxAverageAccelerometer();
@@ -205,6 +219,12 @@ public class MainActivity extends Activity {
 			break;
 		case R.id.menu_TestQuery_Proximity_MinProx:
 			minProximity();
+			break;
+		case R.id.menu_TestQuery_Proximity_Top10Prox:
+			top10Proximity();
+			break;
+		case R.id.menu_TestQuery_Proximity_Bottom10Prox:
+			bottom10Proximity();
 			break;
 		case R.id.menu_settings:
 			intent = new Intent(this, SettingsActivity.class);
@@ -222,9 +242,9 @@ public class MainActivity extends Activity {
 		if (sensorQ_Light2.containsReadings()) {
 			SensorDescLight minLightDesc = sensorQ_Light2.getMinValue();
 			toastToScreen("Minimum Light: " + minLightDesc.getLight() + "\nat "
-					+ getDate(minLightDesc.getTimestamp()));
+					+ getDate(minLightDesc.getTimestamp()), true);
 		} else {
-			toastToScreen("No Data Found");
+			toastToScreen("No Data Found", false);
 		}
 	}
 
@@ -234,9 +254,45 @@ public class MainActivity extends Activity {
 		if (sensorQ_Light.containsReadings()) {
 			SensorDescLight maxLightDesc = sensorQ_Light.getMaxValue();
 			toastToScreen("Maximum Light: " + maxLightDesc.getLight() + "\nat "
-					+ getDate(maxLightDesc.getTimestamp()));
+					+ getDate(maxLightDesc.getTimestamp()), true);
 		} else {
-			toastToScreen("No Data Found");
+			toastToScreen("No Data Found", false);
+		}
+	}
+
+	private void bottom10Light() {
+		SensorQueriesLight sensorQ_Light = new SensorQueriesLight(1,
+				Long.MAX_VALUE, getFilesDir());
+		if (sensorQ_Light.containsReadings()) {
+			ArrayList<SensorDescLight> topKLightDesc = sensorQ_Light
+					.getBottomK(10);
+			int i = 1;
+			Log.d(DEBUG_TAG, "Bottom 10 Light:");
+			for (SensorDescLight bat : topKLightDesc) {
+				Log.d(DEBUG_TAG, i++ + ": " + bat.getLight() + " Date: "
+						+ getDate(bat.getTimestamp()));
+			}
+			toastToScreen("Bottom 10 logged", false);
+		} else {
+			toastToScreen("No Data Found", false);
+		}
+	}
+
+	private void top10Light() {
+		SensorQueriesLight sensorQ_Light = new SensorQueriesLight(1,
+				Long.MAX_VALUE, getFilesDir());
+		if (sensorQ_Light.containsReadings()) {
+			ArrayList<SensorDescLight> topKLightDesc = sensorQ_Light
+					.getTopK(10);
+			int i = 1;
+			Log.d(DEBUG_TAG, "Top 10 Light:");
+			for (SensorDescLight light : topKLightDesc) {
+				Log.d(DEBUG_TAG, i++ + ": " + light.getLight() + " Date: "
+						+ getDate(light.getTimestamp()));
+			}
+			toastToScreen("Top 10 logged", false);
+		} else {
+			toastToScreen("No Data Found", false);
 		}
 	}
 
@@ -246,9 +302,9 @@ public class MainActivity extends Activity {
 		if (sensorQ_Proximity.containsReadings()) {
 			SensorDescProximity minProxDesc = sensorQ_Proximity.getMinValue();
 			toastToScreen("Minimum Proximity: " + minProxDesc.getProximity()
-					+ "\nat " + getDate(minProxDesc.getTimestamp()));
+					+ "\nat " + getDate(minProxDesc.getTimestamp()), true);
 		} else {
-			toastToScreen("No Data Found");
+			toastToScreen("No Data Found", false);
 		}
 	}
 
@@ -258,9 +314,45 @@ public class MainActivity extends Activity {
 		if (sensorQ_Prox.containsReadings()) {
 			SensorDescProximity maxProxDesc = sensorQ_Prox.getMaxValue();
 			toastToScreen("Maximum Prox: " + maxProxDesc.getProximity()
-					+ "\nat " + getDate(maxProxDesc.getTimestamp()));
+					+ "\nat " + getDate(maxProxDesc.getTimestamp()), true);
 		} else {
-			toastToScreen("No Data Found");
+			toastToScreen("No Data Found", false);
+		}
+	}
+
+	private void bottom10Proximity() {
+		SensorQueriesProximity sensorQ_Prox = new SensorQueriesProximity(1,
+				Long.MAX_VALUE, getFilesDir());
+		if (sensorQ_Prox.containsReadings()) {
+			ArrayList<SensorDescProximity> topKProxDesc = sensorQ_Prox
+					.getBottomK(10);
+			int i = 1;
+			Log.d(DEBUG_TAG, "Bottom 10 Prox:");
+			for (SensorDescProximity proxDesc : topKProxDesc) {
+				Log.d(DEBUG_TAG, i++ + ": " + proxDesc.getProximity()
+						+ " Date: " + getDate(proxDesc.getTimestamp()));
+			}
+			toastToScreen("Bottom 10 logged", false);
+		} else {
+			toastToScreen("No Data Found", false);
+		}
+	}
+
+	private void top10Proximity() {
+		SensorQueriesProximity sensorQ_Light = new SensorQueriesProximity(1,
+				Long.MAX_VALUE, getFilesDir());
+		if (sensorQ_Light.containsReadings()) {
+			ArrayList<SensorDescProximity> topKProxDesc = sensorQ_Light
+					.getTopK(10);
+			int i = 1;
+			Log.d(DEBUG_TAG, "Top 10 Prox:");
+			for (SensorDescProximity proxDesc : topKProxDesc) {
+				Log.d(DEBUG_TAG, i++ + ": " + proxDesc.getProximity()
+						+ " Date: " + getDate(proxDesc.getTimestamp()));
+			}
+			toastToScreen("Top 10 logged", false);
+		} else {
+			toastToScreen("No Data Found", false);
 		}
 	}
 
@@ -274,9 +366,9 @@ public class MainActivity extends Activity {
 					+ maxAccAverageSensDesc.getAccX() + "\ny: "
 					+ maxAccAverageSensDesc.getAccY() + "\nz: "
 					+ maxAccAverageSensDesc.getAccZ() + "\nDate: "
-					+ getDate(maxAccAverageSensDesc.getTimestamp()));
+					+ getDate(maxAccAverageSensDesc.getTimestamp()), true);
 		} else {
-			toastToScreen("No Data Found");
+			toastToScreen("No Data Found", false);
 		}
 	}
 
@@ -290,9 +382,9 @@ public class MainActivity extends Activity {
 					+ minAccAverageSensDesc.getAccX() + "\ny: "
 					+ minAccAverageSensDesc.getAccY() + "\nz: "
 					+ minAccAverageSensDesc.getAccZ() + "\nDate: "
-					+ getDate(minAccAverageSensDesc.getTimestamp()));
+					+ getDate(minAccAverageSensDesc.getTimestamp()), true);
 		} else {
-			toastToScreen("No Data Found");
+			toastToScreen("No Data Found", false);
 		}
 	}
 
@@ -302,9 +394,9 @@ public class MainActivity extends Activity {
 		if (sensorQ_Batteries2.containsReadings()) {
 			SensorDescBattery maxBatDesc = sensorQ_Batteries2.getMaxValue();
 			toastToScreen("Max Battery: " + maxBatDesc.getBatteryPercent()
-					+ "\nat " + getDate(maxBatDesc.getTimestamp()));
+					+ "\nat " + getDate(maxBatDesc.getTimestamp()), true);
 		} else {
-			toastToScreen("No Data Found");
+			toastToScreen("No Data Found", false);
 		}
 	}
 
@@ -314,9 +406,45 @@ public class MainActivity extends Activity {
 		if (sensorQ_Batteries.containsReadings()) {
 			SensorDescBattery minBatDesc = sensorQ_Batteries.getMinValue();
 			toastToScreen("Minimum Battery: " + minBatDesc.getBatteryPercent()
-					+ "\nat " + getDate(minBatDesc.getTimestamp()));
+					+ "\nat " + getDate(minBatDesc.getTimestamp()), true);
 		} else {
-			toastToScreen("No Data Found");
+			toastToScreen("No Data Found", false);
+		}
+	}
+
+	private void bottom10Battery() {
+		SensorQueriesBattery sensorQ_Batteries = new SensorQueriesBattery(1,
+				Long.MAX_VALUE, getFilesDir());
+		if (sensorQ_Batteries.containsReadings()) {
+			ArrayList<SensorDescBattery> topKBatDesc = sensorQ_Batteries
+					.getBottomK(10);
+			int i = 1;
+			Log.d(DEBUG_TAG, "Bottom 10 Bat:");
+			for (SensorDescBattery bat : topKBatDesc) {
+				toastToScreen("Bottom 10 logged", false);
+				Log.d(DEBUG_TAG, i++ + ": " + bat.getBatteryPercent()
+						+ " Date: " + getDate(bat.getTimestamp()));
+			}
+		} else {
+			toastToScreen("No Data Found", false);
+		}
+	}
+
+	private void top10Battery() {
+		SensorQueriesBattery sensorQ_Batteries = new SensorQueriesBattery(1,
+				Long.MAX_VALUE, getFilesDir());
+		if (sensorQ_Batteries.containsReadings()) {
+			ArrayList<SensorDescBattery> topKBatDesc = sensorQ_Batteries
+					.getTopK(10);
+			int i = 1;
+			Log.d(DEBUG_TAG, "Top 10 Bat:");
+			for (SensorDescBattery bat : topKBatDesc) {
+				toastToScreen("Top 10 logged", false);
+				Log.d(DEBUG_TAG, i++ + ": " + bat.getBatteryPercent()
+						+ " Date: " + getDate(bat.getTimestamp()));
+			}
+		} else {
+			toastToScreen("No Data Found", false);
 		}
 	}
 
@@ -327,8 +455,10 @@ public class MainActivity extends Activity {
 		return date;
 	}
 
-	private void toastToScreen(String msg) {
-		Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+	private void toastToScreen(String msg, boolean lengthLong) {
+
+		int toastLength = lengthLong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT;
+		Toast.makeText(getApplicationContext(), msg, toastLength).show();
 	}
 
 }

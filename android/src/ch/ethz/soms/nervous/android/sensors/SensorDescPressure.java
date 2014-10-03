@@ -2,18 +2,17 @@ package ch.ethz.soms.nervous.android.sensors;
 
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
 
-public class SensorDescPressure extends SensorDesc {
-	
-	public static final long SENSOR_ID = 0x0000000000000009L;
-	
-	private final float pressure;
+public class SensorDescPressure extends SensorSingleValueDesc {
 
+	public static final long SENSOR_ID = 0x0000000000000009L;
+
+	private final float pressure;
 
 	public SensorDescPressure(final long timestamp, final float pressure) {
 		super(timestamp);
 		this.pressure = pressure;
 	}
-	
+
 	public SensorDescPressure(SensorData sensorData) {
 		super(sensorData);
 		this.pressure = sensorData.getValueFloat(0);
@@ -34,6 +33,11 @@ public class SensorDescPressure extends SensorDesc {
 	@Override
 	public long getSensorIdentifier() {
 		return SENSOR_ID;
+	}
+
+	@Override
+	public float getValue() {
+		return pressure;
 	}
 
 }

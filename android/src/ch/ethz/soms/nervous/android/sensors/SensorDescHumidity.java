@@ -2,17 +2,16 @@ package ch.ethz.soms.nervous.android.sensors;
 
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
 
-public class SensorDescHumidity extends SensorDesc {
-	
-	public static final long SENSOR_ID = 0x0000000000000003L;
-		private final float humidity;
+public class SensorDescHumidity extends SensorSingleValueDesc {
 
+	public static final long SENSOR_ID = 0x0000000000000003L;
+	private final float humidity;
 
 	public SensorDescHumidity(final long timestamp, final float humidity) {
 		super(timestamp);
 		this.humidity = humidity;
 	}
-	
+
 	public SensorDescHumidity(SensorData sensorData) {
 		super(sensorData);
 		this.humidity = sensorData.getValueFloat(0);
@@ -33,6 +32,11 @@ public class SensorDescHumidity extends SensorDesc {
 	@Override
 	public long getSensorIdentifier() {
 		return SENSOR_ID;
+	}
+
+	@Override
+	public float getValue() {
+		return humidity;
 	}
 
 }
