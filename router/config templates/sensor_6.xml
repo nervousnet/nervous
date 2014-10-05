@@ -1,0 +1,10 @@
+<sensor>
+	<sensorName>Proximity</sensorName>
+	<sensorID>0000000000000006</sensorID>
+	<attributes>
+		<attribute>
+			<name>Proximity</name>
+			<type>FLOAT</type>
+		</attribute>
+	</attributes>
+</sensor>

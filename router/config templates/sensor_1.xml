@@ -1,0 +1,22 @@
+<sensor>
+	<sensorName>Battery</sensorName>
+	<sensorID>0000000000000001</sensorID>
+	<attributes>
+		<attribute>
+			<name>Percent</name>
+			<type>FLOAT</type>
+		</attribute>
+		<attribute>
+			<name>Charging</name>
+			<type>BOOLEAN</type>
+		</attribute>
+		<attribute>
+			<name>UsbCharging</name>
+			<type>BOOLEAN</type>
+		</attribute>
+		<attribute>
+			<name>AcCharging</name>
+			<type>BOOLEAN</type>
+		</attribute>
+	</attributes>
+</sensor>

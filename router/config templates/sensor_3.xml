@@ -1,0 +1,10 @@
+<sensor>
+	<sensorName>Humidity</sensorName>
+	<sensorID>0000000000000003</sensorID>
+	<attributes>
+		<attribute>
+			<name>Humidity</name>
+			<type>FLOAT</type>
+		</attribute>
+	</attributes>
+</sensor>

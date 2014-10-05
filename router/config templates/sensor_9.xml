@@ -1,0 +1,10 @@
+<sensor>
+	<sensorName>Pressure</sensorName>
+	<sensorID>0000000000000009</sensorID>
+	<attributes>
+		<attribute>
+			<name>pressure</name>
+			<type>FLOAT</type>
+		</attribute>
+	</attributes>
+</sensor>

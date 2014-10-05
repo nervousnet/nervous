@@ -1,0 +1,10 @@
+<sensor>
+	<sensorName>Light</sensorName>
+	<sensorID>0000000000000004</sensorID>
+	<attributes>
+		<attribute>
+			<name>Light</name>
+			<type>FLOAT</type>
+		</attribute>
+	</attributes>
+</sensor>

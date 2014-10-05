@@ -7,7 +7,7 @@ import java.util.PriorityQueue;
 
 import ch.ethz.soms.nervous.android.sensors.SensorDesc;
 import ch.ethz.soms.nervous.android.sensors.SensorDescBattery;
-import ch.ethz.soms.nervous.android.sensors.SensorSingleValueDesc;
+import ch.ethz.soms.nervous.android.sensors.SensorDescSingleValue;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
 
 /**
@@ -16,7 +16,7 @@ import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorD
  * @author cpcrasher
  * @param <G>
  */
-public abstract class SensorSingleValueQueries<G extends SensorSingleValueDesc>
+public abstract class SensorSingleValueQueries<G extends SensorDescSingleValue>
 		extends SensorQueries<G> {
 
 	public SensorSingleValueQueries(long timestamp_from, long timestamp_to,

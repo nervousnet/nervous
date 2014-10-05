@@ -1,0 +1,18 @@
+<sensor>
+	<sensorName>Gyroscope</sensorName>
+	<sensorID>0000000000000002</sensorID>
+	<attributes>
+		<attribute>
+			<name>X</name>
+			<type>FLOAT</type>
+		</attribute>
+		<attribute>
+			<name>Y</name>
+			<type>FLOAT</type>
+		</attribute>
+		<attribute>
+			<name>Z</name>
+			<type>FLOAT</type>
+		</attribute>
+	</attributes>
+</sensor>

@@ -2,7 +2,7 @@ package ch.ethz.soms.nervous.android.sensors;
 
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
 
-public class SensorDescHumidity extends SensorSingleValueDesc {
+public class SensorDescHumidity extends SensorDescSingleValue {
 
 	public static final long SENSOR_ID = 0x0000000000000003L;
 	private final float humidity;

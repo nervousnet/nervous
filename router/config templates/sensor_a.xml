@@ -1,0 +1,30 @@
+<sensor>
+	<sensorName>Connectivity</sensorName>
+	<sensorID>000000000000000A</sensorID>
+	<attributes>
+		<attribute>
+			<name>Connected</name>
+			<type>BOOLEAN</type>
+		</attribute>
+		<attribute>
+			<name>NetworkType</name>
+			<type>INT32</type>
+		</attribute>
+		<attribute>
+			<name>Roaming</name>
+			<type>BOOLEAN</type>
+		</attribute>
+		<attribute>
+			<name>WifiHashId</name>
+			<type>BOOLEAN</type>
+		</attribute>
+		<attribute>
+			<name>WifiStrength</name>
+			<type>INT32</type>
+		</attribute>
+		<attribute>
+			<name>MobileHashId</name>
+			<type>STRING</type>
+		</attribute>
+	</attributes>
+</sensor>

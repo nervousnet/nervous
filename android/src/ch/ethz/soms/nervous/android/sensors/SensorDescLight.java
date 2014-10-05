@@ -2,7 +2,7 @@ package ch.ethz.soms.nervous.android.sensors;
 
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
 
-public class SensorDescLight extends SensorSingleValueDesc {
+public class SensorDescLight extends SensorDescSingleValue {
 
 	public static final long SENSOR_ID = 0x0000000000000004L;
 

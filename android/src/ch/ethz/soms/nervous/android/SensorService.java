@@ -350,8 +350,8 @@ public class SensorService extends Service implements SensorEventListener, Noise
 	}
 
 	@Override
-	public void connectivitySensorDataReady(long timestamp, boolean isConnected, int networkType, boolean isRoaming) {
-		SensorDesc sensorDesc = new SensorDescConnectivity(timestamp, isConnected, networkType, isRoaming);
+	public void connectivitySensorDataReady(long timestamp, boolean isConnected, int networkType, boolean isRoaming, String wifiHashId, int wifiStrength, String mobileHashId) {
+		SensorDesc sensorDesc = new SensorDescConnectivity(timestamp, isConnected, networkType, isRoaming, wifiHashId, wifiStrength, mobileHashId);
 		store(sensorDesc);
 	}
 

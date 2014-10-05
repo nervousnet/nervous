@@ -32,7 +32,7 @@
         </sensor>
 		<sensor>
             <sensorName>BLEBeacon</sensorName>
-            <sensorID>B</sensorID>
+            <sensorID>000000000000000B</sensorID>
             <attributes>
                 <attribute>
                     <name>mac</name>
