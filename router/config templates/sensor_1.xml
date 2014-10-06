@@ -8,15 +8,15 @@
 		</attribute>
 		<attribute>
 			<name>Charging</name>
-			<type>BOOLEAN</type>
+			<type>BOOL</type>
 		</attribute>
 		<attribute>
 			<name>UsbCharging</name>
-			<type>BOOLEAN</type>
+			<type>BOOL</type>
 		</attribute>
 		<attribute>
 			<name>AcCharging</name>
-			<type>BOOLEAN</type>
+			<type>BOOL</type>
 		</attribute>
 	</attributes>
 </sensor>

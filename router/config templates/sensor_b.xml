@@ -3,39 +3,39 @@
 	<sensorID>000000000000000B</sensorID>
 	<attributes>
 		<attribute>
-			<name>mac</name>
+			<name>Mac</name>
 			<type>INT64</type>
 		</attribute>
 		<attribute>
-			<name>advertisementMSB</name>
+			<name>AdvertisementMSB</name>
 			<type>INT64</type>
 		</attribute>
 		<attribute>
-			<name>advertisementLSB</name>
+			<name>AdvertisementLSB</name>
 			<type>INT64</type>
 		</attribute>
 		<attribute>
-			<name>bleuuidMSB</name>
+			<name>BleuuidMSB</name>
 			<type>INT64</type>
 		</attribute>
 		<attribute>
-			<name>bleuuidLSB</name>
+			<name>BleuuidLSB</name>
 			<type>INT64</type>
 		</attribute>
 		<attribute>
-			<name>rssi</name>
+			<name>RSSI</name>
 			<type>INT32</type>
 		</attribute>
 		<attribute>
-			<name>major</name>
+			<name>Major</name>
 			<type>INT32</type>
 		</attribute>
 		<attribute>
-			<name>minor</name>
+			<name>Minor</name>
 			<type>INT32</type>
 		</attribute>
 		<attribute>
-			<name>txpower</name>
+			<name>TXpower</name>
 			<type>INT32</type>
 		</attribute>
 	</attributes>

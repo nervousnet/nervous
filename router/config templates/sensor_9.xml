@@ -3,7 +3,7 @@
 	<sensorID>0000000000000009</sensorID>
 	<attributes>
 		<attribute>
-			<name>pressure</name>
+			<name>Pressure</name>
 			<type>FLOAT</type>
 		</attribute>
 	</attributes>

@@ -1,61 +1,61 @@
 <sensor>
-	<sensorName>Accelerometer</sensorName>
+	<sensorName>Noise</sensorName>
 	<sensorID>0000000000000008</sensorID>
 	<attributes>
 		<attribute>
-			<name>rms<name>
+			<name>Rms</name>
 			<type>FLOAT</type>
 		</attribute>
 		<attribute>
-			<name>spl</name>
+			<name>Spl</name>
 			<type>FLOAT</type>
 		</attribute>
 		<attribute>
-			<name>band_1</name>
+			<name>Band01</name>
 			<type>FLOAT</type>
 		</attribute>
 		<attribute>
-			<name>band_2</name>
+			<name>Band02</name>
 			<type>FLOAT</type>
 		</attribute>
 		<attribute>
-			<name>band_3</name>
+			<name>Band03</name>
 			<type>FLOAT</type>
 		</attribute>
 		<attribute>
-			<name>band_4</name>
+			<name>Band04</name>
 			<type>FLOAT</type>
 		</attribute>
 		<attribute>
-			<name>band_5</name>
+			<name>Band05</name>
 			<type>FLOAT</type>
 		</attribute>
 		<attribute>
-			<name>band_6</name>
+			<name>Band06</name>
 			<type>FLOAT</type>
 		</attribute>
 		<attribute>
-			<name>band_7</name>
+			<name>Band07</name>
 			<type>FLOAT</type>
 		</attribute>
 		<attribute>
-			<name>band_8</name>
+			<name>Band08</name>
 			<type>FLOAT</type>
 		</attribute>
 		<attribute>
-			<name>band_9</name>
+			<name>Band09</name>
 			<type>FLOAT</type>
 		</attribute>
 		<attribute>
-			<name>band_10</name>
+			<name>Band10</name>
 			<type>FLOAT</type>
 		</attribute>
 		<attribute>
-			<name>band_11</name>
+			<name>Band11</name>
 			<type>FLOAT</type>
 		</attribute>
 		<attribute>
-			<name>band_12</name>
+			<name>Band12</name>
 			<type>FLOAT</type>
 		</attribute>
 	</attributes>

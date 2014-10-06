@@ -5,21 +5,22 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.ethz.soms.nervous.utils.ValueFormatter;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
-import android.telephony.CellIdentityGsm;
-import android.telephony.CellIdentityLte;
 import android.telephony.CellInfo;
 import android.telephony.CellInfoCdma;
 import android.telephony.CellInfoGsm;
 import android.telephony.CellInfoLte;
 import android.telephony.CellInfoWcdma;
+import android.telephony.CellLocation;
 import android.telephony.TelephonyManager;
+import android.telephony.cdma.CdmaCellLocation;
+import android.telephony.gsm.GsmCellLocation;
+import ch.ethz.soms.nervous.utils.ValueFormatter;
 
 public class ConnectivitySensor {
 
@@ -84,64 +85,38 @@ public class ConnectivitySensor {
 			TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
 			List<CellInfo> cis = tm.getAllCellInfo();
-			for (CellInfo ci : cis) {
-				if (ci.isRegistered()) {
-					if (ci instanceof CellInfoCdma) {
-						CellInfoCdma cic = (CellInfoCdma) ci;
-						StringBuilder cicBuilder = new StringBuilder();
-						cicBuilder.append(ValueFormatter.leadingZeroHexUpperString(cic.getCellIdentity().getSystemId()));
-						cicBuilder.append(ValueFormatter.leadingZeroHexUpperString(cic.getCellIdentity().getNetworkId()));
-						cicBuilder.append(ValueFormatter.leadingZeroHexUpperString(cic.getCellIdentity().getBasestationId()));
-						MessageDigest messageDigest;
-						try {
-							messageDigest = MessageDigest.getInstance("SHA-256");
-							messageDigest.update(cicBuilder.toString().getBytes());
-							cdmaHashId = messageDigest.digest();
-						} catch (NoSuchAlgorithmException e) {
+			if (cis != null) {
+				// New method
+				for (CellInfo ci : cis) {
+					if (ci.isRegistered()) {
+						if (ci instanceof CellInfoCdma) {
+							CellInfoCdma cic = (CellInfoCdma) ci;
+							cdmaHashId = generateMobileDigestId(cic.getCellIdentity().getSystemId(), cic.getCellIdentity().getNetworkId(), cic.getCellIdentity().getBasestationId());
+						}
+						if (ci instanceof CellInfoGsm) {
+							CellInfoGsm cic = (CellInfoGsm) ci;
+							gsmHashId = generateMobileDigestId(cic.getCellIdentity().getMcc(), cic.getCellIdentity().getMnc(), cic.getCellIdentity().getCid());
+						}
+						if (ci instanceof CellInfoLte) {
+							CellInfoLte cic = (CellInfoLte) ci;
+							lteHashId = generateMobileDigestId(cic.getCellIdentity().getMcc(), cic.getCellIdentity().getMnc(), cic.getCellIdentity().getCi());
+						}
+						if (ci instanceof CellInfoWcdma) {
+							CellInfoWcdma cic = (CellInfoWcdma) ci;
+							wcdmaHashId = generateMobileDigestId(cic.getCellIdentity().getMcc(), cic.getCellIdentity().getMnc(), cic.getCellIdentity().getCid());
 						}
 					}
-					if (ci instanceof CellInfoGsm) {
-						CellInfoGsm cic = (CellInfoGsm) ci;
-						StringBuilder cicBuilder = new StringBuilder();
-						cicBuilder.append(ValueFormatter.leadingZeroHexUpperString(cic.getCellIdentity().getMcc()));
-						cicBuilder.append(ValueFormatter.leadingZeroHexUpperString(cic.getCellIdentity().getMnc()));
-						cicBuilder.append(ValueFormatter.leadingZeroHexUpperString(cic.getCellIdentity().getCid()));
-						MessageDigest messageDigest;
-						try {
-							messageDigest = MessageDigest.getInstance("SHA-256");
-							messageDigest.update(cicBuilder.toString().getBytes());
-							gsmHashId = messageDigest.digest();
-						} catch (NoSuchAlgorithmException e) {
-						}
-					}
-					if (ci instanceof CellInfoLte) {
-						CellInfoLte cic = (CellInfoLte) ci;
-						StringBuilder cicBuilder = new StringBuilder();
-						cicBuilder.append(ValueFormatter.leadingZeroHexUpperString(cic.getCellIdentity().getMcc()));
-						cicBuilder.append(ValueFormatter.leadingZeroHexUpperString(cic.getCellIdentity().getMnc()));
-						cicBuilder.append(ValueFormatter.leadingZeroHexUpperString(cic.getCellIdentity().getCi()));
-						MessageDigest messageDigest;
-						try {
-							messageDigest = MessageDigest.getInstance("SHA-256");
-							messageDigest.update(cicBuilder.toString().getBytes());
-							lteHashId = messageDigest.digest();
-						} catch (NoSuchAlgorithmException e) {
-						}
-					}
-					if (ci instanceof CellInfoWcdma) {
-						CellInfoWcdma cic = (CellInfoWcdma) ci;
-						StringBuilder cicBuilder = new StringBuilder();
-						cicBuilder.append(ValueFormatter.leadingZeroHexUpperString(cic.getCellIdentity().getMcc()));
-						cicBuilder.append(ValueFormatter.leadingZeroHexUpperString(cic.getCellIdentity().getMnc()));
-						cicBuilder.append(ValueFormatter.leadingZeroHexUpperString(cic.getCellIdentity().getCid()));
-						MessageDigest messageDigest;
-						try {
-							messageDigest = MessageDigest.getInstance("SHA-256");
-							messageDigest.update(cicBuilder.toString().getBytes());
-							wcdmaHashId = messageDigest.digest();
-						} catch (NoSuchAlgorithmException e) {
-						}
-					}
+				}
+			} else {
+				// Legacy method
+				CellLocation cl = tm.getCellLocation();
+				if (cl instanceof CdmaCellLocation) {
+					CdmaCellLocation cic = (CdmaCellLocation) cl;
+					cdmaHashId = generateMobileDigestId(cic.getSystemId(), cic.getNetworkId(), cic.getBaseStationId());
+				}
+				if (cl instanceof GsmCellLocation) {
+					GsmCellLocation cic = (GsmCellLocation) cl;
+					gsmHashId = generateMobileDigestId(cic.getLac(), 0, cic.getCid());
 				}
 			}
 
@@ -150,10 +125,25 @@ public class ConnectivitySensor {
 			mobileHashBuilder.append(new String(lteHashId));
 			mobileHashBuilder.append(new String(gsmHashId));
 			mobileHashBuilder.append(new String(wcdmaHashId));
-			
+
 			dataReady(System.currentTimeMillis(), isConnected, networkType, isRoaming, wifiHashId, wifiStrength, mobileHashBuilder.toString());
 			return null;
 		}
+	}
+
+	private byte[] generateMobileDigestId(int v1, int v2, int v3) {
+		StringBuilder cicBuilder = new StringBuilder();
+		cicBuilder.append(ValueFormatter.leadingZeroHexUpperString(v1));
+		cicBuilder.append(ValueFormatter.leadingZeroHexUpperString(v2));
+		cicBuilder.append(ValueFormatter.leadingZeroHexUpperString(v3));
+		MessageDigest messageDigest;
+		try {
+			messageDigest = MessageDigest.getInstance("SHA-256");
+			messageDigest.update(cicBuilder.toString().getBytes());
+			return messageDigest.digest();
+		} catch (NoSuchAlgorithmException e) {
+		}
+		return new byte[16];
 	}
 
 	public void start() {

@@ -73,7 +73,7 @@ public class UploadService extends Service {
 		protected Void doInBackground(SensorDesc... params) {
 			try {
 				NervousVM nvm = NervousVM.getInstance(getApplicationContext().getFilesDir());
-				Socket socket = new Socket("inn.ac", 25600);
+				Socket socket = new Socket("192.168.1.53", 25600);
 				OutputStream os = socket.getOutputStream();
 				for (long i = 0x0; i < 0xC; i++) {
 					Builder sub = SensorUpload.newBuilder();

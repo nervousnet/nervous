@@ -127,25 +127,33 @@ public class SensorService extends Service implements SensorEventListener, Noise
 		hasConnectivity = scConnectivity.isCollect(serviceRound);
 
 		// Noise sensor
-		sensorNoise = new NoiseSensor();
-		sensorNoise.addListener(this);
-		// Noise sensor doesn't really make sense with less than 250ms
-		sensorNoise.startRecording(Math.max(scNoise.getMeasureDuration(), 250));
+		if (hasNoise) {
+			sensorNoise = new NoiseSensor();
+			sensorNoise.addListener(this);
+			// Noise sensor doesn't really make sense with less than 250ms
+			sensorNoise.startRecording(Math.max(scNoise.getMeasureDuration(), 250));
+		}
 
 		// Battery sensor
-		sensorBattery = new BatterySensor(getApplicationContext());
-		sensorBattery.addListener(this);
-		sensorBattery.start();
+		if (hasBattery) {
+			sensorBattery = new BatterySensor(getApplicationContext());
+			sensorBattery.addListener(this);
+			sensorBattery.start();
+		}
 
 		// Connectivity sensor
-		sensorConnectivity = new ConnectivitySensor(getApplicationContext());
-		sensorConnectivity.addListener(this);
-		sensorConnectivity.start();
-		
+		if (hasConnectivity) {
+			sensorConnectivity = new ConnectivitySensor(getApplicationContext());
+			sensorConnectivity.addListener(this);
+			sensorConnectivity.start();
+		}
+
 		// BLE sensor
-		sensorBLEBeacon = new BLESensor(getApplicationContext());
-		sensorBLEBeacon.addListener(this);
-		sensorBLEBeacon.startScanning(Math.max(scBLEBeacon.getMeasureDuration(), 2000));
+		if (hasBLEBeacon) {
+			sensorBLEBeacon = new BLESensor(getApplicationContext());
+			sensorBLEBeacon.addListener(this);
+			sensorBLEBeacon.startScanning(Math.max(scBLEBeacon.getMeasureDuration(), 2000));
+		}
 
 		// Normal android sensors
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -159,14 +167,14 @@ public class SensorService extends Service implements SensorEventListener, Noise
 		sensorHumidity = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
 		sensorPressure = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
 
-		hasAccelerometer = sensorManager.registerListener(this, sensorAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-		hasLight = sensorManager.registerListener(this, sensorLight, SensorManager.SENSOR_DELAY_NORMAL);
-		hasMagnet = sensorManager.registerListener(this, sensorMagnet, SensorManager.SENSOR_DELAY_NORMAL);
-		hasProximity = sensorManager.registerListener(this, sensorProximity, SensorManager.SENSOR_DELAY_NORMAL);
-		hasGyroscope = sensorManager.registerListener(this, sensorGyroscope, SensorManager.SENSOR_DELAY_NORMAL);
-		hasTemperature = sensorManager.registerListener(this, sensorTemperature, SensorManager.SENSOR_DELAY_NORMAL);
-		hasHumidity = sensorManager.registerListener(this, sensorHumidity, SensorManager.SENSOR_DELAY_NORMAL);
-		hasPressure = sensorManager.registerListener(this, sensorPressure, SensorManager.SENSOR_DELAY_NORMAL);
+		hasAccelerometer = hasAccelerometer ? sensorManager.registerListener(this, sensorAccelerometer, SensorManager.SENSOR_DELAY_NORMAL) : false;
+		hasLight = hasLight ? sensorManager.registerListener(this, sensorLight, SensorManager.SENSOR_DELAY_NORMAL) : false;
+		hasMagnet = hasMagnet ? sensorManager.registerListener(this, sensorMagnet, SensorManager.SENSOR_DELAY_NORMAL) : false;
+		hasProximity = hasProximity ? sensorManager.registerListener(this, sensorProximity, SensorManager.SENSOR_DELAY_NORMAL) : false;
+		hasGyroscope = hasGyroscope ? sensorManager.registerListener(this, sensorGyroscope, SensorManager.SENSOR_DELAY_NORMAL) : false;
+		hasTemperature = hasTemperature ? sensorManager.registerListener(this, sensorTemperature, SensorManager.SENSOR_DELAY_NORMAL) : false;
+		hasHumidity = hasHumidity ? sensorManager.registerListener(this, sensorHumidity, SensorManager.SENSOR_DELAY_NORMAL) : false;
+		hasPressure = hasPressure ? sensorManager.registerListener(this, sensorPressure, SensorManager.SENSOR_DELAY_NORMAL) : false;
 
 		sensorCollected = new HashMap<Class<? extends SensorDesc>, SensorCollectStatus>();
 		if (hasAccelerometer) {
@@ -201,6 +209,9 @@ public class SensorService extends Service implements SensorEventListener, Noise
 		}
 		if (hasBLEBeacon) {
 			sensorCollected.put(SensorDescBLEBeacon.class, scBLEBeacon);
+		}
+		if (hasConnectivity) {
+			sensorCollected.put(SensorDescConnectivity.class, scConnectivity);
 		}
 
 		Log.d(DEBUG_TAG, "Service execution started");

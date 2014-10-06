@@ -15,6 +15,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import ch.ethz.soms.nervous.router.sql.SqlSensorConfiguration;
+import ch.ethz.soms.nervous.router.utils.FileOperations;
 import ch.ethz.soms.nervous.router.utils.Log;
 
 @XmlRootElement(name = "config")
@@ -217,7 +218,11 @@ public class Configuration {
 		} catch (JAXBException jbe) {
 			Log.getInstance().append(Log.FLAG_ERROR, "Error parsing the configuration file");
 		}
-		// Error reading the configuration, write current configuration
+		// Error reading the configuration, write current configuration after backing up
+		try {
+			FileOperations.copyFile(new File(Configuration.config.getConfigPath()), new File(Configuration.config.getConfigPath()+".back"));
+		} catch (IOException e) {
+		}
 		marshal();
 	}
 }
