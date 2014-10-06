@@ -31,21 +31,14 @@ public abstract class SensorQueries<G extends SensorDesc> {
 		}
 	}
 	
+	/**
+	 * @return
+	 * Returns the number of elements 
+	 */
+	public int getCount(){
+		return list.size();
+	}
+	
 	public abstract ArrayList<G> getSensorDescriptorList();
 }
 
-/* Todo:
- * average
- * median
- * max
- * min
- * top-k
- * count
- * sum
- * sum squares
- * standard deviation
- * variance
- * root mean square error
- * correlation coefficient
- * k-means clustering
- *  */

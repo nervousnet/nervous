@@ -2,6 +2,8 @@ package ch.ethz.soms.nervous.android.sensorQueries;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
@@ -50,6 +52,26 @@ public abstract class SensorSingleValueQueries<G extends SensorDescSingleValue>
 		return maxSensDesc;
 	}
 
+	public float getAvergage() {
+		float totalSum = 0;
+		for (SensorData sensorData : list) {
+			G sensDesc = createSensorDesc(sensorData);
+			totalSum += sensDesc.getValue();
+		}
+
+		float average = totalSum / (list.size());
+		return average;
+	}
+
+	public float getSum() {
+		float totalSum = 0;
+		for (SensorData sensorData : list) {
+			G sensDesc = createSensorDesc(sensorData);
+			totalSum += sensDesc.getValue();
+		}
+		return totalSum;
+	}
+
 	public G getMinValue() {
 		Float minVal = Float.MAX_VALUE;
 		G minSensDesc = createDummyObject();
@@ -62,6 +84,28 @@ public abstract class SensorSingleValueQueries<G extends SensorDescSingleValue>
 			}
 		}
 		return minSensDesc;
+	}
+
+	public float getMedian() {
+		Comparator<G> comparator = new LargestFirstComparator();
+		ArrayList<G> arrList = new ArrayList<G>();
+
+		// Add all SensorDesc
+		for (SensorData sensorData : list) {
+			arrList.add(createSensorDesc(sensorData));
+		}
+		Collections.sort(arrList, comparator);
+
+		double middle = arrList.size() / 2;
+		float result;
+		if (arrList.size() % 2 == 1) {
+			result = arrList.get((int) Math.ceil(middle)).getValue();
+		} else {
+			float r1 = arrList.get((int) middle).getValue();
+			float r2 = arrList.get((int) middle + 1).getValue();
+			result = (r1 + r2) / 2;
+		}
+		return result;
 	}
 
 	public ArrayList<G> getTopK(int k) {
