@@ -240,3 +240,9 @@
 2014-10-06 02:45:02.484 - [I] - Reading configuration file done
 2014-10-06 02:45:02.542 - [I] - Establishing connection to SQL database done
 2014-10-06 02:45:02.86 - [I] - Setting up concurrent server done
+2014-10-06 02:48:10.439 - [I] - Reading configuration file done
+2014-10-06 02:48:10.507 - [I] - Establishing connection to SQL database done
+2014-10-06 02:48:10.73 - [I] - Setting up concurrent server done
+2014-10-06 02:48:48.678 - [I] - Reading configuration file done
+2014-10-06 02:48:48.737 - [I] - Establishing connection to SQL database done
+2014-10-06 02:48:48.97 - [I] - Setting up concurrent server done
