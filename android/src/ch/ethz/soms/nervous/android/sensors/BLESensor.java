@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.xml.sax.DTDHandler;
 
+import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -16,6 +17,7 @@ import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 
@@ -36,11 +38,14 @@ public class BLESensor {
 		listenerList.add(listener);
 	}
 
+	@TargetApi(18)
 	public BLESensor(Context context) {
-		this.context = context;
-		bluetoothManager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
-		bluetoothAdapter = bluetoothManager.getAdapter();
-		lastDetectedTime = 0;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+			this.context = context;
+			bluetoothManager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
+			bluetoothAdapter = bluetoothManager.getAdapter();
+			lastDetectedTime = 0;
+		}
 	}
 
 	private void dataReady(List<BLEBeaconRecord> beaconRecordList) {
@@ -49,20 +54,19 @@ public class BLESensor {
 		}
 	}
 
+	@TargetApi(18)
 	public class BLETask extends AsyncTask<Long, Void, Void> {
 
 		private LinkedList<BLEBeaconRecord> beaconRecordList;
-
 		private BluetoothAdapter.LeScanCallback leScanCallback = new BluetoothAdapter.LeScanCallback() {
 			@Override
 			public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
 				addBLEBeaconRecord(device, rssi, scanRecord);
 			}
 		};
-		
+
 		// Add some thread safety
-		private synchronized void addBLEBeaconRecord(BluetoothDevice device, int rssi, byte[] scanRecord)
-		{
+		private synchronized void addBLEBeaconRecord(BluetoothDevice device, int rssi, byte[] scanRecord) {
 			long detectionTime = System.currentTimeMillis();
 			if (lastDetectedTime >= detectionTime) {
 				detectionTime = lastDetectedTime + 1;
@@ -72,6 +76,7 @@ public class BLESensor {
 		}
 
 		// Currently unused (for iBeacons)
+
 		private final BluetoothGattCallback gattCallback = new BluetoothGattCallback() {
 			@Override
 			public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
@@ -119,11 +124,15 @@ public class BLESensor {
 	}
 
 	public boolean startScanning(long duration) {
-		if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
-			return false;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+			if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
+				return false;
+			} else {
+				new BLETask().execute(duration);
+				return true;
+			}
 		} else {
-			new BLETask().execute(duration);
-			return true;
+			return false;
 		}
 	}
 

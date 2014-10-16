@@ -3,7 +3,6 @@ package ch.ethz.soms.nervous.android;
 import java.util.HashMap;
 import java.util.List;
 
-import android.app.NativeActivity;
 import android.app.Service;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -133,8 +132,8 @@ public class SensorService extends Service implements SensorEventListener, Noise
 		if (hasNoise) {
 			sensorNoise = new NoiseSensor();
 			sensorNoise.addListener(this);
-			// Noise sensor doesn't really make sense with less than 250ms
-			sensorNoise.startRecording(Math.max(scNoise.getMeasureDuration(), 250));
+			// Noise sensor doesn't really make sense with less than 500ms
+			sensorNoise.startRecording(Math.max(scNoise.getMeasureDuration(), 500));
 		}
 
 		// Battery sensor
@@ -155,7 +154,8 @@ public class SensorService extends Service implements SensorEventListener, Noise
 		if (hasBLEBeacon) {
 			sensorBLEBeacon = new BLESensor(getApplicationContext());
 			sensorBLEBeacon.addListener(this);
-			sensorBLEBeacon.startScanning(Math.max(scBLEBeacon.getMeasureDuration(), 2000));
+			// Update this variable if the BLE sensor is currently unavailable
+			hasBLEBeacon = sensorBLEBeacon.startScanning(Math.max(scBLEBeacon.getMeasureDuration(), 2000));
 		}
 
 		// Normal android sensors
