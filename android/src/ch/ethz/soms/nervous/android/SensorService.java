@@ -12,6 +12,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.util.Log;
 import ch.ethz.soms.nervous.android.sensors.BLEBeaconRecord;
 import ch.ethz.soms.nervous.android.sensors.BLESensor;
@@ -43,6 +44,8 @@ public class SensorService extends Service implements SensorEventListener, Noise
 	private final IBinder mBinder = new SensorBinder();
 	private SensorManager sensorManager = null;
 
+	private PowerManager.WakeLock wakeLock;
+	
 	private SensorConfiguration sensorConfiguration;
 	private int serviceRound = 0;
 
@@ -225,13 +228,16 @@ public class SensorService extends Service implements SensorEventListener, Noise
 
 	@Override
 	public void onCreate() {
-		// Do nothing
-
+		Log.d(DEBUG_TAG, "Wakelock aquired");
+		PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+		wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, DEBUG_TAG);
+		wakeLock.acquire();
 	}
 
 	@Override
 	public void onDestroy() {
-		// Do nothing
+		wakeLock.release();
+		Log.d(DEBUG_TAG, "Wakelock released");
 	}
 
 	@Override

@@ -11,7 +11,7 @@ import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorD
 import ch.ethz.soms.nervous.vm.NervousVM;
 
 public class Test {
-
+	
 	@org.junit.Test
 	public void testPerformance() {
 		int testWith = 20000;
@@ -90,11 +90,13 @@ public class Test {
 			nervousVM.storeSensor(0, sensorData);
 		}
 
-		long lower = 11;
-		long upper = 8197;
+		long lower = 4200*2;
+		long upper = 4300*2;
 
 		List<SensorData> output = nervousVM.retrieve(0, lower, upper);
 
+		System.out.println(output.size());
+		
 		for (int i = (int) lower; i <= (int) upper; i++) {
 			try {
 				assertEquals((long) i, output.get(i).getRecordTime());

@@ -113,7 +113,7 @@ public class SensorStorePage {
 	public List<SensorData> retrieve(long fromTimestamp, long toTimestamp) {
 		// Find x >= z
 		long startOffset = sst.findEntry(fromTimestamp, false);
-		// Find x > z and substract one
+		// Find x > z and subtract one
 		long endOffset = sst.findEntry(toTimestamp, true);
 		if (startOffset < 0 || endOffset < 0) {
 			return null;

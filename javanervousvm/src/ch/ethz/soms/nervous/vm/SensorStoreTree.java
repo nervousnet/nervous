@@ -62,6 +62,9 @@ public class SensorStoreTree {
 			posTimestamp = raf.readLong();
 			fileOffset = raf.readLong();
 			raf.close();
+			// Out of range test
+			fileOffset = (!mode && posTimestamp < timestamp) ? -1 : fileOffset;
+			fileOffset = (mode && posTimestamp > timestamp) ? -1 : fileOffset;
 		} catch (IOException e) {
 			fileOffset = -1;
 		} finally {
