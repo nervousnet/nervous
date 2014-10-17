@@ -20,7 +20,7 @@ public class SensorQueriesTemparature extends
 	}
 
 	@Override
-	SensorDescTemperature createSensorDesc(SensorData sensorData) {
+	SensorDescTemperature createSensorDescSingleValue(SensorData sensorData) {
 		return new SensorDescTemperature(sensorData);
 	}
 

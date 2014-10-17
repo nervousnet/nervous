@@ -15,7 +15,7 @@ import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorD
 /**
  * Queries for sensor with only one float value
  * 
- * @author cpcrasher
+ * @author Patrick
  * @param <G>
  */
 public abstract class SensorSingleValueQueries<G extends SensorDescSingleValue>
@@ -26,7 +26,7 @@ public abstract class SensorSingleValueQueries<G extends SensorDescSingleValue>
 		super(timestamp_from, timestamp_to, file);
 	}
 
-	abstract G createSensorDesc(SensorData sensorData);
+	abstract G createSensorDescSingleValue(SensorData sensorData);
 
 	abstract G createDummyObject();
 
@@ -34,7 +34,7 @@ public abstract class SensorSingleValueQueries<G extends SensorDescSingleValue>
 	public ArrayList<G> getSensorDescriptorList() {
 		ArrayList<G> descList = new ArrayList<G>();
 		for (SensorData sensorData : list) {
-			descList.add(createSensorDesc(sensorData));
+			descList.add(createSensorDescSingleValue(sensorData));
 		}
 		return descList;
 	}
@@ -43,7 +43,7 @@ public abstract class SensorSingleValueQueries<G extends SensorDescSingleValue>
 		Float maxVal = Float.MIN_VALUE;
 		G maxSensDesc = createDummyObject();
 		for (SensorData sensorData : list) {
-			G sensDesc = createSensorDesc(sensorData);
+			G sensDesc = createSensorDescSingleValue(sensorData);
 			if (sensDesc.getValue() > maxVal) {
 				maxVal = sensDesc.getValue();
 				maxSensDesc = sensDesc;
@@ -55,7 +55,7 @@ public abstract class SensorSingleValueQueries<G extends SensorDescSingleValue>
 	public float getAvergage() {
 		float totalSum = 0;
 		for (SensorData sensorData : list) {
-			G sensDesc = createSensorDesc(sensorData);
+			G sensDesc = createSensorDescSingleValue(sensorData);
 			totalSum += sensDesc.getValue();
 		}
 
@@ -66,7 +66,7 @@ public abstract class SensorSingleValueQueries<G extends SensorDescSingleValue>
 	public float getSum() {
 		float totalSum = 0;
 		for (SensorData sensorData : list) {
-			G sensDesc = createSensorDesc(sensorData);
+			G sensDesc = createSensorDescSingleValue(sensorData);
 			totalSum += sensDesc.getValue();
 		}
 		return totalSum;
@@ -77,7 +77,7 @@ public abstract class SensorSingleValueQueries<G extends SensorDescSingleValue>
 		G minSensDesc = createDummyObject();
 
 		for (SensorData sensorData : list) {
-			G sensDesc = createSensorDesc(sensorData);
+			G sensDesc = createSensorDescSingleValue(sensorData);
 			if (sensDesc.getValue() < minVal) {
 				minVal = sensDesc.getValue();
 				minSensDesc = sensDesc;
@@ -92,7 +92,7 @@ public abstract class SensorSingleValueQueries<G extends SensorDescSingleValue>
 
 		// Add all SensorDesc
 		for (SensorData sensorData : list) {
-			arrList.add(createSensorDesc(sensorData));
+			arrList.add(createSensorDescSingleValue(sensorData));
 		}
 		Collections.sort(arrList, comparator);
 
@@ -113,7 +113,7 @@ public abstract class SensorSingleValueQueries<G extends SensorDescSingleValue>
 		PriorityQueue<G> prioQueue = new PriorityQueue<G>(3, comparator);
 
 		for (SensorData sensorData : list) {
-			prioQueue.add(createSensorDesc(sensorData));
+			prioQueue.add(createSensorDescSingleValue(sensorData));
 		}
 		int i = 1;
 		ArrayList<G> descList = new ArrayList<G>();
@@ -129,7 +129,7 @@ public abstract class SensorSingleValueQueries<G extends SensorDescSingleValue>
 		PriorityQueue<G> prioQueue = new PriorityQueue<G>(3, comparator);
 
 		for (SensorData sensorData : list) {
-			prioQueue.add(createSensorDesc(sensorData));
+			prioQueue.add(createSensorDescSingleValue(sensorData));
 		}
 		int i = 1;
 		ArrayList<G> descList = new ArrayList<G>();

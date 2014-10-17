@@ -20,7 +20,7 @@ public class SensorQueriesHumidity extends
 	}
 
 	@Override
-	SensorDescHumidity createSensorDesc(SensorData sensorData) {
+	SensorDescHumidity createSensorDescSingleValue(SensorData sensorData) {
 		return new SensorDescHumidity(sensorData);
 	}
 

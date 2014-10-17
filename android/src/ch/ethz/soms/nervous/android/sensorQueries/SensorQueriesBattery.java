@@ -26,7 +26,7 @@ public class SensorQueriesBattery extends
 	}
 
 	@Override
-	SensorDescBattery createSensorDesc(SensorData sensorData) {
+	SensorDescBattery createSensorDescSingleValue(SensorData sensorData) {
 		return new SensorDescBattery(sensorData);
 	}
 

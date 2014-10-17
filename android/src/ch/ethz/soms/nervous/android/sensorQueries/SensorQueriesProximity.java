@@ -23,7 +23,7 @@ public class SensorQueriesProximity extends
 	}
 
 	@Override
-	SensorDescProximity createSensorDesc(SensorData sensorData) {
+	SensorDescProximity createSensorDescSingleValue(SensorData sensorData) {
 		return new SensorDescProximity(sensorData);
 	}
 

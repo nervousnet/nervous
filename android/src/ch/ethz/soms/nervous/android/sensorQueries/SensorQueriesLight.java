@@ -21,7 +21,7 @@ public class SensorQueriesLight extends
 	}
 
 	@Override
-	SensorDescLight createSensorDesc(SensorData sensorData) {
+	SensorDescLight createSensorDescSingleValue(SensorData sensorData) {
 		return new SensorDescLight(sensorData);
 	}
 
