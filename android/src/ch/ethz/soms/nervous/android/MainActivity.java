@@ -13,7 +13,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -57,6 +65,91 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				new PerformanceTestTask(getApplicationContext()).execute();
+			}
+		});
+
+		setupButtonAnimation();
+	}
+
+	private void setupButtonAnimation() {
+		final RelativeLayout layout_mainMap = (RelativeLayout) findViewById(R.id.layout_map);
+		layout_mainMap.setBackgroundResource(R.raw.mapdummy);
+
+		final LinearLayout layoutExtraMenuButtonGroup = (LinearLayout) findViewById(R.id.layout_extraMenuButtonGroup);
+		layoutExtraMenuButtonGroup.setVisibility(View.INVISIBLE);
+
+		final ImageButton btn_mainMenuButton = (ImageButton) findViewById(R.id.btn_mainMenuButton);
+		ImageButton btn_showRelations = (ImageButton) findViewById(R.id.btn_showRelations);
+		btn_showRelations.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				toastToScreen("Yolo", false);
+			}
+		});
+
+		final Animation flyInAnimation = AnimationUtils.loadAnimation(this,
+				R.anim.menu_button_group_animation_in);
+		final Animation flyOutAnimation = AnimationUtils.loadAnimation(this,
+				R.anim.menu_button_group_animation_out);
+		final AlphaAnimation alphaAnimFadeIn = new AlphaAnimation(0, 1);
+		final AlphaAnimation alphaAnimFadeOut = new AlphaAnimation(1, 0);
+		final AlphaAnimation alphaAnimSemiFadeOut = new AlphaAnimation(1, 0.5f);
+		final AlphaAnimation alphaAnimSemiFadeIn = new AlphaAnimation(0.5f, 1);
+
+		alphaAnimFadeIn.setDuration(getResources().getInteger(
+				R.integer.menuButtonsGroup_animationDuration));
+		alphaAnimFadeOut.setDuration(getResources().getInteger(
+				R.integer.menuButtonsGroup_animationDuration));
+		alphaAnimSemiFadeIn.setDuration(getResources().getInteger(
+				R.integer.menuButtonsGroup_animationDuration));
+		alphaAnimSemiFadeOut.setDuration(getResources().getInteger(
+				R.integer.menuButtonsGroup_animationDuration));
+		btn_mainMenuButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				btn_mainMenuButton.setImageResource(R.raw.ic_stack);
+				if (layoutExtraMenuButtonGroup.getVisibility() == View.INVISIBLE) {
+					btn_mainMenuButton.setImageResource(R.raw.ic_cross);
+					layoutExtraMenuButtonGroup.setVisibility(View.VISIBLE);
+					AnimationSet animSet = new AnimationSet(false);
+					animSet.addAnimation(flyInAnimation);
+					animSet.addAnimation(alphaAnimFadeIn);
+					layout_mainMap.startAnimation(alphaAnimSemiFadeOut);
+					layoutExtraMenuButtonGroup.startAnimation(animSet);
+
+					layout_mainMap.postDelayed(
+							new Runnable() {
+								@Override
+								public void run() {
+									layout_mainMap.setAlpha(0.5f);
+									layout_mainMap.setEnabled(false);
+								}
+							},
+							getResources()
+									.getInteger(
+											R.integer.menuButtonsGroup_animationDuration));
+				} else {
+					AnimationSet animSet = new AnimationSet(false);
+					animSet.addAnimation(flyOutAnimation);
+					animSet.addAnimation(alphaAnimFadeOut);
+					layout_mainMap.startAnimation(alphaAnimSemiFadeIn);
+					layoutExtraMenuButtonGroup.startAnimation(animSet);
+					layoutExtraMenuButtonGroup.postDelayed(
+							new Runnable() {
+								@Override
+								public void run() {
+									layoutExtraMenuButtonGroup
+											.setVisibility(View.INVISIBLE);
+									layout_mainMap.setAlpha(1);
+									layout_mainMap.setEnabled(true);
+								}
+							},
+							getResources()
+									.getInteger(
+											R.integer.menuButtonsGroup_animationDuration));
+				}
 			}
 		});
 	}

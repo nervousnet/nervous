@@ -28,16 +28,8 @@ public class SensorLoggingToggleActivity extends Activity {
 		final String[] sensorNames = getSensorNames();
 		int numOfSensors = sensorNames.length;
 
-		Integer[] images_log = new Integer[numOfSensors];
-		Integer[] images_share = new Integer[numOfSensors];
-		for (int i = 0; i < numOfSensors; i++) {
-			images_log[i] = R.raw.img_log_on;
-			images_share[i] = R.raw.img_share_on;
-		}
-
 		CustomListAdapter adapter = new CustomListAdapter(
-				SensorLoggingToggleActivity.this, sensorNames, images_log,
-				images_share);
+				SensorLoggingToggleActivity.this, sensorNames);
 		listSensorLoggingToggle = (ListView) findViewById(R.id.list_SensorLoggingToggle);
 		listSensorLoggingToggle.setAdapter(adapter);
 		listSensorLoggingToggle
@@ -63,16 +55,12 @@ public class SensorLoggingToggleActivity extends Activity {
 	public class CustomListAdapter extends ArrayAdapter<String> {
 		private final Activity context;
 		String[] sensorName;
-		private final Integer[] image_share, image_log;
 
-		public CustomListAdapter(Activity context, String[] i_sensorName,
-				Integer[] images_log, Integer[] images_share) {
+		public CustomListAdapter(Activity context, String[] i_sensorName) {
 			super(context, R.layout.sensor_logging_toggle_listitem,
 					i_sensorName);
 			this.context = context;
 			this.sensorName = i_sensorName;
-			this.image_log = images_log;
-			this.image_share = images_share;
 
 		}
 
