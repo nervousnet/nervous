@@ -72,52 +72,16 @@ public class MainActivity extends Activity {
 	}
 
 	private void setupAnimations() {
-		final RelativeLayout layout_NodeExtraInf = (RelativeLayout) findViewById(R.id.layout_NodeInformation);
-		layout_NodeExtraInf.setVisibility(View.INVISIBLE);
+		final RelativeLayout layout_NodeExtraInf = setup_NodeExtraInf();
+		final RelativeLayout layout_mainMap = setup_MainMap(layout_NodeExtraInf);
 
-		final RelativeLayout layout_mainMap = (RelativeLayout) findViewById(R.id.layout_map);
-		final Animation flyInFromBottomAnimation = AnimationUtils
-				.loadAnimation(this, R.anim.node_extra_information_animation_in);
-		final Animation flyOutToBottomAnimation = AnimationUtils.loadAnimation(
-				this, R.anim.node_extra_information_animation_out);
-		layout_mainMap.setBackgroundResource(R.raw.mapdummy);
-		layout_mainMap.setOnClickListener(new OnClickListener() {
+		final LinearLayout layoutExtraMenuButtonGroup = setup_ExtraMenuButtons();
+		setup_MainMenuButton(layout_mainMap, layoutExtraMenuButtonGroup);
+	}
 
-			@Override
-			public void onClick(View v) {
-				if (layout_NodeExtraInf.getVisibility() == View.INVISIBLE) {
-					layout_NodeExtraInf.setVisibility(View.VISIBLE);
-					layout_NodeExtraInf
-							.startAnimation(flyInFromBottomAnimation);
-				} else {
-					layout_NodeExtraInf.startAnimation(flyOutToBottomAnimation);
-					layout_NodeExtraInf.postDelayed(
-							new Runnable() {
-								@Override
-								public void run() {
-									layout_NodeExtraInf
-											.setVisibility(View.INVISIBLE);
-								}
-							},
-							getResources()
-									.getInteger(
-											R.integer.menuButtonsGroup_animationDuration));
-				}
-			}
-		});
-
-		final LinearLayout layoutExtraMenuButtonGroup = (LinearLayout) findViewById(R.id.layout_extraMenuButtonGroup);
-		layoutExtraMenuButtonGroup.setVisibility(View.INVISIBLE);
-
+	private void setup_MainMenuButton(final RelativeLayout layout_mainMap,
+			final LinearLayout layoutExtraMenuButtonGroup) {
 		final ImageButton btn_mainMenuButton = (ImageButton) findViewById(R.id.btn_mainMenuButton);
-		ImageButton btn_showRelations = (ImageButton) findViewById(R.id.btn_showRelations);
-		btn_showRelations.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				toastToScreen("Yolo", false);
-			}
-		});
 
 		final Animation flyInFromRightAnimation = AnimationUtils.loadAnimation(
 				this, R.anim.menu_button_group_animation_in);
@@ -183,6 +147,61 @@ public class MainActivity extends Activity {
 				}
 			}
 		});
+	}
+
+	private LinearLayout setup_ExtraMenuButtons() {
+		final LinearLayout layoutExtraMenuButtonGroup = (LinearLayout) findViewById(R.id.layout_extraMenuButtonGroup);
+		layoutExtraMenuButtonGroup.setVisibility(View.INVISIBLE);
+
+		ImageButton btn_showRelations = (ImageButton) findViewById(R.id.btn_showRelations);
+		btn_showRelations.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				toastToScreen("Yolo", false);
+			}
+		});
+		return layoutExtraMenuButtonGroup;
+	}
+
+	private RelativeLayout setup_MainMap(final RelativeLayout layout_NodeExtraInf) {
+		final RelativeLayout layout_mainMap = (RelativeLayout) findViewById(R.id.layout_map);
+		final Animation flyInFromBottomAnimation = AnimationUtils
+				.loadAnimation(this, R.anim.node_extra_information_animation_in);
+		final Animation flyOutToBottomAnimation = AnimationUtils.loadAnimation(
+				this, R.anim.node_extra_information_animation_out);
+		layout_mainMap.setBackgroundResource(R.raw.mapdummy);
+		layout_mainMap.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if (layout_NodeExtraInf.getVisibility() == View.INVISIBLE) {
+					layout_NodeExtraInf.setVisibility(View.VISIBLE);
+					layout_NodeExtraInf
+							.startAnimation(flyInFromBottomAnimation);
+				} else {
+					layout_NodeExtraInf.startAnimation(flyOutToBottomAnimation);
+					layout_NodeExtraInf.postDelayed(
+							new Runnable() {
+								@Override
+								public void run() {
+									layout_NodeExtraInf
+											.setVisibility(View.INVISIBLE);
+								}
+							},
+							getResources()
+									.getInteger(
+											R.integer.menuButtonsGroup_animationDuration));
+				}
+			}
+		});
+		return layout_mainMap;
+	}
+
+	private RelativeLayout setup_NodeExtraInf() {
+		final RelativeLayout layout_NodeExtraInf = (RelativeLayout) findViewById(R.id.layout_NodeInformation);
+		layout_NodeExtraInf.setVisibility(View.INVISIBLE);
+		return layout_NodeExtraInf;
 	}
 
 	@Override
