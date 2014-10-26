@@ -139,15 +139,19 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="#EAFFFFFF"
-        android:padding="5dp" >
+        android:paddingBottom="5dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="5dp"
+        android:paddingTop="10dp" >
 
         <TextView
             android:id="@+id/txt_NodeInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:text="Medium Text"
             android:layout_below="@+id/txt_NodeName"
+            android:textColor="#333333"
+            android:text="Java, Haskel, Logo, Notepad"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
@@ -155,7 +159,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:text="Large Text"
+            android:text="BadBoy96"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <ImageButton

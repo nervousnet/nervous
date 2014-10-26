@@ -98,8 +98,12 @@ public class MainActivity extends Activity {
 				R.integer.menuButtonsGroup_animationDuration));
 		alphaAnimSemiFadeIn.setDuration(getResources().getInteger(
 				R.integer.menuButtonsGroup_animationDuration));
+		alphaAnimSemiFadeIn.setFillAfter(true);
+		alphaAnimSemiFadeIn.setFillEnabled(true);
 		alphaAnimSemiFadeOut.setDuration(getResources().getInteger(
 				R.integer.menuButtonsGroup_animationDuration));
+		alphaAnimSemiFadeOut.setFillAfter(true);
+		alphaAnimSemiFadeOut.setFillEnabled(true);
 		btn_mainMenuButton.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -111,34 +115,27 @@ public class MainActivity extends Activity {
 					AnimationSet animSet = new AnimationSet(false);
 					animSet.addAnimation(flyInFromRightAnimation);
 					animSet.addAnimation(alphaAnimFadeIn);
+					animSet.setFillAfter(true);
+					animSet.setFillEnabled(true);
 					layout_mainMap.startAnimation(alphaAnimSemiFadeOut);
 					layoutExtraMenuButtonGroup.startAnimation(animSet);
+					layout_mainMap.setEnabled(false);
 
-					layout_mainMap.postDelayed(
-							new Runnable() {
-								@Override
-								public void run() {
-									layout_mainMap.setAlpha(0.5f);
-									layout_mainMap.setEnabled(false);
-								}
-							},
-							getResources()
-									.getInteger(
-											R.integer.menuButtonsGroup_animationDuration));
 				} else {
 					AnimationSet animSet = new AnimationSet(false);
 					animSet.addAnimation(flyOutToRightAnimation);
 					animSet.addAnimation(alphaAnimFadeOut);
+					animSet.setFillAfter(true);
+					animSet.setFillEnabled(true);
 					layout_mainMap.startAnimation(alphaAnimSemiFadeIn);
 					layoutExtraMenuButtonGroup.startAnimation(animSet);
+					layout_mainMap.setEnabled(true);
 					layoutExtraMenuButtonGroup.postDelayed(
 							new Runnable() {
 								@Override
 								public void run() {
 									layoutExtraMenuButtonGroup
 											.setVisibility(View.INVISIBLE);
-									layout_mainMap.setAlpha(1);
-									layout_mainMap.setEnabled(true);
 								}
 							},
 							getResources()
@@ -164,7 +161,8 @@ public class MainActivity extends Activity {
 		return layoutExtraMenuButtonGroup;
 	}
 
-	private RelativeLayout setup_MainMap(final RelativeLayout layout_NodeExtraInf) {
+	private RelativeLayout setup_MainMap(
+			final RelativeLayout layout_NodeExtraInf) {
 		final RelativeLayout layout_mainMap = (RelativeLayout) findViewById(R.id.layout_map);
 		final Animation flyInFromBottomAnimation = AnimationUtils
 				.loadAnimation(this, R.anim.node_extra_information_animation_in);
@@ -201,6 +199,16 @@ public class MainActivity extends Activity {
 	private RelativeLayout setup_NodeExtraInf() {
 		final RelativeLayout layout_NodeExtraInf = (RelativeLayout) findViewById(R.id.layout_NodeInformation);
 		layout_NodeExtraInf.setVisibility(View.INVISIBLE);
+
+		ImageButton btn_NodeOptions = (ImageButton) findViewById(R.id.btn_NodeOptions);
+		btn_NodeOptions.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				toastToScreen("Options", false);
+			}
+		});
+
 		return layout_NodeExtraInf;
 	}
 
