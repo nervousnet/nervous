@@ -68,12 +68,43 @@ public class MainActivity extends Activity {
 			}
 		});
 
-		setupButtonAnimation();
+		setupAnimations();
 	}
 
-	private void setupButtonAnimation() {
+	private void setupAnimations() {
+		final RelativeLayout layout_NodeExtraInf = (RelativeLayout) findViewById(R.id.layout_NodeInformation);
+		layout_NodeExtraInf.setVisibility(View.INVISIBLE);
+
 		final RelativeLayout layout_mainMap = (RelativeLayout) findViewById(R.id.layout_map);
+		final Animation flyInFromBottomAnimation = AnimationUtils
+				.loadAnimation(this, R.anim.node_extra_information_animation_in);
+		final Animation flyOutToBottomAnimation = AnimationUtils.loadAnimation(
+				this, R.anim.node_extra_information_animation_out);
 		layout_mainMap.setBackgroundResource(R.raw.mapdummy);
+		layout_mainMap.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if (layout_NodeExtraInf.getVisibility() == View.INVISIBLE) {
+					layout_NodeExtraInf.setVisibility(View.VISIBLE);
+					layout_NodeExtraInf
+							.startAnimation(flyInFromBottomAnimation);
+				} else {
+					layout_NodeExtraInf.startAnimation(flyOutToBottomAnimation);
+					layout_NodeExtraInf.postDelayed(
+							new Runnable() {
+								@Override
+								public void run() {
+									layout_NodeExtraInf
+											.setVisibility(View.INVISIBLE);
+								}
+							},
+							getResources()
+									.getInteger(
+											R.integer.menuButtonsGroup_animationDuration));
+				}
+			}
+		});
 
 		final LinearLayout layoutExtraMenuButtonGroup = (LinearLayout) findViewById(R.id.layout_extraMenuButtonGroup);
 		layoutExtraMenuButtonGroup.setVisibility(View.INVISIBLE);
@@ -88,10 +119,10 @@ public class MainActivity extends Activity {
 			}
 		});
 
-		final Animation flyInAnimation = AnimationUtils.loadAnimation(this,
-				R.anim.menu_button_group_animation_in);
-		final Animation flyOutAnimation = AnimationUtils.loadAnimation(this,
-				R.anim.menu_button_group_animation_out);
+		final Animation flyInFromRightAnimation = AnimationUtils.loadAnimation(
+				this, R.anim.menu_button_group_animation_in);
+		final Animation flyOutToRightAnimation = AnimationUtils.loadAnimation(
+				this, R.anim.menu_button_group_animation_out);
 		final AlphaAnimation alphaAnimFadeIn = new AlphaAnimation(0, 1);
 		final AlphaAnimation alphaAnimFadeOut = new AlphaAnimation(1, 0);
 		final AlphaAnimation alphaAnimSemiFadeOut = new AlphaAnimation(1, 0.5f);
@@ -114,7 +145,7 @@ public class MainActivity extends Activity {
 					btn_mainMenuButton.setImageResource(R.raw.ic_cross);
 					layoutExtraMenuButtonGroup.setVisibility(View.VISIBLE);
 					AnimationSet animSet = new AnimationSet(false);
-					animSet.addAnimation(flyInAnimation);
+					animSet.addAnimation(flyInFromRightAnimation);
 					animSet.addAnimation(alphaAnimFadeIn);
 					layout_mainMap.startAnimation(alphaAnimSemiFadeOut);
 					layoutExtraMenuButtonGroup.startAnimation(animSet);
@@ -132,7 +163,7 @@ public class MainActivity extends Activity {
 											R.integer.menuButtonsGroup_animationDuration));
 				} else {
 					AnimationSet animSet = new AnimationSet(false);
-					animSet.addAnimation(flyOutAnimation);
+					animSet.addAnimation(flyOutToRightAnimation);
 					animSet.addAnimation(alphaAnimFadeOut);
 					layout_mainMap.startAnimation(alphaAnimSemiFadeIn);
 					layoutExtraMenuButtonGroup.startAnimation(animSet);

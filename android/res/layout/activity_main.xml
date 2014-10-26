@@ -42,6 +42,7 @@
             android:layout_below="@+id/perftestbutton"
             android:layout_centerHorizontal="true"
             android:text="@string/loadingStatus" />
+
     </RelativeLayout>
 
     <ImageButton
@@ -70,8 +71,7 @@
             android:id="@+id/btn_mainMenuButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
+            android:layout_below="@+id/layout_extraMenuButtonGroup"
             android:layout_marginEnd="2dp"
             android:background="@raw/oval_orange"
             android:padding="8dp"
@@ -83,7 +83,6 @@
             android:id="@+id/layout_extraMenuButtonGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/btn_mainMenuButton"
             android:layout_alignLeft="@+id/btn_mainMenuButton"
             android:orientation="vertical" >
 
@@ -131,6 +130,44 @@
                 android:scaleType="fitXY"
                 android:src="@raw/ic_relations" />
         </LinearLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_NodeInformation"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="#EAFFFFFF"
+        android:padding="5dp" >
+
+        <TextView
+            android:id="@+id/txt_NodeInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="Medium Text"
+            android:layout_below="@+id/txt_NodeName"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/txt_NodeName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="Large Text"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <ImageButton
+            android:id="@+id/btn_NodeOptions"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="2dp"
+            android:background="#00000000"
+            android:padding="8dp"
+            android:scaleType="fitXY"
+            android:src="@raw/ic_3dots" />
 
     </RelativeLayout>
 
