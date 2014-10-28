@@ -1,0 +1,178 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_mainframe"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black" >
+
+    <RelativeLayout
+        android:id="@+id/layout_map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context=".MainActivity" >
+
+        <ToggleButton
+            android:id="@+id/togglebutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/text_status"
+            android:layout_alignParentTop="true"
+            android:layout_alignRight="@+id/text_status"
+            android:onClick="onToggleClicked"
+            android:textOff="@string/service_off"
+            android:textOn="@string/service_on" />
+
+        <Button
+            android:id="@+id/perftestbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/togglebutton"
+            android:layout_alignRight="@+id/togglebutton"
+            android:layout_below="@+id/togglebutton"
+            android:text="VM performance test" />
+
+        <TextView
+            android:id="@+id/text_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/perftestbutton"
+            android:layout_centerHorizontal="true"
+            android:text="@string/loadingStatus" />
+
+    </RelativeLayout>
+
+    <ImageButton
+        android:id="@+id/btn_ResetMap"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom|left"
+        android:layout_marginBottom="5dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginLeft="5dp"
+        android:background="@raw/oval_orange"
+        android:padding="8dp"
+        android:scaleType="fitXY"
+        android:src="@raw/ic_resetmap"
+        android:tint="@android:color/white" />
+
+    <RelativeLayout
+        android:id="@+id/layout_buttonsGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:paddingRight="5dp"
+        android:paddingBottom="5dp" >
+
+        <ImageButton
+            android:id="@+id/btn_mainMenuButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_below="@+id/layout_extraMenuButtonGroup"
+            android:layout_marginEnd="2dp"
+            android:background="@raw/oval_orange"
+            android:padding="8dp"
+            android:scaleType="fitXY"
+            android:src="@raw/ic_stack"
+            android:tint="@android:color/white" />
+
+        <LinearLayout
+            android:id="@+id/layout_extraMenuButtonGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/btn_mainMenuButton"
+            android:orientation="vertical" >
+
+            <ImageButton
+                android:id="@+id/btn_highlightHeartbeat"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginEnd="2dp"
+                android:background="@raw/oval_white"
+                android:padding="8dp"
+                android:scaleType="fitXY"
+                android:src="@raw/ic_heartbeat" />
+
+            <ImageButton
+                android:id="@+id/btn_showPOIs"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginEnd="2dp"
+                android:background="@raw/oval_white"
+                android:padding="8dp"
+                android:scaleType="fitXY"
+                android:src="@raw/ic_poi" />
+
+            <ImageButton
+                android:id="@+id/btn_HighlightFriends"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginEnd="2dp"
+                android:background="@raw/oval_white"
+                android:padding="8dp"
+                android:scaleType="fitXY"
+                android:src="@raw/ic_friends" />
+
+            <ImageButton
+                android:id="@+id/btn_showRelations"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginEnd="2dp"
+                android:background="@raw/oval_white"
+                android:padding="8dp"
+                android:scaleType="fitXY"
+                android:src="@raw/ic_relations" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_NodeInformation"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="#EAFFFFFF"
+        android:paddingBottom="5dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="5dp"
+        android:paddingTop="10dp" >
+
+        <TextView
+            android:id="@+id/txt_NodeInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/txt_NodeName"
+            android:textColor="#333333"
+            android:text="Java, Haskel, Logo, Notepad"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/txt_NodeName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="BadBoy96"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <ImageButton
+            android:id="@+id/btn_NodeOptions"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="2dp"
+            android:background="#00000000"
+            android:padding="8dp"
+            android:scaleType="fitXY"
+            android:src="@raw/ic_3dots" />
+
+    </RelativeLayout>
+
+</FrameLayout>

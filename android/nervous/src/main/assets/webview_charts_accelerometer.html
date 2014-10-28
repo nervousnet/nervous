@@ -1,0 +1,66 @@
+<html>
+<body>
+<script src="./Chart.js"></script>
+<script src="./jQuery.min.js"></script>
+
+<div style="width: 50%">
+    <canvas id="canvas"></canvas>
+</div>
+
+
+<script>
+
+		var randomScalingFactor = function(){ return Math.round(Math.random()*100)};
+		var lineChartData = {
+			labels : labels_array,
+			datasets : [
+				{
+					label: "X-axis",
+					fillColor : "rgba(220,220,220,0.2)",
+					strokeColor : "rgba(220,220,220,1)",
+					pointColor : "rgba(220,220,220,1)",
+					pointStrokeColor : "#fff",
+					pointHighlightFill : "#fff",
+					pointHighlightStroke : "rgba(220,220,220,1)",
+					data : x_axis_data_arrays
+				},
+				{
+					label: "Y-axis",
+					fillColor : "rgba(133,242,166,0.2)",
+					strokeColor : "rgba(133,242,166,1)",
+					pointColor : "rgba(133,242,166,1)",
+					pointStrokeColor : "#fff",
+					pointHighlightFill : "#fff",
+					pointHighlightStroke : "rgba(133,242,166,1)",
+					data : y_axis_data_arrays
+				},
+				{
+					label: "Z-axis",
+					fillColor : "rgba(133,206,242,0.2)",
+					strokeColor : "rgba(133,206,242,1)",
+					pointColor : "rgba(133,206,242,1)",
+					pointStrokeColor : "#fff",
+					pointHighlightFill : "#fff",
+					pointHighlightStroke : "rgba(133,206,242,1)",
+					data : z_axis_data_arrays
+				}
+			]
+
+		}
+
+	window.onload = function(){
+		var ctx = document.getElementById("canvas").getContext("2d");
+	    ctx.canvas.width = screen_width*0.8;
+		ctx.canvas.height = screen_height*0.5;
+		window.myLine = new Chart(ctx).Line(lineChartData, {
+            //options
+            showXLabels: 6
+		});
+
+		console.log("ctx.canvas.width: "+ctx.canvas.width);
+		console.log("canvas width: "+$("#canvas").css("width"));
+	}
+
+	</script>
+</body>
+</html>
