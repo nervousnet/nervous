@@ -40,6 +40,7 @@ import ch.ethz.soms.nervous.android.sensors.SensorDescBattery;
 import ch.ethz.soms.nervous.android.sensors.SensorDescLight;
 import ch.ethz.soms.nervous.android.sensors.SensorDescProximity;
 import ch.ethz.soms.nervous.android.test.PerformanceTestTask;
+import ch.ethz.soms.nervous.android.test.PerformanceTestTask2;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
@@ -64,7 +65,7 @@ public class MainActivity extends Activity {
 		buttonPerfTest.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				new PerformanceTestTask(getApplicationContext()).execute();
+				new PerformanceTestTask2(getApplicationContext()).execute();
 			}
 		});
 

@@ -19,7 +19,7 @@ import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorD
 
 public class NervousVM {
 
-	public final static long MAX_PAGES = 3;
+	public final static long MAX_PAGES = 5;
 	public final static long MAX_ENTRIES = 4096;
 
 	private static NervousVM nervousStorage;
