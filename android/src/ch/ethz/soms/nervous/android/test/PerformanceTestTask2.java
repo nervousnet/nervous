@@ -10,6 +10,8 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.PowerManager;
@@ -27,9 +29,9 @@ public class PerformanceTestTask2 extends AsyncTask<Void, Void, Void> {
 	private static final int TEST_SENSOR_COUNT = 20;
 	private static final int REPETITIONS = 10;
 
-	// private static final int TEST_COUNT = 1000;
-	// private static final int TEST_SENSOR_COUNT = 3;
-	// private static final int REPETITIONS = 2;
+	//private static final int TEST_COUNT = 1000;
+	//private static final int TEST_SENSOR_COUNT = 3;
+	//private static final int REPETITIONS = 5;
 
 	private Context context;
 
@@ -45,8 +47,9 @@ public class PerformanceTestTask2 extends AsyncTask<Void, Void, Void> {
 
 		NervousVM vm = NervousVM.getInstance(context.getFilesDir());
 
-		PerformanceLog plog = new PerformanceLog();
-		plog.log("TEST USING: " + String.valueOf(TEST_COUNT) + "PER RUN, " + String.valueOf(TEST_SENSOR_COUNT) + " SENSORS, " + String.valueOf(REPETITIONS) + " REPETITIONS");
+		PerformanceLog plog = new PerformanceLog(-1);
+		plog.log("TEST USING: " + String.valueOf(TEST_COUNT) + " PER RUN AND SENSOR, " + String.valueOf(TEST_SENSOR_COUNT) + " SENSORS, " + String.valueOf(REPETITIONS) + " REPETITIONS");
+		plog.close();
 
 		long tick, tock;
 		double time;
@@ -58,13 +61,13 @@ public class PerformanceTestTask2 extends AsyncTask<Void, Void, Void> {
 
 		// Test repetitions loop
 		for (int test = 0; test < REPETITIONS; test++) {
-
+			plog = new PerformanceLog(test);
 			plog.log("RUN: " + String.valueOf(test) + " BATTERY BEFORE INSERT: " + String.valueOf(getBatteryLevel()));
 			// Test run (insert)
 			tick = System.currentTimeMillis();
 			for (int i = 0; i < TEST_COUNT; i++) {
 				for (int sid = 0; sid < TEST_SENSOR_COUNT; sid++) {
-					SensorDesc sensorDesc = new SensorDescDummy(i, true, 12345, 13.5f, 12345L, 13.5d, "TEST");
+					SensorDesc sensorDesc = new SensorDescDummy(i + 1, true, 12345, 13.5f, 12345L, 13.5d, "TEST");
 					vm.storeSensor(SensorDescDummy.SENSOR_ID - sid, sensorDesc.toProtoSensor());
 				}
 			}
@@ -72,21 +75,24 @@ public class PerformanceTestTask2 extends AsyncTask<Void, Void, Void> {
 			time = tock - tick;
 			plog.log("RUN: " + String.valueOf(test) + " INSERT TIME: " + String.valueOf(time) + " ms");
 
-			plog.log("RUN: " + String.valueOf(test) + " BATTERY BEFORE READ THROUGH: " + String.valueOf(getBatteryLevel()));
+			plog.log("RUN: " + String.valueOf(test) + " BATTERY BEFORE RETRIEVE: " + String.valueOf(getBatteryLevel()));
 			// Test run (read through)
+			long peekSize = 0;
 			tick = System.currentTimeMillis();
 			for (int sid = 0; sid < TEST_SENSOR_COUNT; sid++) {
 				List<SensorData> peek = vm.retrieve(SensorDescDummy.SENSOR_ID - sid, 0, Long.MAX_VALUE);
+				peekSize += peek.size();
 			}
 			tock = System.currentTimeMillis();
 			time = tock - tick;
+			plog.log("RUN: " + String.valueOf(test) + " RETRIEVE SIZE: " + String.valueOf(peekSize) + " measurements");
 			plog.log("RUN: " + String.valueOf(test) + " RETRIEVE TIME: " + String.valueOf(time) + " ms");
 
 			// Storage usage
 			long storageSizeSum = 0;
 			for (int sid = 0; sid < TEST_SENSOR_COUNT; sid++) {
 				long[] storageSize = vm.getSensorStorageSize(SensorDescDummy.SENSOR_ID - sid);
-				storageSizeSum = storageSize[0] + storageSize[1];
+				storageSizeSum += (storageSize[0] + storageSize[1]);
 			}
 			plog.log("RUN: " + String.valueOf(test) + " STORAGE USAGE: " + String.valueOf(storageSizeSum) + " B");
 			plog.log("RUN: " + String.valueOf(test) + " BATTERY AFTER RUN: " + String.valueOf(getBatteryLevel()));
@@ -95,19 +101,20 @@ public class PerformanceTestTask2 extends AsyncTask<Void, Void, Void> {
 			for (int sid = 0; sid < TEST_SENSOR_COUNT; sid++) {
 				vm.deleteSensor(SensorDescDummy.SENSOR_ID - sid);
 			}
+			plog.close();
 		}
 
-		plog.close();
 		wakeLock.release();
 		return null;
 	}
 
 	private class PerformanceLog {
 		BufferedWriter bw;
+		File file;
 
-		public PerformanceLog() {
-			String path = context.getExternalFilesDir(null).getPath() + File.separator + "NervousPerformanceLog.txt";
-			File file = new File(path);
+		public PerformanceLog(int index) {
+			String path = context.getExternalFilesDir(null).getPath() + File.separator + "NervousPerformanceLog" + index + ".txt";
+			file = new File(path);
 			try {
 				bw = new BufferedWriter(new FileWriter(file));
 			} catch (IOException e) {
@@ -128,6 +135,7 @@ public class PerformanceTestTask2 extends AsyncTask<Void, Void, Void> {
 			try {
 				bw.flush();
 				bw.close();
+				context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
 			} catch (IOException e) {
 			}
 		}

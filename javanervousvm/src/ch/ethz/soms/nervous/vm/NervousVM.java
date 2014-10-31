@@ -422,7 +422,7 @@ public class NervousVM {
 		long[] size = { 0, 0 };
 		SensorStoreConfig ssc = new SensorStoreConfig(dir, sensorID);
 		for (int i = 0; i < MAX_PAGES; i++) {
-			SensorStorePage ssp = new SensorStorePage(dir, sensorID, ssc.getCurrentPage());
+			SensorStorePage ssp = new SensorStorePage(dir, sensorID, ssc.getCurrentPage() - i);
 			size[0] += ssp.getStoreSize();
 			size[1] += ssp.getIndexSize();
 		}
