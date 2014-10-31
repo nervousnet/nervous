@@ -8,8 +8,15 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry kind="lib" path="libs/protobuf-java-2.5.0.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/android/libs/protobuf-java-2.5.0-javadoc.jar!/"/>
+			<attribute name="javadoc_location" value="jar:platform:/resource/android/doc/protobuf-java-2.5.0-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="libs/osmdroid-android-4.2.jar" sourcepath="doc/osmdroid-android-4.2-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/android/doc/osmdroid-android-4.2-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="libs/slf4j-android-1.7.7.jar" sourcepath="doc/slf4j-android-1.7.7-sources.jar"/>
+	<classpathentry kind="lib" path="libs/slf4j-api-1.7.7.jar" sourcepath="doc/slf4j-api-1.7.7-sources.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

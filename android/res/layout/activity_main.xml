@@ -42,7 +42,6 @@
             android:layout_below="@+id/perftestbutton"
             android:layout_centerHorizontal="true"
             android:text="@string/loadingStatus" />
-
     </RelativeLayout>
 
     <ImageButton
@@ -53,6 +52,7 @@
         android:layout_marginBottom="5dp"
         android:layout_marginEnd="2dp"
         android:layout_marginLeft="5dp"
+        android:layout_marginRight="2dp"
         android:background="@raw/oval_orange"
         android:padding="8dp"
         android:scaleType="fitXY"
@@ -64,8 +64,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
-        android:paddingRight="5dp"
-        android:paddingBottom="5dp" >
+        android:paddingBottom="5dp"
+        android:paddingEnd="5dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp" >
 
         <ImageButton
             android:id="@+id/btn_mainMenuButton"
@@ -73,6 +75,7 @@
             android:layout_height="50dp"
             android:layout_below="@+id/layout_extraMenuButtonGroup"
             android:layout_marginEnd="2dp"
+            android:layout_marginRight="2dp"
             android:background="@raw/oval_orange"
             android:padding="8dp"
             android:scaleType="fitXY"
@@ -92,6 +95,7 @@
                 android:layout_height="50dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginEnd="2dp"
+                android:layout_marginRight="2dp"
                 android:background="@raw/oval_white"
                 android:padding="8dp"
                 android:scaleType="fitXY"
@@ -103,6 +107,7 @@
                 android:layout_height="50dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginEnd="2dp"
+                android:layout_marginRight="2dp"
                 android:background="@raw/oval_white"
                 android:padding="8dp"
                 android:scaleType="fitXY"
@@ -114,6 +119,7 @@
                 android:layout_height="50dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginEnd="2dp"
+                android:layout_marginRight="2dp"
                 android:background="@raw/oval_white"
                 android:padding="8dp"
                 android:scaleType="fitXY"
@@ -125,12 +131,12 @@
                 android:layout_height="50dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginEnd="2dp"
+                android:layout_marginRight="2dp"
                 android:background="@raw/oval_white"
                 android:padding="8dp"
                 android:scaleType="fitXY"
                 android:src="@raw/ic_relations" />
         </LinearLayout>
-
     </RelativeLayout>
 
     <RelativeLayout
@@ -150,9 +156,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/txt_NodeName"
-            android:textColor="#333333"
             android:text="Java, Haskel, Logo, Notepad"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#333333" />
 
         <TextView
             android:id="@+id/txt_NodeName"
@@ -168,11 +174,11 @@
             android:layout_height="50dp"
             android:layout_alignParentRight="true"
             android:layout_marginEnd="2dp"
+            android:layout_marginRight="2dp"
             android:background="#00000000"
             android:padding="8dp"
             android:scaleType="fitXY"
             android:src="@raw/ic_3dots" />
-
     </RelativeLayout>
 
 </FrameLayout>
