@@ -20,6 +20,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.graphics.drawable.shapes.Shape;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ViewSwitcher;
 
@@ -76,6 +77,9 @@ public class NervousMap {
 
 	public NervousMap(Context context) {
 		this.context = context;
+
+		tileSources = new HashMap<Integer, ITileSource>();
+
 		switcher = new ViewSwitcher(context);
 
 		mapView = new MapView(context, null);
@@ -104,6 +108,9 @@ public class NervousMap {
 				switcher.showNext();
 			}
 		} else {
+			if (switcher.getCurrentView() != mapView) {
+				switcher.showNext();
+			}
 			ITileSource its = tileSources.get(mapLayer);
 			if (its != null) {
 				mapView.setTileSource(its);
@@ -123,16 +130,19 @@ public class NervousMap {
 	}
 
 	private class OrbitView extends View {
+
+		private float alpha = 255;
+
 		private Paint textPaint;
 		private Paint circlePaint;
 
 		private class TextShapeDrawable extends Drawable {
 
-			private String text;
+			private String[] text;
 			private int x;
 			private int y;
 
-			public TextShapeDrawable(String text, int x, int y) {
+			public TextShapeDrawable(String[] text, int x, int y) {
 				this.text = text;
 				this.x = x;
 				this.y = y;
@@ -140,13 +150,24 @@ public class NervousMap {
 
 			@Override
 			public void draw(Canvas canvas) {
-				canvas.drawText(text, x, y, textPaint);
 				Rect bounds = new Rect();
-				textPaint.getTextBounds(text, 0, text.length(), bounds);
 
-				int radius = Math.max(bounds.right, bounds.bottom);
+				float height = 0;
+				float width = 0;
 
+				for (int i = 0; i < text.length; ++i) {
+					textPaint.getTextBounds(text[i], 0, text[i].length(), bounds);
+					height += 1.2f * (float) Math.abs(bounds.bottom - bounds.top);
+					width = Math.max(width, Math.abs(bounds.right - bounds.left));
+				}
+
+				int radius = (int) (0.6 * Math.sqrt(height * height + width * width));
 				canvas.drawCircle(x, y, radius, circlePaint);
+
+				for (int i = 0; i < text.length; ++i) {
+					canvas.drawText(text[i], x, y + (int) ((1.0/2.0 + 0.2 + i - (float) text.length / 2.0) * (1.2f * Math.abs((float) height / (float) text.length))), textPaint);
+				}
+
 			}
 
 			@Override
@@ -156,6 +177,7 @@ public class NervousMap {
 
 			@Override
 			public void setAlpha(int alpha) {
+
 			}
 
 			@Override
@@ -180,8 +202,10 @@ public class NervousMap {
 		}
 
 		private void setup() {
+			setWillNotDraw(false);
+
 			circlePaint = new Paint();
-			circlePaint.setColor(Color.argb(200, 127, 100, 50));
+			circlePaint.setColor(Color.argb(200, 200, 130, 90));
 			circlePaint.setStyle(Paint.Style.FILL);
 			circlePaint.setAntiAlias(true);
 
@@ -203,9 +227,42 @@ public class NervousMap {
 
 		@Override
 		protected void onDraw(Canvas canvas) {
-			TextShapeDrawable youDrawable = new TextShapeDrawable("YOU", canvas.getWidth() / 2, canvas.getHeight() / 2);
+			canvas.saveLayerAlpha(0.f, 0.f, (float) canvas.getWidth(), (float) canvas.getHeight(), (int) alpha, Canvas.HAS_ALPHA_LAYER_SAVE_FLAG);
+			super.onDraw(canvas);
+			canvas.drawColor(Color.WHITE);
+			TextShapeDrawable youDrawable = new TextShapeDrawable(new String[] { "YOU", "LOL", "TEXT" }, canvas.getWidth() / 2, canvas.getHeight() / 2);
 			youDrawable.draw(canvas);
 			invalidate();
 		}
+
+		public void setAlpha(float alpha) {
+			this.alpha = alpha;
+		}
+
+		@Override
+		public float getAlpha() {
+			return alpha;
+		}
+
+		@Override
+		public boolean onTouchEvent(MotionEvent event) {
+			switch (event.getAction()) {
+			case MotionEvent.ACTION_DOWN:
+				break;
+			case MotionEvent.ACTION_UP:
+				this.performClick();
+				break;
+			default:
+				break;
+			}
+			return true;
+		}
+
+		@Override
+		public boolean performClick() {
+			super.performClick();
+			return true;
+		}
+
 	}
 }
