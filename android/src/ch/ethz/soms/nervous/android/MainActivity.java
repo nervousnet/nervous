@@ -41,6 +41,7 @@ import ch.ethz.soms.nervous.android.sensors.SensorDescLight;
 import ch.ethz.soms.nervous.android.sensors.SensorDescProximity;
 import ch.ethz.soms.nervous.android.test.PerformanceTestTask;
 import ch.ethz.soms.nervous.android.test.PerformanceTestTask2;
+import ch.ethz.soms.nervous.map.NervousMap;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
@@ -61,6 +62,7 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 
 		nervousMap = new NervousMap(getApplicationContext());
+		nervousMap.selectMapLayer(-1);
 
 		textStatus = (TextView) findViewById(R.id.text_status);
 		buttonOnOff = (ToggleButton) findViewById(R.id.togglebutton);
@@ -78,14 +80,14 @@ public class MainActivity extends Activity {
 
 	private void setupAnimations() {
 		final RelativeLayout layoutNodeExtraInf = setupNodeExtraInf();
-		final RelativeLayout layoutMainMap = setup_MainMap(layoutNodeExtraInf);
+		final RelativeLayout layoutMainMap = setupMainMap(layoutNodeExtraInf);
 
 		final LinearLayout layoutExtraMenuButtonGroup = setupExtraMenuButtons();
 		setupMainMenuButton(layoutMainMap, layoutExtraMenuButtonGroup);
 	}
 
-	private void setupMainMenuButton(final RelativeLayout layout_mainMap, final LinearLayout layoutExtraMenuButtonGroup) {
-		final ImageButton btn_mainMenuButton = (ImageButton) findViewById(R.id.btn_mainMenuButton);
+	private void setupMainMenuButton(final RelativeLayout layoutMainMap, final LinearLayout layoutExtraMenuButtonGroup) {
+		final ImageButton mainMenuButton = (ImageButton) findViewById(R.id.btn_mainMenuButton);
 
 		final Animation flyInFromRightAnimation = AnimationUtils.loadAnimation(this, R.anim.menu_button_group_animation_in);
 		final Animation flyOutToRightAnimation = AnimationUtils.loadAnimation(this, R.anim.menu_button_group_animation_out);
@@ -102,22 +104,22 @@ public class MainActivity extends Activity {
 		alphaAnimSemiFadeOut.setDuration(getResources().getInteger(R.integer.menuButtonsGroup_animationDuration));
 		alphaAnimSemiFadeOut.setFillAfter(true);
 		alphaAnimSemiFadeOut.setFillEnabled(true);
-		btn_mainMenuButton.setOnClickListener(new OnClickListener() {
+		mainMenuButton.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				btn_mainMenuButton.setImageResource(R.raw.ic_stack);
+				mainMenuButton.setImageResource(R.raw.ic_stack);
 				if (layoutExtraMenuButtonGroup.getVisibility() == View.INVISIBLE) {
-					btn_mainMenuButton.setImageResource(R.raw.ic_cross);
+					mainMenuButton.setImageResource(R.raw.ic_cross);
 					layoutExtraMenuButtonGroup.setVisibility(View.VISIBLE);
 					AnimationSet animSet = new AnimationSet(false);
 					animSet.addAnimation(flyInFromRightAnimation);
 					animSet.addAnimation(alphaAnimFadeIn);
 					animSet.setFillAfter(true);
 					animSet.setFillEnabled(true);
-					layout_mainMap.startAnimation(alphaAnimSemiFadeOut);
+					layoutMainMap.startAnimation(alphaAnimSemiFadeOut);
 					layoutExtraMenuButtonGroup.startAnimation(animSet);
-					layout_mainMap.setEnabled(false);
+					layoutMainMap.setEnabled(false);
 
 				} else {
 					AnimationSet animSet = new AnimationSet(false);
@@ -125,9 +127,9 @@ public class MainActivity extends Activity {
 					animSet.addAnimation(alphaAnimFadeOut);
 					animSet.setFillAfter(true);
 					animSet.setFillEnabled(true);
-					layout_mainMap.startAnimation(alphaAnimSemiFadeIn);
+					layoutMainMap.startAnimation(alphaAnimSemiFadeIn);
 					layoutExtraMenuButtonGroup.startAnimation(animSet);
-					layout_mainMap.setEnabled(true);
+					layoutMainMap.setEnabled(true);
 					layoutExtraMenuButtonGroup.postDelayed(new Runnable() {
 						@Override
 						public void run() {
@@ -154,12 +156,12 @@ public class MainActivity extends Activity {
 		return layoutExtraMenuButtonGroup;
 	}
 
-	private RelativeLayout setup_MainMap(final RelativeLayout layout_NodeExtraInf) {
+	private RelativeLayout setupMainMap(final RelativeLayout layoutNodeExtraInf) {
 		final RelativeLayout layoutMainMap = (RelativeLayout) findViewById(R.id.layout_map);
 		final Animation flyInFromBottomAnimation = AnimationUtils.loadAnimation(this, R.anim.node_extra_information_animation_in);
 		final Animation flyOutToBottomAnimation = AnimationUtils.loadAnimation(this, R.anim.node_extra_information_animation_out);
 		
-		layoutMainMap.addView(nervousMap.getMap());
+		layoutMainMap.addView(nervousMap.getViewSwitcher());
 		
 		/*layoutMainMap.setBackgroundResource(R.raw.mapdummy);
 		layoutMainMap.setOnClickListener(new OnClickListener() {

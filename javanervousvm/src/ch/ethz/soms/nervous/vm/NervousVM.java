@@ -135,7 +135,6 @@ public class NervousVM {
 			dis = new DataInputStream(fis);
 			uuid = new UUID(dis.readLong(), dis.readLong());
 			dis.close();
-			fis.close();
 		} catch (IOException e) {
 			success = false;
 		} finally {
