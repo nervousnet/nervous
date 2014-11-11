@@ -74,6 +74,9 @@
                     <item
                         android:id="@+id/menu_TestQuery_Light_Bottom10Light"
                         android:title="Bottom 10 Light"/>
+                     <item
+                        android:id="@+id/menu_TestQuery_Light_Prox_Kmean"
+                        android:title="LightProx k Mean"/>
                 </menu>
             </item>
             <item

@@ -30,10 +30,12 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Vector;
 
 import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesAccelerometer;
 import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesBattery;
 import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesLight;
+import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesMultipleSensors;
 import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesProximity;
 import ch.ethz.soms.nervous.android.sensors.SensorDescAccelerometer;
 import ch.ethz.soms.nervous.android.sensors.SensorDescBattery;
@@ -86,22 +88,29 @@ public class MainActivity extends Activity {
 		setupMainMenuButton(layoutMainMap, layoutExtraMenuButtonGroup);
 	}
 
-	private void setupMainMenuButton(final RelativeLayout layoutMainMap, final LinearLayout layoutExtraMenuButtonGroup) {
+	private void setupMainMenuButton(final RelativeLayout layoutMainMap,
+			final LinearLayout layoutExtraMenuButtonGroup) {
 		final ImageButton mainMenuButton = (ImageButton) findViewById(R.id.btn_mainMenuButton);
 
-		final Animation flyInFromRightAnimation = AnimationUtils.loadAnimation(this, R.anim.menu_button_group_animation_in);
-		final Animation flyOutToRightAnimation = AnimationUtils.loadAnimation(this, R.anim.menu_button_group_animation_out);
+		final Animation flyInFromRightAnimation = AnimationUtils.loadAnimation(
+				this, R.anim.menu_button_group_animation_in);
+		final Animation flyOutToRightAnimation = AnimationUtils.loadAnimation(
+				this, R.anim.menu_button_group_animation_out);
 		final AlphaAnimation alphaAnimFadeIn = new AlphaAnimation(0, 1);
 		final AlphaAnimation alphaAnimFadeOut = new AlphaAnimation(1, 0);
 		final AlphaAnimation alphaAnimSemiFadeOut = new AlphaAnimation(1, 0.5f);
 		final AlphaAnimation alphaAnimSemiFadeIn = new AlphaAnimation(0.5f, 1);
 
-		alphaAnimFadeIn.setDuration(getResources().getInteger(R.integer.menuButtonsGroup_animationDuration));
-		alphaAnimFadeOut.setDuration(getResources().getInteger(R.integer.menuButtonsGroup_animationDuration));
-		alphaAnimSemiFadeIn.setDuration(getResources().getInteger(R.integer.menuButtonsGroup_animationDuration));
+		alphaAnimFadeIn.setDuration(getResources().getInteger(
+				R.integer.menuButtonsGroup_animationDuration));
+		alphaAnimFadeOut.setDuration(getResources().getInteger(
+				R.integer.menuButtonsGroup_animationDuration));
+		alphaAnimSemiFadeIn.setDuration(getResources().getInteger(
+				R.integer.menuButtonsGroup_animationDuration));
 		alphaAnimSemiFadeIn.setFillAfter(true);
 		alphaAnimSemiFadeIn.setFillEnabled(true);
-		alphaAnimSemiFadeOut.setDuration(getResources().getInteger(R.integer.menuButtonsGroup_animationDuration));
+		alphaAnimSemiFadeOut.setDuration(getResources().getInteger(
+				R.integer.menuButtonsGroup_animationDuration));
 		alphaAnimSemiFadeOut.setFillAfter(true);
 		alphaAnimSemiFadeOut.setFillEnabled(true);
 		mainMenuButton.setOnClickListener(new OnClickListener() {
@@ -130,12 +139,17 @@ public class MainActivity extends Activity {
 					layoutMainMap.startAnimation(alphaAnimSemiFadeIn);
 					layoutExtraMenuButtonGroup.startAnimation(animSet);
 					layoutMainMap.setEnabled(true);
-					layoutExtraMenuButtonGroup.postDelayed(new Runnable() {
-						@Override
-						public void run() {
-							layoutExtraMenuButtonGroup.setVisibility(View.INVISIBLE);
-						}
-					}, getResources().getInteger(R.integer.menuButtonsGroup_animationDuration));
+					layoutExtraMenuButtonGroup.postDelayed(
+							new Runnable() {
+								@Override
+								public void run() {
+									layoutExtraMenuButtonGroup
+											.setVisibility(View.INVISIBLE);
+								}
+							},
+							getResources()
+									.getInteger(
+											R.integer.menuButtonsGroup_animationDuration));
 				}
 			}
 		});
@@ -158,30 +172,29 @@ public class MainActivity extends Activity {
 
 	private RelativeLayout setupMainMap(final RelativeLayout layoutNodeExtraInf) {
 		final RelativeLayout layoutMainMap = (RelativeLayout) findViewById(R.id.layout_map);
-		final Animation flyInFromBottomAnimation = AnimationUtils.loadAnimation(this, R.anim.node_extra_information_animation_in);
-		final Animation flyOutToBottomAnimation = AnimationUtils.loadAnimation(this, R.anim.node_extra_information_animation_out);
-		
-		layoutMainMap.addView(nervousMap.getViewSwitcher());
-		
-		/*layoutMainMap.setBackgroundResource(R.raw.mapdummy);
-		layoutMainMap.setOnClickListener(new OnClickListener() {
+		final Animation flyInFromBottomAnimation = AnimationUtils
+				.loadAnimation(this, R.anim.node_extra_information_animation_in);
+		final Animation flyOutToBottomAnimation = AnimationUtils.loadAnimation(
+				this, R.anim.node_extra_information_animation_out);
 
-			@Override
-			public void onClick(View v) {
-				if (layout_NodeExtraInf.getVisibility() == View.INVISIBLE) {
-					layout_NodeExtraInf.setVisibility(View.VISIBLE);
-					layout_NodeExtraInf.startAnimation(flyInFromBottomAnimation);
-				} else {
-					layout_NodeExtraInf.startAnimation(flyOutToBottomAnimation);
-					layout_NodeExtraInf.postDelayed(new Runnable() {
-						@Override
-						public void run() {
-							layout_NodeExtraInf.setVisibility(View.INVISIBLE);
-						}
-					}, getResources().getInteger(R.integer.menuButtonsGroup_animationDuration));
-				}
-			}
-		});*/
+		layoutMainMap.addView(nervousMap.getViewSwitcher());
+
+		/*
+		 * layoutMainMap.setBackgroundResource(R.raw.mapdummy);
+		 * layoutMainMap.setOnClickListener(new OnClickListener() {
+		 * 
+		 * @Override public void onClick(View v) { if
+		 * (layout_NodeExtraInf.getVisibility() == View.INVISIBLE) {
+		 * layout_NodeExtraInf.setVisibility(View.VISIBLE);
+		 * layout_NodeExtraInf.startAnimation(flyInFromBottomAnimation); } else
+		 * { layout_NodeExtraInf.startAnimation(flyOutToBottomAnimation);
+		 * layout_NodeExtraInf.postDelayed(new Runnable() {
+		 * 
+		 * @Override public void run() {
+		 * layout_NodeExtraInf.setVisibility(View.INVISIBLE); } },
+		 * getResources()
+		 * .getInteger(R.integer.menuButtonsGroup_animationDuration)); } } });
+		 */
 		return layoutMainMap;
 	}
 
@@ -211,11 +224,17 @@ public class MainActivity extends Activity {
 
 		// Schedule
 		AlarmManager scheduler = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		Intent sensorIntent = new Intent(getApplicationContext(), SensorService.class);
-		PendingIntent scheduledSensorIntent = PendingIntent.getService(getApplicationContext(), 0, sensorIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		Intent sensorIntent = new Intent(getApplicationContext(),
+				SensorService.class);
+		PendingIntent scheduledSensorIntent = PendingIntent.getService(
+				getApplicationContext(), 0, sensorIntent,
+				PendingIntent.FLAG_UPDATE_CURRENT);
 
-		Intent uploadIntent = new Intent(getApplicationContext(), UploadService.class);
-		PendingIntent scheduledUploadIntent = PendingIntent.getService(getApplicationContext(), 0, uploadIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		Intent uploadIntent = new Intent(getApplicationContext(),
+				UploadService.class);
+		PendingIntent scheduledUploadIntent = PendingIntent.getService(
+				getApplicationContext(), 0, uploadIntent,
+				PendingIntent.FLAG_UPDATE_CURRENT);
 
 		// 30 seconds
 		long sensorInterval = 30 * 1000;
@@ -223,9 +242,13 @@ public class MainActivity extends Activity {
 		// 120 seconds
 		long uploadInterval = 120 * 1000;
 
-		scheduler.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), sensorInterval, scheduledSensorIntent);
+		scheduler.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+				System.currentTimeMillis(), sensorInterval,
+				scheduledSensorIntent);
 
-		scheduler.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), uploadInterval, scheduledUploadIntent);
+		scheduler.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+				System.currentTimeMillis(), uploadInterval,
+				scheduledUploadIntent);
 
 		serviceRunning = true;
 		new ServiceInfo(getApplicationContext()).clean();
@@ -236,11 +259,17 @@ public class MainActivity extends Activity {
 	public void stopSensorService() {
 		// Cancel
 		AlarmManager scheduler = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		Intent sensorIntent = new Intent(getApplicationContext(), SensorService.class);
-		PendingIntent scheduledSensorIntent = PendingIntent.getService(getApplicationContext(), 0, sensorIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		Intent sensorIntent = new Intent(getApplicationContext(),
+				SensorService.class);
+		PendingIntent scheduledSensorIntent = PendingIntent.getService(
+				getApplicationContext(), 0, sensorIntent,
+				PendingIntent.FLAG_UPDATE_CURRENT);
 
-		Intent uploadIntent = new Intent(getApplicationContext(), UploadService.class);
-		PendingIntent scheduledUploadIntent = PendingIntent.getService(getApplicationContext(), 0, uploadIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		Intent uploadIntent = new Intent(getApplicationContext(),
+				UploadService.class);
+		PendingIntent scheduledUploadIntent = PendingIntent.getService(
+				getApplicationContext(), 0, uploadIntent,
+				PendingIntent.FLAG_UPDATE_CURRENT);
 
 		scheduler.cancel(scheduledSensorIntent);
 		scheduler.cancel(scheduledUploadIntent);
@@ -270,7 +299,12 @@ public class MainActivity extends Activity {
 		new Timer().schedule(new TimerTask() {
 			@Override
 			public void run() {
-				final StringBuilder strBuf = new StringBuilder("Service started. \nStarted at: " + info.getTimeOfFirstFrame() + " \nFrames gathered: " + info.getAmountOfFrames() + "\nFile size: " + info.getFileSize() + " Bytes");
+				final StringBuilder strBuf = new StringBuilder(
+						"Service started. \nStarted at: "
+								+ info.getTimeOfFirstFrame()
+								+ " \nFrames gathered: "
+								+ info.getAmountOfFrames() + "\nFile size: "
+								+ info.getFileSize() + " Bytes");
 				if (!serviceRunning) {
 					strBuf.append("\n\nService stopped.");
 				}
@@ -345,6 +379,9 @@ public class MainActivity extends Activity {
 		case R.id.menu_TestQuery_Proximity_Bottom10Prox:
 			bottom10Proximity();
 			break;
+		case R.id.menu_TestQuery_Light_Prox_Kmean:
+			lightProxKMean();
+			break;
 		case R.id.menu_settings:
 			intent = new Intent(this, SettingsActivity.class);
 			startActivity(intent);
@@ -355,34 +392,53 @@ public class MainActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	private void lightProxKMean() {
+		SensorQueriesMultipleSensors sq = new SensorQueriesMultipleSensors();
+		SensorQueriesLight sensorQ_Light = new SensorQueriesLight(1,
+				Long.MAX_VALUE, getFilesDir());
+		SensorQueriesProximity sensorQ_Prox = new SensorQueriesProximity(1,
+				Long.MAX_VALUE, getFilesDir());
+		ArrayList<Vector<Float>> res = sq.getKMeans(
+				sensorQ_Light.getSensorDescriptorList(),
+				sensorQ_Prox.getSensorDescriptorList());
+		toastToScreen(res.get(0).get(0) + "", false);
+	}
+
 	private void minLight() {
-		SensorQueriesLight sensorQ_Light2 = new SensorQueriesLight(1, Long.MAX_VALUE, getFilesDir());
+		SensorQueriesLight sensorQ_Light2 = new SensorQueriesLight(1,
+				Long.MAX_VALUE, getFilesDir());
 		if (sensorQ_Light2.containsReadings()) {
 			SensorDescLight minLightDesc = sensorQ_Light2.getMinValue();
-			toastToScreen("Minimum Light: " + minLightDesc.getLight() + "\nat " + getDate(minLightDesc.getTimestamp()), true);
+			toastToScreen("Minimum Light: " + minLightDesc.getLight() + "\nat "
+					+ getDate(minLightDesc.getTimestamp()), true);
 		} else {
 			toastToScreen("No Data Found", false);
 		}
 	}
 
 	private void maxLight() {
-		SensorQueriesLight sensorQ_Light = new SensorQueriesLight(1, Long.MAX_VALUE, getFilesDir());
+		SensorQueriesLight sensorQ_Light = new SensorQueriesLight(1,
+				Long.MAX_VALUE, getFilesDir());
 		if (sensorQ_Light.containsReadings()) {
 			SensorDescLight maxLightDesc = sensorQ_Light.getMaxValue();
-			toastToScreen("Maximum Light: " + maxLightDesc.getLight() + "\nat " + getDate(maxLightDesc.getTimestamp()), true);
+			toastToScreen("Maximum Light: " + maxLightDesc.getLight() + "\nat "
+					+ getDate(maxLightDesc.getTimestamp()), true);
 		} else {
 			toastToScreen("No Data Found", false);
 		}
 	}
 
 	private void bottom10Light() {
-		SensorQueriesLight sensorQ_Light = new SensorQueriesLight(1, Long.MAX_VALUE, getFilesDir());
+		SensorQueriesLight sensorQ_Light = new SensorQueriesLight(1,
+				Long.MAX_VALUE, getFilesDir());
 		if (sensorQ_Light.containsReadings()) {
-			ArrayList<SensorDescLight> topKLightDesc = sensorQ_Light.getBottomK(10);
+			ArrayList<SensorDescLight> topKLightDesc = sensorQ_Light
+					.getBottomK(10);
 			int i = 1;
 			Log.d(DEBUG_TAG, "Bottom 10 Light:");
 			for (SensorDescLight bat : topKLightDesc) {
-				Log.d(DEBUG_TAG, i++ + ": " + bat.getLight() + " Date: " + getDate(bat.getTimestamp()));
+				Log.d(DEBUG_TAG, i++ + ": " + bat.getLight() + " Date: "
+						+ getDate(bat.getTimestamp()));
 			}
 			toastToScreen("Bottom 10 logged", false);
 		} else {
@@ -391,13 +447,16 @@ public class MainActivity extends Activity {
 	}
 
 	private void top10Light() {
-		SensorQueriesLight sensorQ_Light = new SensorQueriesLight(1, Long.MAX_VALUE, getFilesDir());
+		SensorQueriesLight sensorQ_Light = new SensorQueriesLight(1,
+				Long.MAX_VALUE, getFilesDir());
 		if (sensorQ_Light.containsReadings()) {
-			ArrayList<SensorDescLight> topKLightDesc = sensorQ_Light.getTopK(10);
+			ArrayList<SensorDescLight> topKLightDesc = sensorQ_Light
+					.getTopK(10);
 			int i = 1;
 			Log.d(DEBUG_TAG, "Top 10 Light:");
 			for (SensorDescLight light : topKLightDesc) {
-				Log.d(DEBUG_TAG, i++ + ": " + light.getLight() + " Date: " + getDate(light.getTimestamp()));
+				Log.d(DEBUG_TAG, i++ + ": " + light.getLight() + " Date: "
+						+ getDate(light.getTimestamp()));
 			}
 			toastToScreen("Top 10 logged", false);
 		} else {
@@ -406,33 +465,40 @@ public class MainActivity extends Activity {
 	}
 
 	private void minProximity() {
-		SensorQueriesProximity sensorQ_Proximity = new SensorQueriesProximity(1, Long.MAX_VALUE, getFilesDir());
+		SensorQueriesProximity sensorQ_Proximity = new SensorQueriesProximity(
+				1, Long.MAX_VALUE, getFilesDir());
 		if (sensorQ_Proximity.containsReadings()) {
 			SensorDescProximity minProxDesc = sensorQ_Proximity.getMinValue();
-			toastToScreen("Minimum Proximity: " + minProxDesc.getProximity() + "\nat " + getDate(minProxDesc.getTimestamp()), true);
+			toastToScreen("Minimum Proximity: " + minProxDesc.getProximity()
+					+ "\nat " + getDate(minProxDesc.getTimestamp()), true);
 		} else {
 			toastToScreen("No Data Found", false);
 		}
 	}
 
 	private void maxProximity() {
-		SensorQueriesProximity sensorQ_Prox = new SensorQueriesProximity(1, Long.MAX_VALUE, getFilesDir());
+		SensorQueriesProximity sensorQ_Prox = new SensorQueriesProximity(1,
+				Long.MAX_VALUE, getFilesDir());
 		if (sensorQ_Prox.containsReadings()) {
 			SensorDescProximity maxProxDesc = sensorQ_Prox.getMaxValue();
-			toastToScreen("Maximum Prox: " + maxProxDesc.getProximity() + "\nat " + getDate(maxProxDesc.getTimestamp()), true);
+			toastToScreen("Maximum Prox: " + maxProxDesc.getProximity()
+					+ "\nat " + getDate(maxProxDesc.getTimestamp()), true);
 		} else {
 			toastToScreen("No Data Found", false);
 		}
 	}
 
 	private void bottom10Proximity() {
-		SensorQueriesProximity sensorQ_Prox = new SensorQueriesProximity(1, Long.MAX_VALUE, getFilesDir());
+		SensorQueriesProximity sensorQ_Prox = new SensorQueriesProximity(1,
+				Long.MAX_VALUE, getFilesDir());
 		if (sensorQ_Prox.containsReadings()) {
-			ArrayList<SensorDescProximity> topKProxDesc = sensorQ_Prox.getBottomK(10);
+			ArrayList<SensorDescProximity> topKProxDesc = sensorQ_Prox
+					.getBottomK(10);
 			int i = 1;
 			Log.d(DEBUG_TAG, "Bottom 10 Prox:");
 			for (SensorDescProximity proxDesc : topKProxDesc) {
-				Log.d(DEBUG_TAG, i++ + ": " + proxDesc.getProximity() + " Date: " + getDate(proxDesc.getTimestamp()));
+				Log.d(DEBUG_TAG, i++ + ": " + proxDesc.getProximity()
+						+ " Date: " + getDate(proxDesc.getTimestamp()));
 			}
 			toastToScreen("Bottom 10 logged", false);
 		} else {
@@ -441,13 +507,16 @@ public class MainActivity extends Activity {
 	}
 
 	private void top10Proximity() {
-		SensorQueriesProximity sensorQ_Light = new SensorQueriesProximity(1, Long.MAX_VALUE, getFilesDir());
+		SensorQueriesProximity sensorQ_Light = new SensorQueriesProximity(1,
+				Long.MAX_VALUE, getFilesDir());
 		if (sensorQ_Light.containsReadings()) {
-			ArrayList<SensorDescProximity> topKProxDesc = sensorQ_Light.getTopK(10);
+			ArrayList<SensorDescProximity> topKProxDesc = sensorQ_Light
+					.getTopK(10);
 			int i = 1;
 			Log.d(DEBUG_TAG, "Top 10 Prox:");
 			for (SensorDescProximity proxDesc : topKProxDesc) {
-				Log.d(DEBUG_TAG, i++ + ": " + proxDesc.getProximity() + " Date: " + getDate(proxDesc.getTimestamp()));
+				Log.d(DEBUG_TAG, i++ + ": " + proxDesc.getProximity()
+						+ " Date: " + getDate(proxDesc.getTimestamp()));
 			}
 			toastToScreen("Top 10 logged", false);
 		} else {
@@ -456,54 +525,73 @@ public class MainActivity extends Activity {
 	}
 
 	private void maxAverageAccelerometer() {
-		SensorQueriesAccelerometer sensorQ_Accel = new SensorQueriesAccelerometer(1, Long.MAX_VALUE, getFilesDir());
+		SensorQueriesAccelerometer sensorQ_Accel = new SensorQueriesAccelerometer(
+				1, Long.MAX_VALUE, getFilesDir());
 		if (sensorQ_Accel.containsReadings()) {
-			SensorDescAccelerometer maxAccAverageSensDesc = sensorQ_Accel.getMaxAverageValue();
-			toastToScreen("Maximum Accelerometer Average: \n x:" + maxAccAverageSensDesc.getAccX() + "\ny: " + maxAccAverageSensDesc.getAccY() + "\nz: " + maxAccAverageSensDesc.getAccZ() + "\nDate: " + getDate(maxAccAverageSensDesc.getTimestamp()), true);
+			SensorDescAccelerometer maxAccAverageSensDesc = sensorQ_Accel
+					.getMaxAverageValue();
+			toastToScreen("Maximum Accelerometer Average: \n x:"
+					+ maxAccAverageSensDesc.getAccX() + "\ny: "
+					+ maxAccAverageSensDesc.getAccY() + "\nz: "
+					+ maxAccAverageSensDesc.getAccZ() + "\nDate: "
+					+ getDate(maxAccAverageSensDesc.getTimestamp()), true);
 		} else {
 			toastToScreen("No Data Found", false);
 		}
 	}
 
 	private void minAverageAccelerometer() {
-		SensorQueriesAccelerometer sensorQ_Accel = new SensorQueriesAccelerometer(1, Long.MAX_VALUE, getFilesDir());
+		SensorQueriesAccelerometer sensorQ_Accel = new SensorQueriesAccelerometer(
+				1, Long.MAX_VALUE, getFilesDir());
 		if (sensorQ_Accel.containsReadings()) {
-			SensorDescAccelerometer minAccAverageSensDesc = sensorQ_Accel.getMinAverageValue();
-			toastToScreen("Minimum Accelerometer Average: \n x:" + minAccAverageSensDesc.getAccX() + "\ny: " + minAccAverageSensDesc.getAccY() + "\nz: " + minAccAverageSensDesc.getAccZ() + "\nDate: " + getDate(minAccAverageSensDesc.getTimestamp()), true);
+			SensorDescAccelerometer minAccAverageSensDesc = sensorQ_Accel
+					.getMinAverageValue();
+			toastToScreen("Minimum Accelerometer Average: \n x:"
+					+ minAccAverageSensDesc.getAccX() + "\ny: "
+					+ minAccAverageSensDesc.getAccY() + "\nz: "
+					+ minAccAverageSensDesc.getAccZ() + "\nDate: "
+					+ getDate(minAccAverageSensDesc.getTimestamp()), true);
 		} else {
 			toastToScreen("No Data Found", false);
 		}
 	}
 
 	private void maxBattery() {
-		SensorQueriesBattery sensorQ_Batteries2 = new SensorQueriesBattery(1, Long.MAX_VALUE, getFilesDir());
+		SensorQueriesBattery sensorQ_Batteries2 = new SensorQueriesBattery(1,
+				Long.MAX_VALUE, getFilesDir());
 		if (sensorQ_Batteries2.containsReadings()) {
 			SensorDescBattery maxBatDesc = sensorQ_Batteries2.getMaxValue();
-			toastToScreen("Max Battery: " + maxBatDesc.getBatteryPercent() + "\nat " + getDate(maxBatDesc.getTimestamp()), true);
+			toastToScreen("Max Battery: " + maxBatDesc.getBatteryPercent()
+					+ "\nat " + getDate(maxBatDesc.getTimestamp()), true);
 		} else {
 			toastToScreen("No Data Found", false);
 		}
 	}
 
 	private void minBattery() {
-		SensorQueriesBattery sensorQ_Batteries = new SensorQueriesBattery(1, Long.MAX_VALUE, getFilesDir());
+		SensorQueriesBattery sensorQ_Batteries = new SensorQueriesBattery(1,
+				Long.MAX_VALUE, getFilesDir());
 		if (sensorQ_Batteries.containsReadings()) {
 			SensorDescBattery minBatDesc = sensorQ_Batteries.getMinValue();
-			toastToScreen("Minimum Battery: " + minBatDesc.getBatteryPercent() + "\nat " + getDate(minBatDesc.getTimestamp()), true);
+			toastToScreen("Minimum Battery: " + minBatDesc.getBatteryPercent()
+					+ "\nat " + getDate(minBatDesc.getTimestamp()), true);
 		} else {
 			toastToScreen("No Data Found", false);
 		}
 	}
 
 	private void bottom10Battery() {
-		SensorQueriesBattery sensorQ_Batteries = new SensorQueriesBattery(1, Long.MAX_VALUE, getFilesDir());
+		SensorQueriesBattery sensorQ_Batteries = new SensorQueriesBattery(1,
+				Long.MAX_VALUE, getFilesDir());
 		if (sensorQ_Batteries.containsReadings()) {
-			ArrayList<SensorDescBattery> topKBatDesc = sensorQ_Batteries.getBottomK(10);
+			ArrayList<SensorDescBattery> topKBatDesc = sensorQ_Batteries
+					.getBottomK(10);
 			int i = 1;
 			Log.d(DEBUG_TAG, "Bottom 10 Bat:");
 			for (SensorDescBattery bat : topKBatDesc) {
 				toastToScreen("Bottom 10 logged", false);
-				Log.d(DEBUG_TAG, i++ + ": " + bat.getBatteryPercent() + " Date: " + getDate(bat.getTimestamp()));
+				Log.d(DEBUG_TAG, i++ + ": " + bat.getBatteryPercent()
+						+ " Date: " + getDate(bat.getTimestamp()));
 			}
 		} else {
 			toastToScreen("No Data Found", false);
@@ -511,14 +599,17 @@ public class MainActivity extends Activity {
 	}
 
 	private void top10Battery() {
-		SensorQueriesBattery sensorQ_Batteries = new SensorQueriesBattery(1, Long.MAX_VALUE, getFilesDir());
+		SensorQueriesBattery sensorQ_Batteries = new SensorQueriesBattery(1,
+				Long.MAX_VALUE, getFilesDir());
 		if (sensorQ_Batteries.containsReadings()) {
-			ArrayList<SensorDescBattery> topKBatDesc = sensorQ_Batteries.getTopK(10);
+			ArrayList<SensorDescBattery> topKBatDesc = sensorQ_Batteries
+					.getTopK(10);
 			int i = 1;
 			Log.d(DEBUG_TAG, "Top 10 Bat:");
 			for (SensorDescBattery bat : topKBatDesc) {
 				toastToScreen("Top 10 logged", false);
-				Log.d(DEBUG_TAG, i++ + ": " + bat.getBatteryPercent() + " Date: " + getDate(bat.getTimestamp()));
+				Log.d(DEBUG_TAG, i++ + ": " + bat.getBatteryPercent()
+						+ " Date: " + getDate(bat.getTimestamp()));
 			}
 		} else {
 			toastToScreen("No Data Found", false);
