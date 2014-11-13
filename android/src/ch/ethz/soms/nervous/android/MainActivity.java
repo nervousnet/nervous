@@ -66,10 +66,10 @@ public class MainActivity extends Activity {
 
 		nervousMap = new NervousMap(getApplicationContext());
 		
-		nervousMap.addMapLayer(0, new AssetsMbTileSource(getApplicationContext(), "cch0", 3, 14));
-		nervousMap.addMapLayer(1, new AssetsMbTileSource(getApplicationContext(), "cch1", 3, 14));
-		nervousMap.addMapLayer(2, new AssetsMbTileSource(getApplicationContext(), "cch2", 3, 14));
-		nervousMap.addMapLayer(3, new AssetsMbTileSource(getApplicationContext(), "blank", 3, 14));
+		nervousMap.addMapLayer(0, new AssetsMbTileSource(getApplicationContext(), "cch0", 17, 22));
+		nervousMap.addMapLayer(1, new AssetsMbTileSource(getApplicationContext(), "cch1", 17, 22));
+		nervousMap.addMapLayer(2, new AssetsMbTileSource(getApplicationContext(), "cch2", 17, 22));
+		nervousMap.addMapLayer(3, new AssetsMbTileSource(getApplicationContext(), "blank", 17, 22));
 
 		nervousMap.selectMapLayer(0);
 
