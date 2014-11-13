@@ -1,34 +1,33 @@
 package ch.ethz.soms.nervous.map;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.osmdroid.tileprovider.tilesource.ITileSource;
+import org.osmdroid.DefaultResourceProxyImpl;
+import org.osmdroid.ResourceProxy;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.util.GeoPoint;
+import org.osmdroid.tileprovider.tilesource.XYTileSource;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.ItemizedIconOverlay;
+import org.osmdroid.views.overlay.ItemizedIconOverlay.OnItemGestureListener;
+import org.osmdroid.views.overlay.Overlay;
+import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.TilesOverlay;
 
-import ch.ethz.soms.nervous.android.sensors.SensorDescBLEBeacon;
 import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
-import android.graphics.drawable.shapes.Shape;
-import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.ViewSwitcher;
+import ch.ethz.soms.nervous.android.sensors.SensorDescBLEBeacon;
+import ch.ethz.soms.nervous.map.MapGraph.MapGraphEdge;
+import ch.ethz.soms.nervous.map.MapGraph.MapGraphNode;
 
 public class NervousMap {
 
 	private HashMap<Integer, MapTilesCustomSource> tileSources;
+	private HashMap<Integer, MapGraphContainer> mapGraphContainers;
 
 	private Context context;
 	private MapView mapView;
@@ -82,6 +81,10 @@ public class NervousMap {
 
 		tileSources = new HashMap<Integer, MapTilesCustomSource>();
 
+		mapGraphContainers = new HashMap<Integer, MapGraphContainer>();
+
+		listenerList = new LinkedList<NervousMapListener>();
+
 		switcher = new ViewSwitcher(context);
 
 		mapView = new MapView(context, null);
@@ -115,16 +118,21 @@ public class NervousMap {
 			}
 			MapTilesCustomSource mtcs = tileSources.get(mapLayer);
 			if (mtcs != null) {
+				//mapView.setTileSource(new XYTileSource("mbtiles", ResourceProxy.string.offline_mode, mtcs.getMinZoom(), mtcs.getMaxZoom(), 256, ".png", new String[] { "http://" }));
+				//mapView.setUseDataConnection(false);
 				TilesOverlay tilesOverlay = new TilesOverlay(mtcs.getProviderArray(), mtcs.getContext());
 				tilesOverlay.setLoadingBackgroundColor(Color.TRANSPARENT);
 				mapView.getOverlays().clear();
 				mapView.getOverlays().add(tilesOverlay);
+				mapView.setMinZoomLevel(mtcs.getMinZoom());
+				mapView.setMaxZoomLevel(mtcs.getMaxZoom());
+				mapView.getController().setZoom(mtcs.getDefaultZoom());
+				mapView.getController().setCenter(mtcs.getCenter());
+				//loadOverlays(mapLayer);
 			} else {
+				mapView.setUseDataConnection(true);
 				mapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
 			}
-			mapView.getController().setZoom(17);
-			GeoPoint mapCenter = new GeoPoint(53.5622f, 9.9853f);
-			mapView.getController().setCenter(mapCenter);
 		}
 	}
 
@@ -136,4 +144,53 @@ public class NervousMap {
 		orbitView.setBeacons(bleBeacons);
 	}
 
+	public void addMapGraph(int mapLayer, MapGraph mapGraph) {
+		MapGraphContainer mapGraphContainer;
+		if (mapGraphContainers.containsKey(mapLayer)) {
+			mapGraphContainer = mapGraphContainers.get(mapLayer);
+		} else {
+			mapGraphContainer = new MapGraphContainer();
+			mapGraphContainers.put(mapLayer, mapGraphContainer);
+		}
+		mapGraphContainer.add(mapGraph);
+	}
+
+	public void clearMapGraph(int mapLayer) {
+		mapGraphContainers.remove(mapLayer);
+	}
+
+	private void loadOverlays(int mapLayer) {
+		MapGraphContainer mgc = mapGraphContainers.get(mapLayer);
+		if (mgc != null) {
+			for (MapGraph mg : mgc.getMapGraphs()) {
+				ArrayList<OverlayItem> overlayItems = new ArrayList<OverlayItem>();
+
+				// Add graph nodes to map
+				for (MapGraphNode mgn : mg.getNodes()) {
+					overlayItems.add(mgn);
+				}
+
+				Overlay overlay = new ItemizedIconOverlay<OverlayItem>(overlayItems, new OnItemGestureListener<OverlayItem>() {
+
+					@Override
+					public boolean onItemLongPress(int arg0, OverlayItem arg1) {
+						return false;
+					}
+
+					@Override
+					public boolean onItemSingleTapUp(int arg0, OverlayItem arg1) {
+						// TODO
+						return true;
+					}
+				}, new DefaultResourceProxyImpl(context));
+
+				mapView.getOverlays().add(overlay);
+
+				// Add graph edges to map
+				for (MapGraphEdge mge : mg.getEdges()) {
+					mapView.getOverlays().add(mge);
+				}
+			}
+		}
+	}
 }

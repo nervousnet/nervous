@@ -44,6 +44,7 @@ import ch.ethz.soms.nervous.android.sensors.SensorDescProximity;
 import ch.ethz.soms.nervous.android.test.PerformanceTestTask;
 import ch.ethz.soms.nervous.android.test.PerformanceTestTask2;
 import ch.ethz.soms.nervous.map.AssetsMbTileSource;
+import ch.ethz.soms.nervous.map.MapGraphLoader;
 import ch.ethz.soms.nervous.map.NervousMap;
 import android.widget.Toast;
 
@@ -66,10 +67,13 @@ public class MainActivity extends Activity {
 
 		nervousMap = new NervousMap(getApplicationContext());
 		
-		nervousMap.addMapLayer(0, new AssetsMbTileSource(getApplicationContext(), "cch0", 17, 22));
-		nervousMap.addMapLayer(1, new AssetsMbTileSource(getApplicationContext(), "cch1", 17, 22));
-		nervousMap.addMapLayer(2, new AssetsMbTileSource(getApplicationContext(), "cch2", 17, 22));
-		nervousMap.addMapLayer(3, new AssetsMbTileSource(getApplicationContext(), "blank", 17, 22));
+		nervousMap.addMapLayer(0, new AssetsMbTileSource(getApplicationContext(), "cch0"));
+		nervousMap.addMapLayer(1, new AssetsMbTileSource(getApplicationContext(), "cch1"));
+		nervousMap.addMapLayer(2, new AssetsMbTileSource(getApplicationContext(), "cch2"));
+		nervousMap.addMapLayer(3, new AssetsMbTileSource(getApplicationContext(), "blank"));
+		
+		// TODO: This out-of-memory despite only having a small graph, very inefficient. Buffer over local file and parse line-wise, probably.
+		//new MapGraphLoader("http://nervous.ethz.ch/app_data/map-sn.json", nervousMap, 0).execute();
 
 		nervousMap.selectMapLayer(0);
 

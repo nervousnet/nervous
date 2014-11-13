@@ -13,33 +13,51 @@ import org.osmdroid.tileprovider.tilesource.BitmapTileSourceBase.LowMemoryExcept
 import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.tileprovider.tilesource.XYTileSource;
 import org.osmdroid.tileprovider.util.SimpleRegisterReceiver;
+import org.osmdroid.util.GeoPoint;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import ch.ethz.soms.nervous.utils.DBAccessHelper;
 
-public class AssetsMbTileSource extends MapTilesCustomSource{
+public class AssetsMbTileSource extends MapTilesCustomSource {
 
 	private String name;
-	private MapTileProviderArray providerArray;
-	private int minZoom;
-	private int maxZoom;
 
-	public AssetsMbTileSource(Context context, String name, int minZoom, int maxZoom) {
+	public AssetsMbTileSource(Context context, String name) {
 		super(context);
 		this.name = name;
-		this.minZoom = minZoom;
-		this.maxZoom = maxZoom;
 		XYTileSource localSource = new XYTileSource("mbtiles", ResourceProxy.string.offline_mode, minZoom, maxZoom, 256, ".png", new String[] { "http://" });
 
 		DBAccessHelper dbah = new DBAccessHelper(context, name + ".mbtiles");
 		dbah.createDB();
+		dbah.openDB();
+
+		Cursor cursor = dbah.getDatabase().rawQuery("SELECT * FROM 'metadata'", new String[] {});
+		while (cursor.moveToNext()) {
+			String metaName = cursor.getString(0);
+			String metaValue = cursor.getString(1);
+			parseMeta(metaName, metaValue);
+		}
+		dbah.closeDB();
 
 		IArchiveFile[] files = { MBTilesFileArchive.getDatabaseFileArchive(dbah.getDatabaseFile()) };
 		MapTileModuleProviderBase moduleProvider = new MapTileFileArchiveProvider(new SimpleRegisterReceiver(context), localSource, files);
 		this.providerArray = new MapTileProviderArray(localSource, null, new MapTileModuleProviderBase[] { moduleProvider });
 
+	}
+
+	private void parseMeta(String name, String value) {
+		if (name.equalsIgnoreCase("center")) {
+			String[] split = value.split(",");
+			center = new GeoPoint(Float.parseFloat(split[1]), Float.parseFloat(split[0]));
+			defaultZoom = Integer.parseInt(split[2]);
+		} else if (name.equalsIgnoreCase("minzoom")) {
+			minZoom = Integer.parseInt(value);
+		} else if (name.equalsIgnoreCase("maxzoom")) {
+			maxZoom = Integer.parseInt(value);
+		}
 	}
 
 	public MapTileProviderArray getProviderArray() {
