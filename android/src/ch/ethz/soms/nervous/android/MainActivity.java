@@ -43,6 +43,7 @@ import ch.ethz.soms.nervous.android.sensors.SensorDescLight;
 import ch.ethz.soms.nervous.android.sensors.SensorDescProximity;
 import ch.ethz.soms.nervous.android.test.PerformanceTestTask;
 import ch.ethz.soms.nervous.android.test.PerformanceTestTask2;
+import ch.ethz.soms.nervous.map.AssetsMbTileSource;
 import ch.ethz.soms.nervous.map.NervousMap;
 import android.widget.Toast;
 
@@ -64,7 +65,13 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 
 		nervousMap = new NervousMap(getApplicationContext());
-		nervousMap.selectMapLayer(-1);
+		
+		nervousMap.addMapLayer(0, new AssetsMbTileSource(getApplicationContext(), "cch0", 3, 14));
+		nervousMap.addMapLayer(1, new AssetsMbTileSource(getApplicationContext(), "cch1", 3, 14));
+		nervousMap.addMapLayer(2, new AssetsMbTileSource(getApplicationContext(), "cch2", 3, 14));
+		nervousMap.addMapLayer(3, new AssetsMbTileSource(getApplicationContext(), "blank", 3, 14));
+
+		nervousMap.selectMapLayer(0);
 
 		textStatus = (TextView) findViewById(R.id.text_status);
 		buttonOnOff = (ToggleButton) findViewById(R.id.togglebutton);
