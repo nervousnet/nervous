@@ -12,6 +12,7 @@ import org.osmdroid.util.GeoPoint;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import ch.ethz.soms.nervous.utils.DBAccessHelper;
 
 public class AssetsMbTileSource extends MapTilesCustomSource {
@@ -21,19 +22,26 @@ public class AssetsMbTileSource extends MapTilesCustomSource {
 	public AssetsMbTileSource(Context context, String name) {
 		super(context);
 		this.name = name;
-		XYTileSource localSource = new XYTileSource("mbtiles", ResourceProxy.string.offline_mode, minZoom, maxZoom, 256, ".png", new String[] { "http://" });
-
+		this.minZoom = 0;
+		this.maxZoom = 100;
+		
 		DBAccessHelper dbah = new DBAccessHelper(context, name + ".mbtiles");
 		dbah.createDB();
 		dbah.openDB();
 
-		Cursor cursor = dbah.getDatabase().rawQuery("SELECT * FROM 'metadata'", new String[] {});
-		while (cursor.moveToNext()) {
-			String metaName = cursor.getString(0);
-			String metaValue = cursor.getString(1);
-			parseMeta(metaName, metaValue);
+		try {
+			Cursor cursor = dbah.getDatabase().rawQuery("SELECT * FROM 'metadata'", new String[] {});
+			while (cursor.moveToNext()) {
+				String metaName = cursor.getString(0);
+				String metaValue = cursor.getString(1);
+				parseMeta(metaName, metaValue);
+			}
+			cursor.close();
+			dbah.closeDB();
+		} catch (SQLException e) {
 		}
-		dbah.closeDB();
+		
+		XYTileSource localSource = new XYTileSource("mbtiles", ResourceProxy.string.offline_mode, minZoom, maxZoom, 256, ".png", new String[] { "http://" });
 
 		IArchiveFile[] files = { MBTilesFileArchive.getDatabaseFileArchive(dbah.getDatabaseFile()) };
 		MapTileModuleProviderBase moduleProvider = new MapTileFileArchiveProvider(new SimpleRegisterReceiver(context), localSource, files);

@@ -14,7 +14,6 @@ public abstract class MapTilesCustomSource {
 	protected GeoPoint center;
 	protected int defaultZoom;
 
-
 	public MapTilesCustomSource(Context context) {
 		this.context = context;
 	}

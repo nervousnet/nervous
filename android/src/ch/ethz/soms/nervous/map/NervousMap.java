@@ -119,8 +119,8 @@ public class NervousMap {
 			}
 			MapTilesCustomSource mtcs = tileSources.get(mapLayer);
 			if (mtcs != null) {
-				//mapView.setTileSource(new XYTileSource("mbtiles", ResourceProxy.string.offline_mode, mtcs.getMinZoom(), mtcs.getMaxZoom(), 256, ".png", new String[] { "http://" }));
-				//mapView.setUseDataConnection(false);
+				mapView.setTileSource(new XYTileSource("mbtiles", ResourceProxy.string.offline_mode, mtcs.getMinZoom(), mtcs.getMaxZoom(), 256, ".png", new String[] { "http://" }));
+				mapView.setUseDataConnection(false);
 				TilesOverlay tilesOverlay = new TilesOverlay(mtcs.getProviderArray(), mtcs.getContext());
 				tilesOverlay.setLoadingBackgroundColor(Color.TRANSPARENT);
 				mapView.getOverlays().clear();
@@ -129,7 +129,7 @@ public class NervousMap {
 				mapView.setMaxZoomLevel(mtcs.getMaxZoom());
 				mapView.getController().setZoom(mtcs.getDefaultZoom());
 				mapView.getController().setCenter(mtcs.getCenter());
-				//loadOverlays(mapLayer);
+				loadOverlays(mapLayer);
 			} else {
 				mapView.setUseDataConnection(true);
 				mapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
@@ -192,6 +192,27 @@ public class NervousMap {
 					mapView.getOverlays().add(mge);
 				}
 			}
+		} else {
+			// TODO: Remove else case, for testing only
+			ArrayList<OverlayItem> overlayItems = new ArrayList<OverlayItem>();
+
+			overlayItems.add(new OverlayItem("YOU", "TEST", new GeoPoint(53.5622f, 9.9853f)));
+
+			Overlay overlay = new ItemizedIconOverlay<OverlayItem>(overlayItems, new OnItemGestureListener<OverlayItem>() {
+
+				@Override
+				public boolean onItemLongPress(int arg0, OverlayItem arg1) {
+					return false;
+				}
+
+				@Override
+				public boolean onItemSingleTapUp(int arg0, OverlayItem arg1) {
+					// TODO
+					return true;
+				}
+			}, new DefaultResourceProxyImpl(context));
+			mapView.getOverlays().add(overlay);
+
 		}
 	}
 }
