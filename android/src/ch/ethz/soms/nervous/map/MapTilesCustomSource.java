@@ -1,6 +1,5 @@
 package ch.ethz.soms.nervous.map;
 
-import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.tileprovider.MapTileProviderArray;
 import org.osmdroid.util.GeoPoint;
 

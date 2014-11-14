@@ -75,7 +75,7 @@ public class MainActivity extends Activity {
 		// TODO: This out-of-memory despite only having a small graph, very inefficient. Buffer over local file and parse line-wise, probably.
 		//new MapGraphLoader("http://nervous.ethz.ch/app_data/map-sn.json", nervousMap, 0).execute();
 
-		nervousMap.selectMapLayer(0);
+		nervousMap.selectMapLayer(1);
 
 		textStatus = (TextView) findViewById(R.id.text_status);
 		buttonOnOff = (ToggleButton) findViewById(R.id.togglebutton);
