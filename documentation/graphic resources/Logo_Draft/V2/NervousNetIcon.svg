@@ -9,15 +9,15 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="694.18701"
-   height="631.07874"
+   width="1024"
+   height="1024"
    id="svg6101"
    version="1.1"
    inkscape:version="0.48.5 r10040"
    sodipodi:docname="NervousNetIcon.svg"
-   inkscape:export-filename="C:\Users\patrick\Documents\Nervous_Mosgap\documentation\graphic resources\Logo_Draft\V2\NervousNetIcon.png"
-   inkscape:export-xdpi="449.96805"
-   inkscape:export-ydpi="449.96805">
+   inkscape:export-filename="C:\Users\cpcrasher\Documents\Nervous_Mosgap\documentation\graphic resources\Logo_Draft\V2\NervousNetIcon.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <defs
      id="defs6103" />
   <sodipodi:namedview
@@ -27,9 +27,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.49497475"
-     inkscape:cx="852.94189"
-     inkscape:cy="482.95831"
+     inkscape:zoom="0.35355339"
+     inkscape:cx="-212.12729"
+     inkscape:cy="605.15138"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -37,11 +37,16 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1858"
-     inkscape:window-height="1057"
+     inkscape:window-width="1474"
+     inkscape:window-height="841"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
-     inkscape:window-maximized="1" />
+     inkscape:window-maximized="1"
+     inkscape:snap-bbox="true"
+     inkscape:bbox-nodes="true"
+     inkscape:bbox-paths="true"
+     inkscape:snap-bbox-edge-midpoints="true"
+     inkscape:snap-bbox-midpoints="true" />
   <metadata
      id="metadata6106">
     <rdf:RDF>
@@ -50,7 +55,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -58,9 +63,9 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-7.0578253,-329.8656)">
+     transform="translate(-7.0578253,63.055665)">
     <path
-       d="m 98.154834,579.33693 153.817526,0 c -3.5659,13.13239 -7.19128,28.39179 -10.75718,41.52439 69.89475,-35.76452 187.53069,-81.5279 234.86851,1.39244 27.47245,47.24356 -33.67658,224.92041 -56.23352,338.5728 -49.24403,0.26493 -98.48807,0 -147.7321,0 19.69761,-90.07415 53.59134,-173.84353 61.80559,-265.45379 4.62179,-51.54505 -98.36605,-14.75446 -114.54437,27.81701 -32.72346,78.41748 -42.57226,156.57003 -63.22298,237.63678 -48.92634,0 -100.172156,0 -149.0984847,0 C 38.82817,832.33844 73.373964,708.88388 98.154834,579.33608 z"
+       d="m 141.36737,398.30535 226.78362,0 c -5.25744,19.36198 -10.60259,41.85995 -15.86003,61.22224 103.05059,-52.73006 276.48926,-120.20214 346.28264,2.05297 40.5045,69.6544 -49.65168,331.61548 -82.90891,499.18094 -72.60382,0.39061 -145.20767,0 -217.8115,0 29.04152,-132.80247 79.01336,-256.30937 91.12419,-391.37662 6.81422,-75.99638 -145.02777,-21.7535 -168.88057,41.01252 -48.24642,115.61623 -62.76716,230.84186 -93.21389,350.3641 -72.13552,0 -147.690687,0 -219.8260655,0 C 53.897973,771.32271 104.8312,589.30524 141.36737,398.3041 z"
        id="path6"
        inkscape:connector-curvature="0"
        style="fill:#f15f18;display:inline"
@@ -71,7 +76,7 @@
     <path
        style="fill:#f15f18;fill-opacity:1;display:inline"
        inkscape:connector-curvature="0"
-       d="m 466.23945,634.28572 c -12.56428,-37.02668 -43.40617,-58.41626 -81.49195,-46.59514 -1.95706,0.59728 -3.05834,0.99123 -1.82998,5.01183 l 20.55466,65.93134 59.04125,-18.14137 c 6.16421,-2.05618 4.40641,-3.94843 3.725,-6.20666 z"
+       d="m 684.05956,479.32009 c -18.52437,-54.59096 -63.99667,-86.12708 -120.14913,-68.6984 -2.88543,0.88061 -4.50912,1.46144 -2.69806,7.38929 l 30.30513,97.20707 87.04854,-26.74706 c 9.08832,-3.03157 6.49667,-5.82144 5.49202,-9.1509 z"
        id="path3022"
        inkscape:export-filename="C:\Users\patrick\Documents\Nervous_Mosgap\documentation\graphic resources\Logo_Draft\V2\path4070-95.png"
        inkscape:export-xdpi="1011.71"
@@ -79,7 +84,7 @@
     <path
        style="fill:#f15f18;fill-opacity:1;display:inline"
        inkscape:connector-curvature="0"
-       d="M 549.2091,616.13342 C 521.21664,525.57929 431.9928,474.20411 349.75259,501.54795 c -1.93926,0.63541 -2.9915,2.90382 -2.32813,5.04793 l 14.29386,47.42372 c 0.64303,2.13243 2.73021,3.34046 4.66872,2.70353 55.08265,-18.31142 114.87953,16.31217 133.24762,77.21058 0.62524,2.11971 2.73911,3.34631 4.66846,2.70352 l 42.93037,-14.26437 0.15251,-0.0763 c 1.95705,-0.65066 3.01538,-2.92922 2.36117,-5.04183 l -0.53883,-1.13355 z"
+       d="M 806.38739,452.55691 C 765.11618,319.04679 633.5674,243.3009 512.31506,283.61572 c -2.85918,0.93681 -4.41057,4.28127 -3.43252,7.4426 l 21.07442,69.91996 c 0.94806,3.14398 4.02533,4.92506 6.88341,3.986 81.2121,-26.99778 169.3747,24.05014 196.45604,113.83683 0.92184,3.12523 4.03846,4.93369 6.88303,3.98598 l 63.29517,-21.03094 0.22486,-0.11249 c 2.88541,-0.95931 4.44578,-4.31874 3.48123,-7.4335 l -0.79443,-1.67128 z"
        id="path3024"
        inkscape:export-filename="C:\Users\patrick\Documents\Nervous_Mosgap\documentation\graphic resources\Logo_Draft\V2\path4070-95.png"
        inkscape:export-xdpi="1011.71"
@@ -87,7 +92,7 @@
     <path
        style="fill:#f15f18;fill-opacity:1;display:inline"
        inkscape:connector-curvature="0"
-       d="m 624.1706,592.54585 -0.56166,-1.13357 C 581.94171,455.48705 448.20355,378.36999 324.9336,419.32096 c -1.9291,0.64048 -2.97727,2.90076 -2.32559,5.09012 l 14.71348,48.76062 c 0.6532,2.16292 2.74877,3.35215 4.67812,2.71013 95.45489,-31.72586 198.97996,28.30103 230.7986,133.75036 0.62778,2.10955 2.73936,3.34605 4.66388,2.71624 l 44.14042,-14.68425 0.1779,-0.0763 c 1.93418,-0.65065 3.02971,-2.93558 2.38158,-5.05657 z"
+       d="m 916.90824,417.78015 -0.8281,-1.6713 C 854.64729,215.705 657.46803,102.00614 475.72274,162.38286 c -2.8442,0.94432 -4.3896,4.27685 -3.42878,7.50482 l 21.69308,71.89109 c 0.96307,3.18889 4.0527,4.94222 6.89728,3.99569 140.73565,-46.77568 293.36971,41.72609 340.2821,197.19726 0.92558,3.11025 4.03882,4.93331 6.87626,4.00472 l 65.07923,-21.64999 0.26229,-0.11249 c 2.85169,-0.95932 4.46691,-4.32812 3.51133,-7.45525 z"
        id="path3026"
        inkscape:export-filename="C:\Users\patrick\Documents\Nervous_Mosgap\documentation\graphic resources\Logo_Draft\V2\path4070-95.png"
        inkscape:export-xdpi="1011.71"
@@ -95,7 +100,7 @@
     <path
        style="fill:#f15f18;fill-opacity:1;display:inline"
        inkscape:connector-curvature="0"
-       d="m 701.06625,568.21129 -0.56166,-1.13357 C 645.71215,363.50605 489.13545,303.0171 300.32149,340.17797 c -1.93164,0.64304 -2.97726,2.90051 -2.32558,5.08961 l 14.00664,46.39005 c 0.6532,2.16292 2.74878,3.3519 4.67813,2.71013 162.87512,-48.38115 301.14275,51.15407 329.73378,191.18683 0.62773,2.10955 2.73905,3.34631 4.66388,2.71649 l 47.42011,-14.94146 0.1779,-0.0763 c 1.93418,-0.65066 3.02961,-2.93558 2.38158,-5.05657 z"
+       d="m 1030.2807,381.90205 -0.8281,-1.6713 C 948.66839,80.09114 717.81669,-9.0917669 439.43541,45.696932 c -2.84795,0.948167 -4.38958,4.276553 -3.42876,7.504092 l 20.65094,68.395936 c 0.96308,3.18891 4.05271,4.94194 6.89729,3.99569 240.13788,-71.331555 443.99529,75.41998 486.14899,281.87981 0.92551,3.11026 4.03837,4.93369 6.87628,4.00511 l 69.91475,-22.02922 0.2622,-0.11249 c 2.8517,-0.95933 4.4668,-4.32813 3.5114,-7.45525 z"
        id="path3026-6"
        sodipodi:nodetypes="cccccccccccc"
        inkscape:export-filename="C:\Users\patrick\Documents\Nervous_Mosgap\documentation\graphic resources\Logo_Draft\V2\path4070-95.png"

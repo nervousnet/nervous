@@ -6,20 +6,20 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.text.InputFilter.LengthFilter;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -41,10 +41,8 @@ import ch.ethz.soms.nervous.android.sensors.SensorDescAccelerometer;
 import ch.ethz.soms.nervous.android.sensors.SensorDescBattery;
 import ch.ethz.soms.nervous.android.sensors.SensorDescLight;
 import ch.ethz.soms.nervous.android.sensors.SensorDescProximity;
-import ch.ethz.soms.nervous.android.test.PerformanceTestTask;
 import ch.ethz.soms.nervous.android.test.PerformanceTestTask2;
 import ch.ethz.soms.nervous.map.AssetsMbTileSource;
-import ch.ethz.soms.nervous.map.MapGraphLoader;
 import ch.ethz.soms.nervous.map.NervousMap;
 import android.widget.Toast;
 
@@ -58,7 +56,15 @@ public class MainActivity extends Activity {
 
 	private NervousMap nervousMap;
 
-	private boolean serviceRunning;
+	private boolean serviceRunning, menuButtonsShowing;
+
+	private ImageButton mainMenuButton;
+
+	private ImageView imgOverlay;
+
+	private RelativeLayout layoutMainMap;
+
+	private LinearLayout layoutExtraMenuButtonGroup;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,14 +72,20 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 
 		nervousMap = new NervousMap(getApplicationContext());
-		
-		nervousMap.addMapLayer(0, new AssetsMbTileSource(getApplicationContext(), "cch0"));
-		nervousMap.addMapLayer(1, new AssetsMbTileSource(getApplicationContext(), "cch1"));
-		nervousMap.addMapLayer(2, new AssetsMbTileSource(getApplicationContext(), "cch2"));
-		nervousMap.addMapLayer(3, new AssetsMbTileSource(getApplicationContext(), "blank"));
-		
-		// TODO: This out-of-memory despite only having a small graph, very inefficient. Buffer over local file and parse line-wise, probably.
-		//new MapGraphLoader("http://nervous.ethz.ch/app_data/map-sn.json", nervousMap, 0).execute();
+
+		nervousMap.addMapLayer(0, new AssetsMbTileSource(
+				getApplicationContext(), "cch0"));
+		nervousMap.addMapLayer(1, new AssetsMbTileSource(
+				getApplicationContext(), "cch1"));
+		nervousMap.addMapLayer(2, new AssetsMbTileSource(
+				getApplicationContext(), "cch2"));
+		nervousMap.addMapLayer(3, new AssetsMbTileSource(
+				getApplicationContext(), "blank"));
+
+		// TODO: This out-of-memory despite only having a small graph, very
+		// inefficient. Buffer over local file and parse line-wise, probably.
+		// new MapGraphLoader("http://nervous.ethz.ch/app_data/map-sn.json",
+		// nervousMap, 0).execute();
 
 		nervousMap.selectMapLayer(0);
 
@@ -88,25 +100,69 @@ public class MainActivity extends Activity {
 			}
 		});
 
+		menuButtonsShowing = false;
 		setupAnimations();
+
+	}
+
+	@Override
+	public void onBackPressed() {
+		if (menuButtonsShowing) {
+			moveOutButtons(this);
+			menuButtonsShowing = false;
+		} else {
+			super.onBackPressed();
+		}
 	}
 
 	private void setupAnimations() {
 		final RelativeLayout layoutNodeExtraInf = setupNodeExtraInf();
-		final RelativeLayout layoutMainMap = setupMainMap(layoutNodeExtraInf);
-
-		final LinearLayout layoutExtraMenuButtonGroup = setupExtraMenuButtons();
-		setupMainMenuButton(layoutMainMap, layoutExtraMenuButtonGroup);
+		layoutMainMap = setupMainMap(layoutNodeExtraInf);
+		layoutExtraMenuButtonGroup = setupExtraMenuButtons();
+		setupMainMenuButton();
 	}
 
-	private void setupMainMenuButton(final RelativeLayout layoutMainMap,
-			final LinearLayout layoutExtraMenuButtonGroup) {
-		final ImageButton mainMenuButton = (ImageButton) findViewById(R.id.btn_mainMenuButton);
-
-		final Animation flyInFromRightAnimation = AnimationUtils.loadAnimation(
-				this, R.anim.menu_button_group_animation_in);
+	private void moveOutButtons(final MainActivity context) {
 		final Animation flyOutToRightAnimation = AnimationUtils.loadAnimation(
-				this, R.anim.menu_button_group_animation_out);
+				context, R.anim.menu_button_group_animation_out);
+		final AlphaAnimation alphaAnimFadeOut = new AlphaAnimation(1, 0);
+		final AlphaAnimation alphaAnimSemiFadeIn = new AlphaAnimation(0.5f, 1);
+
+		alphaAnimFadeOut.setDuration(getResources().getInteger(
+				R.integer.menuButtonsGroup_animationDuration));
+		alphaAnimSemiFadeIn.setDuration(getResources().getInteger(
+				R.integer.menuButtonsGroup_animationDuration));
+		alphaAnimSemiFadeIn.setFillAfter(true);
+		alphaAnimSemiFadeIn.setFillEnabled(true);
+
+		mainMenuButton.setImageResource(R.raw.ic_stack);
+
+		AnimationSet animSet = new AnimationSet(false);
+		animSet.addAnimation(flyOutToRightAnimation);
+		animSet.addAnimation(alphaAnimFadeOut);
+		animSet.setFillAfter(true);
+		animSet.setFillEnabled(true);
+		layoutMainMap.startAnimation(alphaAnimSemiFadeIn);
+		layoutExtraMenuButtonGroup.startAnimation(animSet);
+		layoutMainMap.setEnabled(true);
+		enableLayout(layoutMainMap);
+		imgOverlay.setEnabled(false);
+		imgOverlay.setVisibility(View.INVISIBLE);
+		layoutExtraMenuButtonGroup.postDelayed(
+				new Runnable() {
+					@Override
+					public void run() {
+						layoutExtraMenuButtonGroup
+								.setVisibility(View.INVISIBLE);
+					}
+				},
+				getResources().getInteger(
+						R.integer.menuButtonsGroup_animationDuration));
+	}
+
+	private void moveInButtons(final MainActivity context) {
+		final Animation flyInFromRightAnimation = AnimationUtils.loadAnimation(
+				context, R.anim.menu_button_group_animation_in);
 		final AlphaAnimation alphaAnimFadeIn = new AlphaAnimation(0, 1);
 		final AlphaAnimation alphaAnimFadeOut = new AlphaAnimation(1, 0);
 		final AlphaAnimation alphaAnimSemiFadeOut = new AlphaAnimation(1, 0.5f);
@@ -124,43 +180,64 @@ public class MainActivity extends Activity {
 				R.integer.menuButtonsGroup_animationDuration));
 		alphaAnimSemiFadeOut.setFillAfter(true);
 		alphaAnimSemiFadeOut.setFillEnabled(true);
+
+		mainMenuButton.setImageResource(R.raw.ic_cross);
+		layoutExtraMenuButtonGroup.setVisibility(View.VISIBLE);
+		AnimationSet animSet = new AnimationSet(false);
+		animSet.addAnimation(flyInFromRightAnimation);
+		animSet.addAnimation(alphaAnimFadeIn);
+		animSet.setFillAfter(true);
+		animSet.setFillEnabled(true);
+		layoutMainMap.startAnimation(alphaAnimSemiFadeOut);
+		layoutExtraMenuButtonGroup.startAnimation(animSet);
+		layoutMainMap.setEnabled(false);
+		disableLayout(layoutMainMap);
+		imgOverlay.setEnabled(true);
+		imgOverlay.setVisibility(View.VISIBLE);
+	}
+
+	private void enableLayout(final ViewGroup layout) {
+		for (int i = 0; i < layout.getChildCount(); i++) {
+			View child = layout.getChildAt(i);
+			child.setEnabled(true);
+		}
+	}
+
+	private void disableLayout(final ViewGroup layout) {
+		for (int i = 0; i < layout.getChildCount(); i++) {
+			View child = layout.getChildAt(i);
+			child.setEnabled(false);
+		}
+	}
+
+	private void setupMainMenuButton() {
+		mainMenuButton = (ImageButton) findViewById(R.id.btn_mainMenuButton);
+		final MainActivity context = this;
+
+		imgOverlay = (ImageView) findViewById(R.id.img_Overlay);
+		imgOverlay.setEnabled(false);
+		imgOverlay.setVisibility(View.INVISIBLE);
+		imgOverlay.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if (menuButtonsShowing) {
+					moveOutButtons(context);
+					menuButtonsShowing = false;
+				}
+			}
+		});
 		mainMenuButton.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				mainMenuButton.setImageResource(R.raw.ic_stack);
-				if (layoutExtraMenuButtonGroup.getVisibility() == View.INVISIBLE) {
-					mainMenuButton.setImageResource(R.raw.ic_cross);
-					layoutExtraMenuButtonGroup.setVisibility(View.VISIBLE);
-					AnimationSet animSet = new AnimationSet(false);
-					animSet.addAnimation(flyInFromRightAnimation);
-					animSet.addAnimation(alphaAnimFadeIn);
-					animSet.setFillAfter(true);
-					animSet.setFillEnabled(true);
-					layoutMainMap.startAnimation(alphaAnimSemiFadeOut);
-					layoutExtraMenuButtonGroup.startAnimation(animSet);
-					layoutMainMap.setEnabled(false);
 
+				if (!menuButtonsShowing) {
+					moveInButtons(context);
+					menuButtonsShowing = true;
 				} else {
-					AnimationSet animSet = new AnimationSet(false);
-					animSet.addAnimation(flyOutToRightAnimation);
-					animSet.addAnimation(alphaAnimFadeOut);
-					animSet.setFillAfter(true);
-					animSet.setFillEnabled(true);
-					layoutMainMap.startAnimation(alphaAnimSemiFadeIn);
-					layoutExtraMenuButtonGroup.startAnimation(animSet);
-					layoutMainMap.setEnabled(true);
-					layoutExtraMenuButtonGroup.postDelayed(
-							new Runnable() {
-								@Override
-								public void run() {
-									layoutExtraMenuButtonGroup
-											.setVisibility(View.INVISIBLE);
-								}
-							},
-							getResources()
-									.getInteger(
-											R.integer.menuButtonsGroup_animationDuration));
+					moveOutButtons(context);
+					menuButtonsShowing = false;
 				}
 			}
 		});
@@ -175,7 +252,7 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				toastToScreen("Yolo", false);
+				toastToScreen("Test", false);
 			}
 		});
 		return layoutExtraMenuButtonGroup;
@@ -183,10 +260,6 @@ public class MainActivity extends Activity {
 
 	private RelativeLayout setupMainMap(final RelativeLayout layoutNodeExtraInf) {
 		final RelativeLayout layoutMainMap = (RelativeLayout) findViewById(R.id.layout_map);
-		final Animation flyInFromBottomAnimation = AnimationUtils
-				.loadAnimation(this, R.anim.node_extra_information_animation_in);
-		final Animation flyOutToBottomAnimation = AnimationUtils.loadAnimation(
-				this, R.anim.node_extra_information_animation_out);
 
 		layoutMainMap.addView(nervousMap.getViewSwitcher());
 
