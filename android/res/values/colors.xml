@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="BlueDarker">#F15F18</color>
-    <color name="BlueLighter">#BBBBBB</color>
-    <color name="GreenDarker">#BBBBBB</color>
-    <color name="GreenLighter">#F15F18</color>
+    <color name="orange_nervous">#F15F18</color>
+    <color name="gray_nervous">#BBBBBB</color>
+    <color name="gray_nervous2">#BBBBBB</color>
+    <color name="orange_nervous2">#F15F18</color>
 </resources>
