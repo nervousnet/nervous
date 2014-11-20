@@ -1,6 +1,11 @@
 package ch.ethz.soms.nervous.map;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -14,7 +19,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.osmdroid.events.MapListener;
 
+import android.content.Context;
 import android.os.AsyncTask;
 
 public class MapGraphLoader extends AsyncTask<Void, Void, Void> {
@@ -22,26 +29,54 @@ public class MapGraphLoader extends AsyncTask<Void, Void, Void> {
 	private NervousMap map;
 	private String uri;
 	private int mapLayer;
-	private JSONArray json;
+	private int identifier;
+	private Context context;
+	private MapGraph mapGraph;
+	private boolean success = false;
 
-	public MapGraphLoader(String uri, NervousMap map, int mapLayer) {
+	public MapGraphLoader(Context context, String uri, NervousMap map, int mapLayer, int identifier) {
 		this.uri = uri;
 		this.map = map;
 		this.mapLayer = mapLayer;
+		this.identifier = identifier;
+		this.context = context;
 	}
 
 	@Override
 	protected Void doInBackground(Void... params) {
-		json = load(uri);
+		load(uri);
+		File file = new File(context.getCacheDir(), "MapGraph_" + String.valueOf(mapLayer) + String.valueOf(identifier));
+		if (file.exists()) {
+			try {
+				BufferedReader br = new BufferedReader(new FileReader(file));
+				String jsonLine;
+				while ((jsonLine = br.readLine()) != null) {
+					try {
+						JSONObject jo = new JSONObject(jsonLine);
+						mapGraph.addFromJson(jo);
+					} catch (JSONException e) {
+					}
+				}
+				success = true;
+				br.close();
+			} catch (FileNotFoundException e) {
+			} catch (IOException e) {
+			}
+			return null;
+		}
+		success = false;
 		return null;
 	}
 
 	@Override
 	protected void onPostExecute(Void param) {
-		map.addMapGraph(mapLayer, new MapGraph(json));
+		if (success) {
+			map.removeMapGraph(mapLayer, mapGraph);
+			map.addMapGraph(mapLayer, mapGraph);
+		}
 	}
 
-	private static JSONArray load(String uri) {
+	private void load(String uri) {
 		HttpClient httpClient = new DefaultHttpClient();
 		HttpGet httpGet = new HttpGet(uri);
 		HttpResponse response;
@@ -50,39 +85,26 @@ public class MapGraphLoader extends AsyncTask<Void, Void, Void> {
 			HttpEntity entity = response.getEntity();
 			if (entity != null) {
 				InputStream is = entity.getContent();
-				JSONArray json = streamToJson(is);
+				File file = new File(context.getCacheDir(), "MapGraph_" + String.valueOf(mapLayer) + String.valueOf(identifier));
+				FileOutputStream fis = new FileOutputStream(file, false);
+				int read = 0;
+				byte[] data = new byte[1024];
+				while ((read = is.read(data)) != -1) {
+					fis.write(data, 0, read);
+				}
 				try {
 					is.close();
 				} catch (Exception e) {
 				}
-				return json;
+				try {
+					fis.close();
+				} catch (Exception e) {
+				}
 			}
 		} catch (ClientProtocolException e) {
 		} catch (IOException e) {
 		}
-		return null;
 	}
 
-	private static JSONArray streamToJson(InputStream is) {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		JSONArray jsonArray = new JSONArray();
-		String line = null;
-		try {
-			while ((line = reader.readLine()) != null) {
-				try {
-					jsonArray.put(new JSONObject(line));
-				} catch (JSONException e) {
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				is.close();
-			} catch (IOException e) {
-			}
-		}
-		return jsonArray;
-	}
 
 }

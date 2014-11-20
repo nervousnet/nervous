@@ -1,7 +1,6 @@
 package ch.ethz.soms.nervous.map;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,6 +13,7 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedIconOverlay.OnItemGestureListener;
+import org.osmdroid.views.overlay.OverlayItem.HotspotPlace;
 import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.TilesOverlay;
@@ -196,7 +196,18 @@ public class NervousMap {
 			// TODO: Remove else case, for testing only
 			ArrayList<OverlayItem> overlayItems = new ArrayList<OverlayItem>();
 
-			overlayItems.add(new OverlayItem("YOU", "TEST", new GeoPoint(53.5622f, 9.9853f)));
+			OverlayItem oi = new OverlayItem("YOU", "TEST", new GeoPoint(53.5622f, 9.9853f));
+			OverlayItem oi2 = new OverlayItem("YOU", "TEST", new GeoPoint(53.5624f, 9.9853f));
+
+			
+			oi.setMarker(MapGraphMarker.getMapGrahpMarker(MapGraphMarker.TYPE_EMPTY_CIRCLE_GREY));
+			oi.setMarkerHotspot(HotspotPlace.CENTER);
+			
+			oi2.setMarker(MapGraphMarker.getMapGrahpMarker(MapGraphMarker.TYPE_EMPTY_CIRCLE_GREY));
+			oi2.setMarkerHotspot(HotspotPlace.CENTER);
+			
+			overlayItems.add(oi);
+			overlayItems.add(oi2);
 
 			Overlay overlay = new ItemizedIconOverlay<OverlayItem>(overlayItems, new OnItemGestureListener<OverlayItem>() {
 
@@ -214,5 +225,9 @@ public class NervousMap {
 			mapView.getOverlays().add(overlay);
 
 		}
+	}
+
+	public void removeMapGraph(int mapLayer, MapGraph mapGraph) {
+		mapGraphContainers.get(mapLayer).remove(mapGraph);
 	}
 }
