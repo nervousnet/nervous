@@ -4,20 +4,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.osmdroid.DefaultResourceProxyImpl;
 import org.osmdroid.ResourceProxy;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.tileprovider.tilesource.XYTileSource;
-import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedIconOverlay.OnItemGestureListener;
-import org.osmdroid.views.overlay.OverlayItem.HotspotPlace;
 import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.TilesOverlay;
-
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.widget.ViewSwitcher;
@@ -25,6 +22,7 @@ import ch.ethz.soms.nervous.android.sensors.SensorDescBLEBeacon;
 import ch.ethz.soms.nervous.map.MapGraph.MapGraphEdge;
 import ch.ethz.soms.nervous.map.MapGraph.MapGraphNode;
 
+@SuppressLint("UseSparseArrays")
 public class NervousMap {
 
 	private HashMap<Integer, MapTilesCustomSource> tileSources;
@@ -154,6 +152,7 @@ public class NervousMap {
 			mapGraphContainers.put(mapLayer, mapGraphContainer);
 		}
 		mapGraphContainer.add(mapGraph);
+		selectMapLayer(mapLayer);
 	}
 
 	public void clearMapGraph(int mapLayer) {
@@ -166,6 +165,11 @@ public class NervousMap {
 			for (MapGraph mg : mgc.getMapGraphs()) {
 				ArrayList<OverlayItem> overlayItems = new ArrayList<OverlayItem>();
 
+				// Add graph edges to map
+				for (MapGraphEdge mge : mg.getEdges()) {
+					mapView.getOverlays().add(mge);
+				}
+				
 				// Add graph nodes to map
 				for (MapGraphNode mgn : mg.getNodes()) {
 					overlayItems.add(mgn);
@@ -174,56 +178,23 @@ public class NervousMap {
 				Overlay overlay = new ItemizedIconOverlay<OverlayItem>(overlayItems, new OnItemGestureListener<OverlayItem>() {
 
 					@Override
-					public boolean onItemLongPress(int arg0, OverlayItem arg1) {
+					public boolean onItemLongPress(int arg, OverlayItem oi) {
 						return false;
 					}
 
 					@Override
-					public boolean onItemSingleTapUp(int arg0, OverlayItem arg1) {
+					public boolean onItemSingleTapUp(int arg, OverlayItem oi) {
 						// TODO
+						if(oi instanceof MapGraphNode) {
+							onTouchEvent(null);
+						}
 						return true;
 					}
 				}, new DefaultResourceProxyImpl(context));
 
 				mapView.getOverlays().add(overlay);
 
-				// Add graph edges to map
-				for (MapGraphEdge mge : mg.getEdges()) {
-					mapView.getOverlays().add(mge);
-				}
 			}
-		} else {
-			// TODO: Remove else case, for testing only
-			ArrayList<OverlayItem> overlayItems = new ArrayList<OverlayItem>();
-
-			OverlayItem oi = new OverlayItem("YOU", "TEST", new GeoPoint(53.5622f, 9.9853f));
-			OverlayItem oi2 = new OverlayItem("YOU", "TEST", new GeoPoint(53.5624f, 9.9853f));
-
-			
-			oi.setMarker(MapGraphMarker.getMapGrahpMarker(MapGraphMarker.TYPE_EMPTY_CIRCLE_GREY));
-			oi.setMarkerHotspot(HotspotPlace.CENTER);
-			
-			oi2.setMarker(MapGraphMarker.getMapGrahpMarker(MapGraphMarker.TYPE_EMPTY_CIRCLE_GREY));
-			oi2.setMarkerHotspot(HotspotPlace.CENTER);
-			
-			overlayItems.add(oi);
-			overlayItems.add(oi2);
-
-			Overlay overlay = new ItemizedIconOverlay<OverlayItem>(overlayItems, new OnItemGestureListener<OverlayItem>() {
-
-				@Override
-				public boolean onItemLongPress(int arg0, OverlayItem arg1) {
-					return false;
-				}
-
-				@Override
-				public boolean onItemSingleTapUp(int arg0, OverlayItem arg1) {
-					// TODO
-					return true;
-				}
-			}, new DefaultResourceProxyImpl(context));
-			mapView.getOverlays().add(overlay);
-
 		}
 	}
 

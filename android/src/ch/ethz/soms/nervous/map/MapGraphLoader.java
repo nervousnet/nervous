@@ -36,7 +36,7 @@ public class MapGraphLoader extends AsyncTask<Void, Void, Void> {
 		this.mapLayer = mapLayer;
 		this.identifier = identifier;
 		this.context = context;
-		this.mapGraph = new MapGraph();
+		this.mapGraph = new MapGraph(context);
 	}
 
 	@Override
@@ -83,7 +83,7 @@ public class MapGraphLoader extends AsyncTask<Void, Void, Void> {
 			HttpEntity entity = response.getEntity();
 			if (entity != null) {
 				InputStream is = entity.getContent();
-				File file = new File(context.getCacheDir(), "MapGraph_" + String.valueOf(mapLayer) + String.valueOf(identifier));
+				File file = new File(context.getCacheDir(), "MapGraph_" + String.valueOf(mapLayer) + "_" + String.valueOf(identifier));
 				FileOutputStream fis = new FileOutputStream(file, false);
 				int read = 0;
 				byte[] data = new byte[1024];
