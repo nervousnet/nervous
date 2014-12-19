@@ -2,13 +2,11 @@ package ch.ethz.soms.nervous.map;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -16,10 +14,8 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.osmdroid.events.MapListener;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -40,12 +36,13 @@ public class MapGraphLoader extends AsyncTask<Void, Void, Void> {
 		this.mapLayer = mapLayer;
 		this.identifier = identifier;
 		this.context = context;
+		this.mapGraph = new MapGraph();
 	}
 
 	@Override
 	protected Void doInBackground(Void... params) {
 		load(uri);
-		File file = new File(context.getCacheDir(), "MapGraph_" + String.valueOf(mapLayer) + String.valueOf(identifier));
+		File file = new File(context.getCacheDir(), "MapGraph_" + String.valueOf(mapLayer) + "_" + String.valueOf(identifier));
 		if (file.exists()) {
 			try {
 				BufferedReader br = new BufferedReader(new FileReader(file));
@@ -71,7 +68,8 @@ public class MapGraphLoader extends AsyncTask<Void, Void, Void> {
 	@Override
 	protected void onPostExecute(Void param) {
 		if (success) {
-			map.removeMapGraph(mapLayer, mapGraph);
+			// Add the new graph to the map
+			map.clearMapGraph(mapLayer);
 			map.addMapGraph(mapLayer, mapGraph);
 		}
 	}
@@ -105,6 +103,5 @@ public class MapGraphLoader extends AsyncTask<Void, Void, Void> {
 		} catch (IOException e) {
 		}
 	}
-
 
 }

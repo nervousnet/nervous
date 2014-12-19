@@ -79,9 +79,7 @@ public class MainActivity extends Activity {
 		nervousMap.addMapLayer(2, new AssetsMbTileSource(getApplicationContext(), "cch2"));
 		nervousMap.addMapLayer(3, new AssetsMbTileSource(getApplicationContext(), "blank"));
 
-		// TODO: This out-of-memory despite only having a small graph, very
-		// inefficient. Buffer over local file and parse line-wise, probably.
-		//new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-sn.json", nervousMap, 0, 0).execute();
+		new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-sn.json", nervousMap, 0, 0).execute();
 
 		nervousMap.selectMapLayer(0);
 

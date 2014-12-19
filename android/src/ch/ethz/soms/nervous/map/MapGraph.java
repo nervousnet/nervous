@@ -1,10 +1,8 @@
 package ch.ethz.soms.nervous.map;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
@@ -18,9 +16,9 @@ public class MapGraph {
 	private ArrayList<MapGraphNode> nodes;
 	private ArrayList<MapGraphEdge> edges;
 
-	MapGraph() {
-		HashMap<String, GeoPoint> mapGraphPoints = new HashMap<String, GeoPoint>();
-		// TODO
+	public MapGraph() {
+		this.nodes = new ArrayList<MapGraph.MapGraphNode>();
+		this.edges = new ArrayList<MapGraph.MapGraphEdge>();
 	}
 
 	public class MapGraphNode extends OverlayItem {
@@ -64,15 +62,32 @@ public class MapGraph {
 	}
 
 	private void addNodeFromJson(JSONObject jo) {
+		GeoPoint pos = new GeoPoint(0, 0);
+		String label = "";
+		String description = "";
 		Iterator<String> it = jo.keys();
 		try {
 			while (it.hasNext()) {
 				String id = it.next();
 				JSONObject attributes = jo.getJSONObject(id);
-				// TODO
+				Iterator<String> jt = attributes.keys();
+				while (jt.hasNext()) {
+					String attrName = jt.next();
+					if (attrName.equals("lon")) {
+						double lon = (Double) attributes.get(attrName);
+						pos.setLongitudeE6((int) (lon * 10e6));
+					} else if (attrName.equals("lat")) {
+						double lat = (Double) attributes.get(attrName);
+						pos.setLatitudeE6((int) (lat * 10e6));
+					} else if (attrName.equals("label")) {
+						label = (String) attributes.get(attrName);
+					}
+				}
 			}
 		} catch (JSONException e) {
 		}
+		MapGraphNode mgn = new MapGraphNode(label, description, pos);
+		nodes.add(mgn);
 	}
 
 	public ArrayList<MapGraphNode> getNodes() {
