@@ -337,12 +337,7 @@ public class SensorService extends Service implements SensorEventListener, Noise
 		if (sensorCollected.isEmpty()) {
 			// Stop service until it's triggered the next time
 			sensorManager.unregisterListener(this);
-
 			Log.d(DEBUG_TAG, "Service execution stopped");
-
-			ServiceInfo info = new ServiceInfo(getApplicationContext());
-			info.setTimeOfLastFrame();
-			stopSelf();
 		}
 	}
 

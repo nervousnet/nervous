@@ -2,6 +2,8 @@ package ch.ethz.soms.nervous.android;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -22,6 +24,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -54,10 +57,12 @@ public class MainActivity extends ActionBarActivity {
 	public static final String DEBUG_TAG = "MainActivity";
 
 	private NervousMap nervousMap;
-	private boolean serviceRunning, menuButtonsShowing;
+	private boolean serviceRunning;
+	private boolean menuButtonsShowing;
 	private ImageButton mainMenuButton;
 	private ImageView imgOverlay;
 	private RelativeLayout layoutMainMap;
+	private Switch serviceSwitch;
 	private LinearLayout layoutExtraMenuButtonGroup;
 
 	@Override
@@ -67,6 +72,8 @@ public class MainActivity extends ActionBarActivity {
 
 		Toolbar toolbar = (Toolbar) findViewById(R.id.fragment_toolbar);
 		this.setSupportActionBar(toolbar);
+
+		serviceSwitch = (Switch) findViewById(R.id.service_switch);
 
 		nervousMap = new NervousMap(getApplicationContext());
 
@@ -82,6 +89,12 @@ public class MainActivity extends ActionBarActivity {
 		menuButtonsShowing = false;
 		setupAnimations();
 
+	}
+
+	public void onServiceSwitchClick(View view) {
+		if (view.getId() == R.id.service_switch) {
+			startStopSensorService(((Switch) view).isChecked());
+		}
 	}
 
 	@Override
@@ -262,79 +275,25 @@ public class MainActivity extends ActionBarActivity {
 		updateServiceInfo();
 	}
 
-	public void startSensorService() {
-
-		// Schedule
-		AlarmManager scheduler = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+	public void startStopSensorService(boolean on) {
 		Intent sensorIntent = new Intent(getApplicationContext(), SensorService.class);
-		PendingIntent scheduledSensorIntent = PendingIntent.getService(getApplicationContext(), 0, sensorIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
 		Intent uploadIntent = new Intent(getApplicationContext(), UploadService.class);
-		PendingIntent scheduledUploadIntent = PendingIntent.getService(getApplicationContext(), 0, uploadIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-		// 30 seconds
-		long sensorInterval = 30 * 1000;
-
-		// 120 seconds
-		long uploadInterval = 120 * 1000;
-
-		scheduler.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), sensorInterval, scheduledSensorIntent);
-
-		scheduler.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), uploadInterval, scheduledUploadIntent);
-
-		serviceRunning = true;
-		new ServiceInfo(getApplicationContext()).clean();
-		Log.d(DEBUG_TAG, "Service started");
-	}
-
-	public void stopSensorService() {
-		// Cancel
-		AlarmManager scheduler = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		Intent sensorIntent = new Intent(getApplicationContext(), SensorService.class);
-		PendingIntent scheduledSensorIntent = PendingIntent.getService(getApplicationContext(), 0, sensorIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-		Intent uploadIntent = new Intent(getApplicationContext(), UploadService.class);
-		PendingIntent scheduledUploadIntent = PendingIntent.getService(getApplicationContext(), 0, uploadIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-		scheduler.cancel(scheduledSensorIntent);
-		scheduler.cancel(scheduledUploadIntent);
-
-		serviceRunning = false;
-		new ServiceInfo(getApplicationContext()).clean();
-		Log.d(DEBUG_TAG, "Service stopped");
-	}
-
-	public void onToggleClicked(View view) {
-		boolean on = ((ToggleButton) view).isChecked();
 		if (on) {
-			startSensorService();
+			startService(sensorIntent);
+			startService(uploadIntent);
+			serviceRunning = true;
 
 		} else {
-			stopSensorService();
+			stopService(sensorIntent);
+			stopService(uploadIntent);
+			serviceRunning = false;
 		}
-
+		updateServiceInfo();
 	}
 
 	public void updateServiceInfo() {
-
-		final ServiceInfo info = new ServiceInfo(getApplicationContext());
-
-		serviceRunning = info.serviceIsRunning();
-
-		new Timer().schedule(new TimerTask() {
-			@Override
-			public void run() {
-				final StringBuilder strBuf = new StringBuilder("Service started. \nStarted at: " + info.getTimeOfFirstFrame() + " \nFrames gathered: " + info.getAmountOfFrames() + "\nFile size: " + info.getFileSize() + " Bytes");
-				if (!serviceRunning) {
-					strBuf.append("\n\nService stopped.");
-				}
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-					}
-				});
-			}
-		}, 0, 1000);
+		serviceRunning = isServiceRunning(SensorService.class) && isServiceRunning(UploadService.class);
+		serviceSwitch.setChecked(serviceRunning);
 	}
 
 	@Override
@@ -342,9 +301,6 @@ public class MainActivity extends ActionBarActivity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-	
-	
-	
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -419,6 +375,16 @@ public class MainActivity extends ActionBarActivity {
 
 		int toastLength = lengthLong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT;
 		Toast.makeText(getApplicationContext(), msg, toastLength).show();
+	}
+
+	private boolean isServiceRunning(Class<?> serviceClass) {
+		ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+		for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+			if (serviceClass.getName().equals(service.service.getClassName())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

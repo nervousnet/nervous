@@ -6,27 +6,35 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.List;
 
-import ch.ethz.soms.nervous.android.SensorService.SensorBinder;
+import android.app.Service;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
+import android.os.Binder;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.IBinder;
+import android.util.Log;
 import ch.ethz.soms.nervous.android.sensors.SensorDesc;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.Builder;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
 import ch.ethz.soms.nervous.vm.NervousVM;
-import android.app.Service;
-import android.content.Context;
-import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.AsyncTask;
-import android.os.Binder;
-import android.os.IBinder;
-import android.util.Log;
 
 public class UploadService extends Service {
 
-	private static final String DEBUG_TAG = "UploadService";
+	private final static String UPLOAD_PREFS = "UploadPreferences";
+
+	private SharedPreferences uploadPreferences;
+
+	private static final String DEBUG_TAG = UploadService.class.getSimpleName();
 
 	private final IBinder mBinder = new UploadBinder();
+	
+	private HandlerThread hthread;
 
 	public class UploadBinder extends Binder {
 		UploadService getService() {
@@ -37,15 +45,33 @@ public class UploadService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 
-		ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-		boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+		uploadPreferences = getSharedPreferences(UPLOAD_PREFS, 0);
+		final int delay = uploadPreferences.getInt("UploadDelay", 10 * 1000);
+		final int period = uploadPreferences.getInt("UploadFrequency", 10 * 1000);
 
-		// Conditions subject to change to fit app purpose and user settings
-		if (isConnected) {
-			UploadTask task = new UploadTask();
-			task.execute();
-		}
+
+		final Handler handler = new Handler(hthread.getLooper());
+
+		final Runnable run = new Runnable() {
+			@Override
+			public void run() {
+				Log.d(DEBUG_TAG, "Upload started");
+
+				ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+				NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+				boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+
+				// Conditions subject to change to fit app purpose and user settings
+				if (isConnected) {
+					UploadTask task = new UploadTask();
+					task.execute();
+				}
+
+				handler.postDelayed(this, period);
+			}
+		};
+
+		handler.postDelayed(run, delay);
 
 		Log.d(DEBUG_TAG, "Service execution started");
 		return START_STICKY;
@@ -53,13 +79,13 @@ public class UploadService extends Service {
 
 	@Override
 	public void onCreate() {
-		// Do nothing
-
+		hthread = new HandlerThread("HandlerThread");
+		hthread.start();
 	}
 
 	@Override
 	public void onDestroy() {
-		// Do nothing
+		hthread.quit();
 	}
 
 	@Override
@@ -98,8 +124,6 @@ public class UploadService extends Service {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			// Stop the service
-			stopSelf();
 			return null;
 		}
 

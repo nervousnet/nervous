@@ -17,10 +17,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/orange_nervous"
+            android:background="@color/blue_nervous"
             android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews"
             android:text="@string/If"
-            android:textColor="@color/gray_nervous"
+            android:textColor="@color/green_nervous"
             android:textSize="50sp"
             android:textStyle="bold" />
 
@@ -29,14 +29,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/orange_nervous"
+            android:background="@color/blue_nervous"
             android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/orange_nervous"
+            android:background="@color/blue_nervous"
             android:orientation="horizontal"
             android:weightSum="2" >
 
@@ -45,18 +45,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:background="@color/orange_nervous"
+                android:background="@color/blue_nervous"
                 android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews" />
 
             <Spinner
                 android:id="@+id/spinner_IfStage1_Part2"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_toEndOf="@id/spinner_IfStage1"
                 android:layout_toRightOf="@id/spinner_IfStage1"
-                android:background="@color/orange_nervous"
-                android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews"
-                android:paddingLeft="@dimen/ifThisThenThat_SpaceBetweenViews" />
+                android:background="@color/blue_nervous"
+                android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -64,7 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/orange_nervous"
+            android:background="@color/blue_nervous"
             android:orientation="horizontal"
             android:weightSum="3" >
 
@@ -73,12 +74,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:gravity="center_vertical"
                 android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews"
-                android:paddingLeft="@dimen/ifThisThenThatLeftPadding"
+                android:paddingEnd="@dimen/ifThisThenThat_SpaceBetweenViews"
+                android:paddingLeft="@dimen/ifThisThenThat_SpaceBetweenViews"
+                android:paddingRight="@dimen/ifThisThenThat_SpaceBetweenViews"
+                android:paddingStart="@dimen/ifThisThenThat_SpaceBetweenViews"
                 android:text="@string/For"
-                android:textColor="@color/gray_nervous"
+                android:textColor="@color/green_nervous"
                 android:textSize="28sp"
                 android:textStyle="bold" />
 
@@ -86,11 +91,15 @@
                 android:id="@+id/spinner_TimeValue"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_toEndOf="@id/txt_for"
                 android:layout_toRightOf="@id/txt_for"
-                android:background="@color/orange_nervous"
+                android:background="@color/blue_nervous"
                 android:gravity="center"
                 android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews"
-                android:paddingLeft="@dimen/ifThisThenThat_SpaceBetweenViews" />
+                android:paddingEnd="@dimen/ifThisThenThat_SpaceBetweenViews"
+                android:paddingLeft="@dimen/ifThisThenThat_SpaceBetweenViews"
+                android:paddingRight="@dimen/ifThisThenThat_SpaceBetweenViews"
+                android:paddingStart="@dimen/ifThisThenThat_SpaceBetweenViews" />
 
             <Spinner
                 android:id="@+id/spinner_TimeUnit"
@@ -98,9 +107,9 @@
                 android:layout_height="match_parent"
                 android:layout_toEndOf="@id/spinner_TimeValue"
                 android:layout_toRightOf="@id/spinner_TimeValue"
-                android:background="@color/orange_nervous"
-                android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews"
-                android:paddingLeft="@dimen/ifThisThenThat_SpaceBetweenViews" />
+                android:background="@color/blue_nervous"
+                android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews" >
+            </Spinner>
         </RelativeLayout>
     </LinearLayout>
 
@@ -116,10 +125,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/blue_nervous"
+            android:background="@color/green_nervous"
             android:text="@string/then"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/orange_nervous2"
+            android:textColor="@color/blue_nervous"
             android:textSize="50sp"
             android:textStyle="bold" />
 
@@ -128,7 +137,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/gray_nervous2"
+            android:background="@color/green_nervous"
             android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews" />
 
         <Spinner
@@ -136,7 +145,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/gray_nervous2"
+            android:background="@color/green_nervous"
             android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews" />
 
         <RelativeLayout
@@ -144,7 +153,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/gray_nervous2"
+            android:background="@color/green_nervous"
             android:orientation="horizontal"
             android:weightSum="3" >
 
@@ -153,11 +162,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:gravity="center_vertical"
-                android:paddingLeft="@dimen/ifThisThenThatLeftPadding"
+                android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews"
+                android:paddingEnd="@dimen/ifThisThenThat_SpaceBetweenViews"
+                android:paddingLeft="@dimen/ifThisThenThat_SpaceBetweenViews"
+                android:paddingRight="@dimen/ifThisThenThat_SpaceBetweenViews"
+                android:paddingStart="@dimen/ifThisThenThat_SpaceBetweenViews"
                 android:text="@string/For"
-                android:textColor="@color/orange_nervous2"
+                android:textColor="@color/blue_nervous"
                 android:textSize="28sp"
                 android:textStyle="bold" />
 
@@ -165,19 +179,23 @@
                 android:id="@+id/spinner_then_TimeValue"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_toEndOf="@id/txt_then_for"
                 android:layout_toRightOf="@id/txt_then_for"
-                android:background="@color/gray_nervous2"
+                android:background="@color/green_nervous"
                 android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews"
-                android:paddingLeft="@dimen/ifThisThenThat_SpaceBetweenViews" />
+                android:paddingEnd="@dimen/ifThisThenThat_SpaceBetweenViews"
+                android:paddingLeft="@dimen/ifThisThenThat_SpaceBetweenViews"
+                android:paddingRight="@dimen/ifThisThenThat_SpaceBetweenViews"
+                android:paddingStart="@dimen/ifThisThenThat_SpaceBetweenViews" />
 
             <Spinner
                 android:id="@+id/spinner_then_TimeUnit"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_toEndOf="@id/spinner_then_TimeValue"
                 android:layout_toRightOf="@id/spinner_then_TimeValue"
-                android:background="@color/gray_nervous2"
-                android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews"
-                android:paddingLeft="@dimen/ifThisThenThat_SpaceBetweenViews" />
+                android:background="@color/green_nervous"
+                android:paddingBottom="@dimen/ifThisThenThat_SpaceBetweenViews" />
         </RelativeLayout>
     </LinearLayout>
 

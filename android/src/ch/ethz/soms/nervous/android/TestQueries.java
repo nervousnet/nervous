@@ -224,7 +224,7 @@ public class TestQueries {
 	private String getDate(long time) {
 		Calendar cal = Calendar.getInstance(Locale.ENGLISH);
 		cal.setTimeInMillis(time);
-		String date = DateFormat.format("dd-MM-yyyy hh:mm:ss", cal).toString();
+		String date = DateFormat.format("dd-MM-yyyy HH:mm:ss", cal).toString();
 		return date;
 	}
 }
