@@ -13,10 +13,5 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/javanervousvmtest/lib/junit-4.11-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/protobuf-java-2.5.0.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/javanervousvmtest/lib/protobuf-java-2.5.0-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
