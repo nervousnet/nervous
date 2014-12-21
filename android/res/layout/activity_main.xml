@@ -81,7 +81,7 @@
                     android:background="@drawable/circle"
                     android:padding="8dp"
                     android:scaleType="fitXY"
-                    android:src="@drawable/relations" />
+                    android:src="@drawable/orbit" />
 
                 <ImageButton
                     android:id="@+id/btn_socialmap"

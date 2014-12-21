@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -23,6 +24,9 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -53,6 +57,7 @@ public class MainActivity extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setTheme(R.style.AppTheme);
 		setContentView(R.layout.activity_main);
 
 		Toolbar toolbar = (Toolbar) findViewById(R.id.fragment_toolbar);
@@ -67,12 +72,16 @@ public class MainActivity extends ActionBarActivity {
 		nervousMap.addMapLayer(2, new AssetsMbTileSource(getApplicationContext(), "cch2"));
 		nervousMap.addMapLayer(3, new AssetsMbTileSource(getApplicationContext(), "blank"));
 
-		new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-sn.json", nervousMap, 0, 0).execute();
-
-		nervousMap.selectMapLayer(0);
+		nervousMap.selectMapLayer(3);
+		new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-sn.json", nervousMap, 3, 0).execute();
 
 		menuButtonsShowing = false;
 		setupAnimations();
+
+		updateServiceInfo();
+		if (!serviceRunning) {
+			askServiceEnable();
+		}
 	}
 
 	public void onServiceSwitchClick(View view) {
@@ -211,14 +220,57 @@ public class MainActivity extends ActionBarActivity {
 		final LinearLayout layoutExtraMenuButtonGroup = (LinearLayout) findViewById(R.id.layout_extraMenuButtonGroup);
 		layoutExtraMenuButtonGroup.setVisibility(View.INVISIBLE);
 
-		/*ImageButton btn_showRelations = (ImageButton) findViewById(R.id.btn_showRelations);
-		btn_showRelations.setOnClickListener(new OnClickListener() {
+		ImageButton btnOrbitalMap = (ImageButton) findViewById(R.id.btn_orbitalmap);
+		ImageButton btnSocialMap = (ImageButton) findViewById(R.id.btn_socialmap);
+		ImageButton btnFloor3Map = (ImageButton) findViewById(R.id.btn_floor3map);
+		ImageButton btnFloor2Map = (ImageButton) findViewById(R.id.btn_floor2map);
+		ImageButton btnFloor1Map = (ImageButton) findViewById(R.id.btn_floor1map);
+
+		btnOrbitalMap.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				toastToScreen("Test", false);
+				// TODO Reload orbits from BLE sensors list
+				nervousMap.selectMapLayer(-1);
 			}
-		});*/
+		});
+
+		btnSocialMap.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				nervousMap.selectMapLayer(3);
+				new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-sn.json", nervousMap, 3, 0).execute();
+			}
+		});
+
+		btnFloor3Map.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				nervousMap.selectMapLayer(2);
+				// TODO Load floor 3 graph
+			}
+		});
+
+		btnFloor2Map.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				nervousMap.selectMapLayer(1);
+				// TODO Load floor 2 graph
+			}
+		});
+
+		btnFloor1Map.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				nervousMap.selectMapLayer(0);
+				// TODO Load floor 1 graph
+			}
+		});
+
 		return layoutExtraMenuButtonGroup;
 	}
 
@@ -249,19 +301,28 @@ public class MainActivity extends ActionBarActivity {
 	protected void onResume() {
 		super.onResume();
 		updateServiceInfo();
-		if (!serviceRunning) {
-			askServiceEnable();
-		}
 	}
 
 	private void askServiceEnable() {
 		final SharedPreferences prefs = getSharedPreferences(NervousStatics.SERVICE_PREFS, 0);
 		boolean showServiceDialog = prefs.getBoolean("ShowServiceDialog", true);
-
 		if (showServiceDialog) {
+			View checkBoxView = View.inflate(this, R.layout.checkbox, null);
+			CheckBox checkBox = (CheckBox) checkBoxView.findViewById(R.id.checkbox);
+			checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					Editor edit = prefs.edit();
+					edit.putBoolean("ShowServiceDialog", !isChecked);
+					edit.commit();
+				}
+			});
+			checkBox.setText(getString(R.string.dont_show_again));
+
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setCancelable(true);
 			builder.setTitle(getString(R.string.contribute));
+			builder.setView(checkBoxView);
 			builder.setMessage(getString(R.string.contribute_long));
 			builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
 
@@ -280,7 +341,6 @@ public class MainActivity extends ActionBarActivity {
 			});
 			builder.create().show();
 		}
-
 	}
 
 	@TargetApi(18)
