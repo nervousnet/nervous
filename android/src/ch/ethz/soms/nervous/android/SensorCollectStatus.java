@@ -3,24 +3,25 @@ package ch.ethz.soms.nervous.android;
 class SensorCollectStatus {
 	private boolean doMeasure = false;
 	private boolean doShare = false;
-	private int measureFrequency = 1;
+	private int measureInterval = 1;
 	private long measureDuration = -1;
 	private int collectAmount = -1;
 
 	private int currentCollectAmount = 0;
 	private long measureStop = -1;
 
-	public SensorCollectStatus(boolean doMeasure, boolean doShare, int measureFrequency, long measureDuration, int collectAmount) {
+	public SensorCollectStatus(boolean doMeasure, boolean doShare, int measureInterval, long measureDuration, int collectAmount) {
 		this.doMeasure = doMeasure;
 		this.doShare = doShare;
-		this.measureFrequency = measureFrequency;
+		this.measureInterval = measureInterval;
 		this.measureDuration = measureDuration;
 		this.collectAmount = collectAmount;
 	}
 
 	public synchronized void setMeasureStart(long measureStart) {
+		currentCollectAmount = 0;
 		if (measureDuration > -1) {
-			this.measureStop = measureStop + measureDuration;
+			measureStop = measureStop + measureDuration;
 		}
 	}
 
@@ -28,8 +29,8 @@ class SensorCollectStatus {
 		currentCollectAmount += 1;
 	}
 
-	public synchronized boolean isCollect(int serviceRound) {
-		return doMeasure && (serviceRound % measureFrequency == 0);
+	public synchronized boolean isCollect() {
+		return doMeasure;
 	}
 
 	public synchronized boolean isDone(long currentTime) {
@@ -42,5 +43,9 @@ class SensorCollectStatus {
 
 	public synchronized long getMeasureDuration() {
 		return measureDuration;
+	}
+	
+	public long getMeasureInterval() {
+		return measureInterval;
 	}
 }

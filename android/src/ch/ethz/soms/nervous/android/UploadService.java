@@ -33,7 +33,7 @@ public class UploadService extends Service {
 	private static final String DEBUG_TAG = UploadService.class.getSimpleName();
 
 	private final IBinder mBinder = new UploadBinder();
-	
+
 	private HandlerThread hthread;
 
 	public class UploadBinder extends Binder {
@@ -46,9 +46,8 @@ public class UploadService extends Service {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 
 		uploadPreferences = getSharedPreferences(UPLOAD_PREFS, 0);
-		final int delay = uploadPreferences.getInt("UploadDelay", 10 * 1000);
-		final int period = uploadPreferences.getInt("UploadFrequency", 10 * 1000);
-
+		final int delay = uploadPreferences.getInt("UploadDelay", 120 * 1000);
+		final int period = uploadPreferences.getInt("UploadFrequency", 120 * 1000);
 
 		final Handler handler = new Handler(hthread.getLooper());
 
