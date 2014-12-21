@@ -1,11 +1,10 @@
 package ch.ethz.soms.nervous.android;
 
+import ch.ethz.soms.nervous.utils.NervousStatics;
 import android.content.Context;
 import android.content.SharedPreferences;
 
 public class SensorConfiguration {
-
-	private final static String SENSOR_PREFS = "SensorPreferences";
 
 	private Context context;
 
@@ -23,7 +22,7 @@ public class SensorConfiguration {
 	}
 
 	public SensorCollectStatus getInitialSensorCollectStatus(long sensorID) {
-		SharedPreferences settings = context.getSharedPreferences(SENSOR_PREFS, 0);
+		SharedPreferences settings = context.getSharedPreferences(NervousStatics.SENSOR_PREFS, 0);
 		boolean doMeasure = settings.getBoolean(Long.toHexString(sensorID) + "_doMeasure", true);
 		boolean doShare = settings.getBoolean(Long.toHexString(sensorID) + "_doShare", true);
 		int measureInterval = settings.getInt(Long.toHexString(sensorID) + "_measureInterval", 30 * 1000);

@@ -44,8 +44,8 @@ public class MapGraph {
 		GeoPoint stop;
 
 		public MapGraphEdge(Context context, GeoPoint start, GeoPoint stop) {
-			super(MapGraphMarker.COLOR_GREY, context);
-			MapGraphMarker mgm = MapGraphMarker.getMapGrahpMarker(MapGraphMarker.TYPE_EMPTY_CIRCLE_GREY);
+			super(0, context);
+			MapGraphMarker mgm = MapGraphMarker.getMapGrahpMarker(context, MapGraphMarker.TYPE_EMPTY_CIRCLE_GRAY);
 			Paint paint = mgm.getPaint();
 			this.setPaint(paint);
 			this.start = start;
@@ -131,9 +131,9 @@ public class MapGraph {
 
 		MapGraphMarker mgm;
 		if (label.equalsIgnoreCase("Phone")) {
-			mgm = MapGraphMarker.getMapGrahpMarker(MapGraphMarker.TYPE_FULL_CIRCLE_GREY);
+			mgm = MapGraphMarker.getMapGrahpMarker(context, MapGraphMarker.TYPE_FULL_CIRCLE_GRAY);
 		} else {
-			mgm = MapGraphMarker.getMapGrahpMarker(MapGraphMarker.TYPE_FULL_CIRCLE_ORANGE);
+			mgm = MapGraphMarker.getMapGrahpMarker(context, MapGraphMarker.TYPE_FULL_CIRCLE_ORANGE);
 		}
 		mgn.setMarker(mgm);
 		mgn.setMarkerHotspot(HotspotPlace.CENTER);

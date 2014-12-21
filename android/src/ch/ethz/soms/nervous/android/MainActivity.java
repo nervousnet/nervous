@@ -1,60 +1,45 @@
 package ch.ethz.soms.nervous.android;
 
-import android.os.Bundle;
-import android.app.Activity;
+import android.annotation.TargetApi;
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.app.ActivityManager.RunningServiceInfo;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.text.format.DateFormat;
-import android.util.Log;
+import android.content.SharedPreferences;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
-import android.widget.TextView;
-import android.widget.ToggleButton;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.Vector;
-
-import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesAccelerometer;
-import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesBattery;
-import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesLight;
-import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesMultipleSensors;
-import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesProximity;
-import ch.ethz.soms.nervous.android.sensors.SensorDescAccelerometer;
-import ch.ethz.soms.nervous.android.sensors.SensorDescBattery;
-import ch.ethz.soms.nervous.android.sensors.SensorDescLight;
-import ch.ethz.soms.nervous.android.sensors.SensorDescProximity;
-import ch.ethz.soms.nervous.android.test.PerformanceTestTask2;
+import android.widget.Toast;
+import ch.ethz.soms.nervous.android.sensors.SensorDescBLEBeacon;
 import ch.ethz.soms.nervous.map.AssetsMbTileSource;
 import ch.ethz.soms.nervous.map.MapGraphLoader;
 import ch.ethz.soms.nervous.map.NervousMap;
-import android.widget.Toast;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
+import ch.ethz.soms.nervous.utils.NervousStatics;
 
 public class MainActivity extends ActionBarActivity {
 
-	public static final String DEBUG_TAG = "MainActivity";
+	public static final String LOG_TAG = MainActivity.class.getSimpleName();
+
+	private static final int REQUEST_ENABLE_BT = 0;
 
 	private NervousMap nervousMap;
 	private boolean serviceRunning;
@@ -88,7 +73,6 @@ public class MainActivity extends ActionBarActivity {
 
 		menuButtonsShowing = false;
 		setupAnimations();
-
 	}
 
 	public void onServiceSwitchClick(View view) {
@@ -124,7 +108,7 @@ public class MainActivity extends ActionBarActivity {
 		alphaAnimSemiFadeIn.setFillAfter(true);
 		alphaAnimSemiFadeIn.setFillEnabled(true);
 
-		mainMenuButton.setImageResource(R.raw.ic_stack);
+		mainMenuButton.setImageResource(R.drawable.relations);
 
 		AnimationSet animSet = new AnimationSet(false);
 		animSet.addAnimation(flyOutToRightAnimation);
@@ -161,7 +145,7 @@ public class MainActivity extends ActionBarActivity {
 		alphaAnimSemiFadeOut.setFillAfter(true);
 		alphaAnimSemiFadeOut.setFillEnabled(true);
 
-		mainMenuButton.setImageResource(R.raw.ic_cross);
+		mainMenuButton.setImageResource(R.drawable.close);
 		layoutExtraMenuButtonGroup.setVisibility(View.VISIBLE);
 		AnimationSet animSet = new AnimationSet(false);
 		animSet.addAnimation(flyInFromRightAnimation);
@@ -227,14 +211,14 @@ public class MainActivity extends ActionBarActivity {
 		final LinearLayout layoutExtraMenuButtonGroup = (LinearLayout) findViewById(R.id.layout_extraMenuButtonGroup);
 		layoutExtraMenuButtonGroup.setVisibility(View.INVISIBLE);
 
-		ImageButton btn_showRelations = (ImageButton) findViewById(R.id.btn_showRelations);
+		/*ImageButton btn_showRelations = (ImageButton) findViewById(R.id.btn_showRelations);
 		btn_showRelations.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				toastToScreen("Test", false);
 			}
-		});
+		});*/
 		return layoutExtraMenuButtonGroup;
 	}
 
@@ -242,20 +226,12 @@ public class MainActivity extends ActionBarActivity {
 		final RelativeLayout layoutMainMap = (RelativeLayout) findViewById(R.id.layout_map);
 
 		layoutMainMap.addView(nervousMap.getViewSwitcher());
-
-		/*
-		 * layoutMainMap.setBackgroundResource(R.raw.mapdummy); layoutMainMap.setOnClickListener(new OnClickListener() {
-		 * 
-		 * @Override public void onClick(View v) { if (layout_NodeExtraInf.getVisibility() == View.INVISIBLE) { layout_NodeExtraInf.setVisibility(View.VISIBLE); layout_NodeExtraInf.startAnimation(flyInFromBottomAnimation); } else { layout_NodeExtraInf.startAnimation(flyOutToBottomAnimation); layout_NodeExtraInf.postDelayed(new Runnable() {
-		 * 
-		 * @Override public void run() { layout_NodeExtraInf.setVisibility(View.INVISIBLE); } }, getResources() .getInteger(R.integer.menuButtonsGroup_animationDuration)); } } });
-		 */
 		return layoutMainMap;
 	}
 
 	private RelativeLayout setupNodeExtraInf() {
-		final RelativeLayout layout_NodeExtraInf = (RelativeLayout) findViewById(R.id.layout_NodeInformation);
-		layout_NodeExtraInf.setVisibility(View.INVISIBLE);
+		final RelativeLayout layoutNodeExtraInf = (RelativeLayout) findViewById(R.id.layout_NodeInformation);
+		layoutNodeExtraInf.setVisibility(View.INVISIBLE);
 
 		ImageButton btn_NodeOptions = (ImageButton) findViewById(R.id.btn_NodeOptions);
 		btn_NodeOptions.setOnClickListener(new OnClickListener() {
@@ -266,13 +242,58 @@ public class MainActivity extends ActionBarActivity {
 			}
 		});
 
-		return layout_NodeExtraInf;
+		return layoutNodeExtraInf;
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
 		updateServiceInfo();
+		if (!serviceRunning) {
+			askServiceEnable();
+		}
+	}
+
+	private void askServiceEnable() {
+		final SharedPreferences prefs = getSharedPreferences(NervousStatics.SERVICE_PREFS, 0);
+		boolean showServiceDialog = prefs.getBoolean("ShowServiceDialog", true);
+
+		if (showServiceDialog) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setCancelable(true);
+			builder.setTitle(getString(R.string.contribute));
+			builder.setMessage(getString(R.string.contribute_long));
+			builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.cancel();
+					startStopSensorService(true);
+				}
+			});
+			builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.cancel();
+				}
+			});
+			builder.create().show();
+		}
+
+	}
+
+	@TargetApi(18)
+	private void initializeBluetooth() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+			BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+			BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
+
+			if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
+				Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+				startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+			}
+		}
 	}
 
 	public void startStopSensorService(boolean on) {
@@ -282,6 +303,14 @@ public class MainActivity extends ActionBarActivity {
 			startService(sensorIntent);
 			startService(uploadIntent);
 			serviceRunning = true;
+
+			// If the user wants to collect BT/BLE data, ask to enable bluetooth if disabled
+			SensorConfiguration sc = SensorConfiguration.getInstance(getApplicationContext());
+			SensorCollectStatus scs = sc.getInitialSensorCollectStatus(SensorDescBLEBeacon.SENSOR_ID);
+			if (scs.isCollect()) {
+				// This will only work on API level 18 or higher
+				initializeBluetooth();
+			}
 
 		} else {
 			stopService(sensorIntent);

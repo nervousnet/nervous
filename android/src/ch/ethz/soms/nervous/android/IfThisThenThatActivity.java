@@ -112,7 +112,7 @@ public class IfThisThenThatActivity extends Activity {
 		final ArrayList<String> sensorArray = getSensorArray();
 		final ArrayAdapter<String> adapter_Sensor = new ArrayAdapter<String>(
 				this, R.layout.if_spinners, sensorArray);
-		Log.d(MainActivity.DEBUG_TAG, "array: " + sensorArray);
+		Log.d(MainActivity.LOG_TAG, "array: " + sensorArray);
 		spinner_Sensor.setAdapter(adapter_Sensor);
 	}
 

@@ -1,30 +1,50 @@
 package ch.ethz.soms.nervous.map;
 
+import ch.ethz.soms.nervous.android.R;
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.drawable.Drawable;
+import android.util.DisplayMetrics;
 
 public class MapGraphMarker extends Drawable {
 
-	public static final int COLOR_ORANGE = 0xFFF15F18;
-	public static final int COLOR_GREY = 0xFFC8C8C8;
-	public static final int COLOR_BLACK = 0xFF000000;
 
-	public static final int TYPE_EMPTY_CIRCLE_GREY = 0;
-	public static final int TYPE_FULL_CIRCLE_GREY = 1;
+	public static final int TYPE_EMPTY_CIRCLE_GRAY = 0;
+	public static final int TYPE_FULL_CIRCLE_GRAY = 1;
 	public static final int TYPE_FULL_CIRCLE_ORANGE = 2;
 
-	public static final float STROKE_WIDTH = 7.f;
-	public static final float CIRCLE_DIAMETER = 15.f;
-	public static final float CIRCLE_RADIUS = CIRCLE_DIAMETER / 2.f;
+	public static final float STROKE_WIDTH_DPI = 5.f;
+	public static final float CIRCLE_DIAMETER_DPI = 10.f;
+
+	private static int colorOrange = 0;
+	private static int colorGray = 0;
+	private static int colorBlack = 0;
+	
+	private static float stroke_width_scaled;
+	private static float circle_diameter_scaled;
+	private static float circle_radius_scaled;
 
 	private static MapGraphMarker markers[] = new MapGraphMarker[3];
+	private static float scaleFactor = 1.0f;
 
-	public static MapGraphMarker getMapGrahpMarker(int type) {
+	public static MapGraphMarker getMapGrahpMarker(Context context, int type) {
 
 		if (!paintInit) {
+			
+			colorOrange = context.getResources().getColor(R.color.orange_nervous);
+			colorGray = context.getResources().getColor(R.color.gray_nervous);
+			colorBlack = 0xFF000000;
+			
+			DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+			scaleFactor = metrics.density;
+
+			stroke_width_scaled = STROKE_WIDTH_DPI * scaleFactor;
+			circle_diameter_scaled = CIRCLE_DIAMETER_DPI * scaleFactor;
+			circle_radius_scaled = circle_diameter_scaled / 2.f;
+
 			initializePaints();
 			paintInit = true;
 		}
@@ -46,19 +66,19 @@ public class MapGraphMarker extends Drawable {
 
 	private static void initializePaints() {
 		paintGreyFull = new Paint();
-		paintGreyFull.setColor(COLOR_GREY);
+		paintGreyFull.setColor(colorGray);
 		paintGreyFull.setStyle(Style.FILL_AND_STROKE);
-		paintGreyFull.setStrokeWidth(STROKE_WIDTH);
+		paintGreyFull.setStrokeWidth(stroke_width_scaled);
 
 		paintGreyStroke = new Paint();
-		paintGreyStroke.setColor(COLOR_GREY);
+		paintGreyStroke.setColor(colorGray);
 		paintGreyStroke.setStyle(Style.STROKE);
-		paintGreyStroke.setStrokeWidth(STROKE_WIDTH);
+		paintGreyStroke.setStrokeWidth(stroke_width_scaled);
 
 		paintOrangeFull = new Paint();
-		paintOrangeFull.setColor(COLOR_ORANGE);
+		paintOrangeFull.setColor(colorOrange);
 		paintOrangeFull.setStyle(Style.FILL_AND_STROKE);
-		paintOrangeFull.setStrokeWidth(STROKE_WIDTH);
+		paintOrangeFull.setStrokeWidth(stroke_width_scaled);
 	}
 
 	private int type;
@@ -72,7 +92,7 @@ public class MapGraphMarker extends Drawable {
 	@Override
 	public void draw(Canvas canv) {
 		Paint paint = getPaint();
-		canv.drawCircle(x, y, CIRCLE_DIAMETER, paint);
+		canv.drawCircle(x, y, circle_diameter_scaled, paint);
 	}
 
 	@Override
@@ -89,12 +109,12 @@ public class MapGraphMarker extends Drawable {
 
 	@Override
 	public int getIntrinsicHeight() {
-		return (int) CIRCLE_DIAMETER;
+		return (int) circle_diameter_scaled;
 	}
 
 	@Override
 	public int getIntrinsicWidth() {
-		return (int) CIRCLE_DIAMETER;
+		return (int) circle_diameter_scaled;
 	}
 
 	@Override
@@ -116,9 +136,9 @@ public class MapGraphMarker extends Drawable {
 		switch (type) {
 		case TYPE_FULL_CIRCLE_ORANGE:
 			return paintOrangeFull;
-		case TYPE_EMPTY_CIRCLE_GREY:
+		case TYPE_EMPTY_CIRCLE_GRAY:
 			return paintGreyStroke;
-		case TYPE_FULL_CIRCLE_GREY:
+		case TYPE_FULL_CIRCLE_GRAY:
 			return paintGreyFull;
 		default:
 			return paintGreyFull;

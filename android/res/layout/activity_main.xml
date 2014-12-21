@@ -19,7 +19,7 @@
         <RelativeLayout
             android:id="@+id/layout_map"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
         <ImageView
             android:id="@+id/img_Overlay"
@@ -37,11 +37,10 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="2dp"
             android:layout_marginStart="5dp"
-            android:background="@raw/oval_orange"
+            android:background="@drawable/circle"
             android:padding="8dp"
             android:scaleType="fitXY"
-            android:src="@raw/ic_resetmap"
-            android:tint="@android:color/white" />
+            android:src="@drawable/refresh"/>
 
         <RelativeLayout
             android:id="@+id/layout_buttonsGroup"
@@ -60,11 +59,10 @@
                 android:layout_below="@+id/layout_extraMenuButtonGroup"
                 android:layout_marginEnd="2dp"
                 android:layout_marginRight="2dp"
-                android:background="@raw/oval_orange"
+                android:background="@drawable/circle"
                 android:padding="8dp"
                 android:scaleType="fitXY"
-                android:src="@raw/ic_stack"
-                android:tint="@android:color/white" />
+                android:src="@drawable/relations"/>
 
             <LinearLayout
                 android:id="@+id/layout_extraMenuButtonGroup"
@@ -74,52 +72,64 @@
                 android:orientation="vertical" >
 
                 <ImageButton
-                    android:id="@+id/btn_highlightHeartbeat"
+                    android:id="@+id/btn_orbitalmap"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginBottom="5dp"
                     android:layout_marginEnd="2dp"
                     android:layout_marginRight="2dp"
-                    android:background="@raw/oval_white"
+                    android:background="@drawable/circle"
                     android:padding="8dp"
                     android:scaleType="fitXY"
-                    android:src="@raw/ic_heartbeat" />
+                    android:src="@drawable/relations" />
 
                 <ImageButton
-                    android:id="@+id/btn_showPOIs"
+                    android:id="@+id/btn_socialmap"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginBottom="5dp"
                     android:layout_marginEnd="2dp"
                     android:layout_marginRight="2dp"
-                    android:background="@raw/oval_white"
+                    android:background="@drawable/circle"
                     android:padding="8dp"
                     android:scaleType="fitXY"
-                    android:src="@raw/ic_poi" />
+                    android:src="@drawable/relations" />
 
                 <ImageButton
-                    android:id="@+id/btn_HighlightFriends"
+                    android:id="@+id/btn_floor3map"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginBottom="5dp"
                     android:layout_marginEnd="2dp"
                     android:layout_marginRight="2dp"
-                    android:background="@raw/oval_white"
+                    android:background="@drawable/circle"
                     android:padding="8dp"
                     android:scaleType="fitXY"
-                    android:src="@raw/ic_friends" />
+                    android:src="@drawable/floor_3" />
 
                 <ImageButton
-                    android:id="@+id/btn_showRelations"
+                    android:id="@+id/btn_floor2map"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginBottom="5dp"
                     android:layout_marginEnd="2dp"
                     android:layout_marginRight="2dp"
-                    android:background="@raw/oval_white"
+                    android:background="@drawable/circle"
                     android:padding="8dp"
                     android:scaleType="fitXY"
-                    android:src="@raw/ic_relations" />
+                    android:src="@drawable/floor_2" />
+
+                <ImageButton
+                    android:id="@+id/btn_floor1map"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_marginRight="2dp"
+                    android:background="@drawable/circle"
+                    android:padding="8dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/floor_1" />
             </LinearLayout>
         </RelativeLayout>
 
@@ -162,7 +172,7 @@
                 android:background="#00000000"
                 android:padding="8dp"
                 android:scaleType="fitXY"
-                android:src="@raw/ic_3dots" />
+                android:src="@drawable/circle" />
         </RelativeLayout>
     </FrameLayout>
 

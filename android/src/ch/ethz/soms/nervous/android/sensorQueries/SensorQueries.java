@@ -19,7 +19,7 @@ public abstract class SensorQueries<G extends SensorDesc> {
 		NervousVM nervousVm = NervousVM.getInstance(file);
 		list = nervousVm.retrieve(getSensorId(), timestamp_from, timestamp_to);
 		if (containsReadings()) {
-			Log.d(MainActivity.DEBUG_TAG, "Retrieved List Size: " + list.size());
+			Log.d(MainActivity.LOG_TAG, "Retrieved List Size: " + list.size());
 		}
 	}
 

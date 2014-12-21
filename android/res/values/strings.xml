@@ -6,18 +6,17 @@
     <string name="start_service">Start Service</string>
     <string name="stop_service">Stop Service</string>
     <string name="settings">Settings</string>
-    <string name="export">Export</string>
-    <string name="loadingStatus">Loading sensor status...</string>
-    <string name="running">Running</string>
-    <string name="stopped">Stopped</string>
-    <string name="service_on">Service ON</string>
-    <string name="service_off">Service OFF</string>
     <string name="title_activity_if_this_then_that">IfThisThenThatActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="If">IF</string>
     <string name="then">THEN</string>
     <string name="For">for</string>
-
+	<string name="yes">Yes</string>
+	<string name="no">No</string>
+	<string name="contribute">Contribute to Nervousnet?</string>
+	<string name="contribute_long">Enable sensor logging and uploading to help Nervousnet.</string>
+    <string name="dont_show_again">Don\'t show this again</string>
+	
     <string name="title_activity_sensor_logging_toggle">SensorLoggingToggleActivity</string>
 
 </resources>

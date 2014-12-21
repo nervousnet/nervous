@@ -22,11 +22,10 @@ import ch.ethz.soms.nervous.android.sensors.SensorDesc;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.Builder;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
+import ch.ethz.soms.nervous.utils.NervousStatics;
 import ch.ethz.soms.nervous.vm.NervousVM;
 
 public class UploadService extends Service {
-
-	private final static String UPLOAD_PREFS = "UploadPreferences";
 
 	private SharedPreferences uploadPreferences;
 
@@ -45,7 +44,7 @@ public class UploadService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 
-		uploadPreferences = getSharedPreferences(UPLOAD_PREFS, 0);
+		uploadPreferences = getSharedPreferences(NervousStatics.UPLOAD_PREFS, 0);
 		final int delay = uploadPreferences.getInt("UploadDelay", 120 * 1000);
 		final int period = uploadPreferences.getInt("UploadFrequency", 120 * 1000);
 
