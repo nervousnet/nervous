@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.xml.sax.DTDHandler;
 
+import ch.ethz.soms.nervous.android.sensors.NoiseSensor.NoiseListener;
 import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -36,6 +37,10 @@ public class BLESensor {
 
 	public void addListener(BLEBeaconListener listener) {
 		listenerList.add(listener);
+	}
+	
+	public void removeListener(BLEBeaconListener listener) {
+		listenerList.remove(listener);
 	}
 
 	@TargetApi(18)

@@ -1,27 +1,22 @@
 package ch.ethz.soms.nervous.android;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
-import ch.ethz.soms.nervous.android.UploadService.UploadTask;
 import ch.ethz.soms.nervous.android.sensors.BLEBeaconRecord;
 import ch.ethz.soms.nervous.android.sensors.BLESensor;
 import ch.ethz.soms.nervous.android.sensors.BLESensor.BLEBeaconListener;
@@ -263,6 +258,7 @@ public class SensorService extends Service implements SensorEventListener, Noise
 
 				} else if (sensorId == SensorDescNoise.SENSOR_ID) {
 					scNoise.setMeasureStart(startTime);
+					doCollect = scNoise.isCollect();
 					if (doCollect) {
 						sensorNoise.addListener(sensorListenerClass);
 						// Noise sensor doesn't really make sense with less than 500ms
@@ -449,6 +445,14 @@ public class SensorService extends Service implements SensorEventListener, Noise
 			sensorManager.unregisterListener(this, sensorProximity);
 		} else if (sensorDesc.getSensorIdentifier() == SensorDescTemperature.SENSOR_ID) {
 			sensorManager.unregisterListener(this, sensorTemperature);
+		} else if (sensorDesc.getSensorIdentifier() == SensorDescNoise.SENSOR_ID) {
+			sensorNoise.removeListener(this);
+		} else if (sensorDesc.getSensorIdentifier() == SensorDescBattery.SENSOR_ID) {
+			sensorBattery.removeListener(this);
+		} else if (sensorDesc.getSensorIdentifier() == SensorDescBLEBeacon.SENSOR_ID) {
+			sensorBLEBeacon.removeListener(this);
+		} else if (sensorDesc.getSensorIdentifier() == SensorDescConnectivity.SENSOR_ID) {
+			sensorConnectivity.removeListener(this);
 		}
 	}
 

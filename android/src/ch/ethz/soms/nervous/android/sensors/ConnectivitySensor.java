@@ -20,6 +20,7 @@ import android.telephony.CellLocation;
 import android.telephony.TelephonyManager;
 import android.telephony.cdma.CdmaCellLocation;
 import android.telephony.gsm.GsmCellLocation;
+import ch.ethz.soms.nervous.android.sensors.NoiseSensor.NoiseListener;
 import ch.ethz.soms.nervous.utils.ValueFormatter;
 
 public class ConnectivitySensor {
@@ -34,6 +35,10 @@ public class ConnectivitySensor {
 
 	public void addListener(ConnectivityListener listener) {
 		listenerList.add(listener);
+	}
+	
+	public void removeListener(ConnectivityListener listener) {
+		listenerList.remove(listener);
 	}
 
 	public interface ConnectivityListener {

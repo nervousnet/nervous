@@ -34,6 +34,10 @@ public class NoiseSensor {
 	public void addListener(NoiseListener listener) {
 		listenerList.add(listener);
 	}
+	
+	public void removeListener(NoiseListener listener) {
+		listenerList.remove(listener);
+	}
 
 	public void dataReady(long recordTime, float rms, float spl, float[] bands) {
 		for (NoiseListener listener : listenerList) {

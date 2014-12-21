@@ -3,6 +3,7 @@ package ch.ethz.soms.nervous.android.sensors;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.ethz.soms.nervous.android.sensors.NoiseSensor.NoiseListener;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -25,6 +26,10 @@ public class BatterySensor {
 
 	public void addListener(BatteryListener listener) {
 		listenerList.add(listener);
+	}
+	
+	public void removeListener(BatteryListener listener) {
+		listenerList.remove(listener);
 	}
 
 	public void dataReady(long timestamp, float batteryPercent, boolean isCharging, boolean isUsbCharge, boolean isAcCharge) {
