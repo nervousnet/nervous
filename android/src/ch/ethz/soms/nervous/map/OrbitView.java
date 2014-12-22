@@ -103,7 +103,7 @@ public class OrbitView extends View {
 		DisplayMetrics metrics = getContext().getResources().getDisplayMetrics();
 		scaleFactor = metrics.density;
 
-		youDrawable = new TextShapeDrawable(new String[] { getContext().getResources().getString(R.string.you) }, scaleFactor, paintCollection.getCirclePaintYou(), paintCollection.getTextPaintYou());
+		youDrawable = new TextShapeDrawable(new String[] { getContext().getResources().getString(R.string.you) }, paintCollection.getCirclePaintYou(), paintCollection.getTextPaintYou());
 		orbits = new ArrayList<OrbitView.Orbiter>();
 
 		viewHandler = new Handler();
@@ -161,14 +161,15 @@ public class OrbitView extends View {
 		}
 
 		for (SensorDescBLEBeacon beacon : bleBeacons) {
-			int paintSelect = beacon.getMajor() == 0x8037 ? 0 : 1;
+			//int paintSelect = beacon.getMajor() == 0x8037 ? 0 : 1;
+			int paintSelect = beacon.getMinor() > 100  && beacon.getMinor() < 122 ? 0 : 1;
 			float txpower = beacon.getTxpower();
 			float rssi = beacon.getRssi();
 			float distance = calculateDistance(txpower, rssi);
 			float ratio = distance / (0.000001f + maxDistance);
 			float velocity = (float) Math.random() * VELOCITY_SCALE - VELOCITY_SCALE / 2.f;
 			velocity = Math.signum(velocity) * VELOCITY_MIN + velocity;
-			orbits.add(new Orbiter(new TextShapeDrawable(new String[] { String.valueOf(beacon.getMinor()) }, scaleFactor, paintCollection.getCirclePaint(paintSelect), paintCollection.getTextPaintOrbiter()), velocity, ratio));
+			orbits.add(new Orbiter(new TextShapeDrawable(new String[] { String.valueOf(beacon.getMinor()) }, paintCollection.getCirclePaint(paintSelect), paintCollection.getTextPaintOrbiter()), velocity, ratio));
 		}
 	}
 

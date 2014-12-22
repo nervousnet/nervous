@@ -49,10 +49,6 @@ public class UploadService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 
-		// Prepare the wakelock
-		PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
-		wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, LOG_TAG);
-
 		uploadPreferences = getSharedPreferences(NervousStatics.UPLOAD_PREFS, 0);
 		final int delay = uploadPreferences.getInt("UploadDelay", 10 * 1000);
 		final int period = uploadPreferences.getInt("UploadFrequency", 10 * 1000);
@@ -63,7 +59,6 @@ public class UploadService extends Service {
 			@Override
 			public void run() {
 				Log.d(LOG_TAG, "Upload started");
-				wakeLock.acquire();
 				ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 				NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 				boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
@@ -86,6 +81,12 @@ public class UploadService extends Service {
 
 	@Override
 	public void onCreate() {
+		// Prepare the wakelock
+		PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+		wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, LOG_TAG);
+		if(!wakeLock.isHeld()) {
+			wakeLock.acquire();
+		}
 		hthread = new HandlerThread("HandlerThread");
 		hthread.start();
 	}
@@ -134,7 +135,6 @@ public class UploadService extends Service {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			wakeLock.release();
 			return null;
 		}
 

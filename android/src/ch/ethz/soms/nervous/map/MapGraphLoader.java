@@ -36,7 +36,7 @@ public class MapGraphLoader extends AsyncTask<Void, Void, Void> {
 		this.mapLayer = mapLayer;
 		this.identifier = identifier;
 		this.context = context;
-		this.mapGraph = new MapGraph(context, youUuid);
+		this.mapGraph = new MapGraph(context, youUuid, identifier);
 	}
 
 	@Override

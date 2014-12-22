@@ -29,6 +29,8 @@ desktop.ini
 /javanervousvmtest/bin
 /javanervousvmtest/.settings
 /javanervousvmtest/NervousVM
+/android-support-v7-appcompat/gen
+/android-support-v7-appcompat/bin
 
 
 # Nervous Router #

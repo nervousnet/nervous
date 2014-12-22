@@ -24,39 +24,61 @@ public class MapGraph {
 	private ArrayList<MapGraphEdge> edges;
 	private HashMap<String, GeoPoint> positionMap;
 	private String youUuid;
+	private int identifier;
+	private PaintCollection paintCollection;
 
-	public MapGraph(Context context, String youUuid) {
+	public MapGraph(Context context, String youUuid, int identifier) {
+		this.paintCollection = PaintCollection.getInstance(context);
 		this.context = context;
 		this.nodes = new ArrayList<MapGraph.MapGraphNode>();
 		this.edges = new ArrayList<MapGraph.MapGraphEdge>();
 		this.positionMap = new HashMap<String, GeoPoint>();
 		this.youUuid = youUuid;
+		this.identifier = identifier;
+	}
+
+	public int getIdentifier() {
+		return identifier;
 	}
 
 	public class MapGraphNode extends OverlayItem {
-		GeoPoint pos;
+		private GeoPoint pos;
 
 		MapGraphNode(String label, String description, GeoPoint pos) {
 			super(label, description, pos);
 			this.pos = pos;
 		}
+
+		public GeoPoint getPos() {
+			return pos;
+		}
+		
 	}
 
 	public class MapGraphEdge extends PathOverlay {
 
-		GeoPoint start;
-		GeoPoint stop;
+		private GeoPoint start;
+		private GeoPoint stop;
 
 		public MapGraphEdge(Context context, GeoPoint start, GeoPoint stop) {
 			super(0, context);
-			MapGraphMarker mgm = MapGraphMarker.getMapGrahpMarker(context, MapGraphMarker.TYPE_EMPTY_CIRCLE_GRAY);
-			Paint paint = mgm.getPaint();
+			Paint paint = paintCollection.getOrbitPaint();
 			this.setPaint(paint);
 			this.start = start;
 			this.stop = stop;
 			this.addPoint(start);
 			this.addPoint(stop);
 		}
+
+		public GeoPoint getStart() {
+			return start;
+		}
+
+		public GeoPoint getStop() {
+			return stop;
+		}
+		
+		
 	}
 
 	public void addFromJson(JSONObject jo) {
@@ -133,8 +155,8 @@ public class MapGraph {
 		positionMap.put(id, pos);
 
 		boolean yourNodeFlag = false;
-		
-		MapGraphMarker mgm = null;
+
+		TextShapeDrawable mgm = null;
 
 		String labelSplit[] = label.split(" ");
 
@@ -142,23 +164,25 @@ public class MapGraph {
 			if (description.equalsIgnoreCase(youUuid)) {
 				description = "YOU";
 				yourNodeFlag = true;
-				mgm = MapGraphMarker.getMapGrahpMarker(context, MapGraphMarker.TYPE_EMPTY_CIRCLE_GRAY);
+				mgm = new TextShapeDrawable(new String[]{description}, paintCollection.getCirclePaintYou(), paintCollection.getTextPaintOrbiter());
 			} else {
-				description = "  ";
-				mgm = MapGraphMarker.getMapGrahpMarker(context, MapGraphMarker.TYPE_FULL_CIRCLE_GRAY);
+				description = "SP";
+				mgm = new TextShapeDrawable(new String[]{description}, paintCollection.getCirclePaintPeer(), paintCollection.getTextPaintOrbiter());
 			}
 		} else {
-			mgm = MapGraphMarker.getMapGrahpMarker(context, MapGraphMarker.TYPE_FULL_CIRCLE_ORANGE);
+			int minorId = Integer.parseInt(description);
+			int paintSelect = minorId > 100  && minorId < 122 ? 0 : 1;
+			mgm = new TextShapeDrawable(new String[]{description}, paintCollection.getCirclePaint(paintSelect), paintCollection.getTextPaintOrbiter());
 		}
 
 		MapGraphNode mgn = new MapGraphNode(label, description, pos);
 		mgn.setMarker(mgm);
 		mgn.setMarkerHotspot(HotspotPlace.CENTER);
 
-		if(yourNodeFlag) {
+		if (yourNodeFlag) {
 			youNode = mgn;
 		}
-		
+
 		nodes.add(mgn);
 	}
 
@@ -168,6 +192,10 @@ public class MapGraph {
 
 	public ArrayList<MapGraphEdge> getEdges() {
 		return edges;
+	}
+
+	public MapGraphNode getYouNode() {
+		return youNode;
 	}
 
 }

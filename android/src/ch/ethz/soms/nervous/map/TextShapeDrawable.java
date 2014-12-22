@@ -11,17 +11,14 @@ class TextShapeDrawable extends Drawable {
 	private String[] text;
 	private int x;
 	private int y;
-	private float scaleFactor;
 	private Paint paint;
 	private Paint textPaint;
 	private int width;
 	private int height;
 	private int radius;
 
-	public TextShapeDrawable(String[] text, float scaleFactor, Paint paint, Paint textPaint) {
+	public TextShapeDrawable(String[] text, Paint paint, Paint textPaint) {
 		this.text = text;
-
-		this.scaleFactor = scaleFactor;
 		this.paint = paint;
 		this.textPaint = textPaint;
 	}
@@ -34,6 +31,7 @@ class TextShapeDrawable extends Drawable {
 
 	@Override
 	public void draw(Canvas canvas) {
+		
 
 		Rect bounds = new Rect();
 
@@ -72,6 +70,28 @@ class TextShapeDrawable extends Drawable {
 		return 0;
 	}
 
+	@Override
+	public void setBounds(int left, int top, int right, int bottom) {
+		x = left;
+		y = top;
+	}
+
+	@Override
+	public void setBounds(android.graphics.Rect bounds) {
+		x = bounds.left;
+		y = bounds.top;
+	}
+
+	@Override
+	public int getIntrinsicHeight() {
+		return (int) radius;
+	}
+
+	@Override
+	public int getIntrinsicWidth() {
+		return (int) radius;
+	}
+	
 	@Override
 	public void setAlpha(int alpha) {
 

@@ -7,7 +7,7 @@ import android.util.DisplayMetrics;
 import ch.ethz.soms.nervous.android.R;
 
 public class PaintCollection {
-	
+
 	public static final float TEXT_SIZE_YOU = 18.f;
 	public static final float TEXT_SIZE_ORBITER = 14.f;
 
@@ -18,7 +18,8 @@ public class PaintCollection {
 	private Paint orbitPaint;
 	private Paint textPaintYou;
 	private Paint textPaintOrbiter;
-	
+	private Paint circlePaintPeer;
+
 	private float scaleFactor;
 
 	public static PaintCollection getInstance(Context context) {
@@ -29,14 +30,19 @@ public class PaintCollection {
 	}
 
 	private PaintCollection(Context context) {
-		
+
 		DisplayMetrics metrics = context.getResources().getDisplayMetrics();
 		scaleFactor = metrics.density;
-		
+
 		circlePaintYou = new Paint();
 		circlePaintYou.setColor(context.getResources().getColor(R.color.orange_nervous));
 		circlePaintYou.setStyle(Paint.Style.FILL);
 		circlePaintYou.setAntiAlias(true);
+
+		circlePaintPeer = new Paint();
+		circlePaintPeer.setColor(context.getResources().getColor(R.color.gray_nervous));
+		circlePaintPeer.setStyle(Paint.Style.FILL);
+		circlePaintPeer.setAntiAlias(true);
 
 		circlePaint = new Paint[2];
 
@@ -95,7 +101,7 @@ public class PaintCollection {
 	public Paint getTextPaintOrbiter() {
 		return textPaintOrbiter;
 	}
-	
+
 	public Paint getCirclePaint(int index) {
 		return circlePaint[index % circlePaint.length];
 	}
@@ -103,7 +109,9 @@ public class PaintCollection {
 	public float getScaleFactor() {
 		return scaleFactor;
 	}
-	
-	
-	
+
+	public Paint getCirclePaintPeer() {
+		return circlePaintPeer;
+	}
+
 }

@@ -51,7 +51,6 @@ public class SensorService extends Service implements SensorEventListener, Noise
 	private PowerManager.WakeLock wakeLock;
 	private HandlerThread hthread;
 	private Handler handler;
-	private Lock wakeLockMutex;
 	private Lock storeMutex;
 
 	private SensorConfiguration sensorConfiguration;
@@ -96,11 +95,6 @@ public class SensorService extends Service implements SensorEventListener, Noise
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-
-		// Prepare the wakelock
-		PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
-		wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, LOG_TAG);
-		wakeLockMutex = new ReentrantLock();
 		storeMutex = new ReentrantLock();
 
 		// Reference for inner runnable
@@ -254,13 +248,7 @@ public class SensorService extends Service implements SensorEventListener, Noise
 				}
 
 				if (doCollect && sensorCollectStatus != null) {
-					wakeLockMutex.lock();
 					sensorCollected.put(sensorId, sensorCollectStatus);
-					// Acquire wakelock, some sensors on some phones need this
-					if (!wakeLock.isHeld()) {
-						wakeLock.acquire();
-					}
-					wakeLockMutex.unlock();
 				}
 
 				if (sensorCollectStatus != null) {
@@ -282,8 +270,15 @@ public class SensorService extends Service implements SensorEventListener, Noise
 
 	@Override
 	public void onCreate() {
+		// Prepare the wakelock
+		PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+		wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, LOG_TAG);
 		hthread = new HandlerThread("HandlerThread");
 		hthread.start();
+		// Acquire wakelock, some sensors on some phones need this
+		if (!wakeLock.isHeld()) {
+			wakeLock.acquire();
+		}
 	}
 
 	@Override
@@ -340,7 +335,7 @@ public class SensorService extends Service implements SensorEventListener, Noise
 			Log.d(LOG_TAG, "Humidity data collected");
 			break;
 		case Sensor.TYPE_PRESSURE:
-			sensorDesc = new SensorDescProximity(timestamp, event.values[0]);
+			sensorDesc = new SensorDescPressure(timestamp, event.values[0]);
 			Log.d(LOG_TAG, "Pressure data collected");
 			break;
 		}
@@ -388,9 +383,7 @@ public class SensorService extends Service implements SensorEventListener, Noise
 		}
 		Log.d(LOG_TAG, "BLEBeacon data collected");
 		// Kick this sensor out anyways as it is possible to retrieve no data at all after the measurement interval
-		wakeLockMutex.lock();
 		sensorCollected.remove(SensorDescBLEBeacon.class);
-		wakeLockMutex.unlock();
 	}
 
 	private synchronized void store(long sensorId, List<SensorDesc> sensorDescs) {
@@ -403,9 +396,7 @@ public class SensorService extends Service implements SensorEventListener, Noise
 					scs.increaseCollectAmount();
 					// Enough collected, remove from list
 					if (scs.isDone(System.currentTimeMillis())) {
-						wakeLockMutex.lock();
 						sensorCollected.remove(scs.getSensorId());
-						wakeLockMutex.unlock();
 						// Remove from listener list
 						unregisterSensor(scs.getSensorId());
 					}
@@ -414,15 +405,6 @@ public class SensorService extends Service implements SensorEventListener, Noise
 					}
 				}
 			}
-			// Make sure the list isn't modified at the same time as the list
-			wakeLockMutex.lock();
-			if (sensorCollected.isEmpty()) {
-				// Wakelock can be removed if all sensors are done for the moment (so none requires it for sure)
-				if (wakeLock.isHeld()) {
-					wakeLock.release();
-				}
-			}
-			wakeLockMutex.unlock();
 		}
 		storeMutex.unlock();
 	}

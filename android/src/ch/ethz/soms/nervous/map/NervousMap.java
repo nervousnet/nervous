@@ -27,7 +27,7 @@ public class NervousMap {
 
 	private HashMap<Integer, MapTilesCustomSource> tileSources;
 	private HashMap<Integer, MapGraphContainer> mapGraphContainers;
-	
+
 	private int selectedMapLayer = -1;
 
 	private Context context;
@@ -133,6 +133,7 @@ public class NervousMap {
 				mapView.getController().setZoom(mtcs.getDefaultZoom());
 				mapView.getController().setCenter(mtcs.getCenter());
 				loadOverlays(mapLayer);
+				focusYouAndZoom();
 			} else {
 				mapView.setUseDataConnection(true);
 				mapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
@@ -174,7 +175,7 @@ public class NervousMap {
 				for (MapGraphEdge mge : mg.getEdges()) {
 					mapView.getOverlays().add(mge);
 				}
-				
+
 				// Add graph nodes to map
 				for (MapGraphNode mgn : mg.getNodes()) {
 					overlayItems.add(mgn);
@@ -190,7 +191,7 @@ public class NervousMap {
 					@Override
 					public boolean onItemSingleTapUp(int arg, OverlayItem oi) {
 						// TODO
-						if(oi instanceof MapGraphNode) {
+						if (oi instanceof MapGraphNode) {
 							onTouchEvent(null);
 						}
 						return true;
@@ -212,8 +213,20 @@ public class NervousMap {
 	}
 
 	public void focusYouAndZoom() {
-		if(selectedMapLayer >= 0) {
-			
+		if (selectedMapLayer >= 0) {
+			MapGraphContainer container = mapGraphContainers.get(selectedMapLayer);
+			if (container != null) {
+				LinkedList<MapGraph> mapGraphs = container.getMapGraphs();
+				if (mapGraphs != null) {
+					for (MapGraph mapGraph : mapGraphs) {
+						MapGraphNode youNode = mapGraph.getYouNode();
+						if (youNode != null) {
+							mapView.getController().setCenter(youNode.getPos());
+							mapView.getController().setZoom(((mapView.getMinZoomLevel() + mapView.getMaxZoomLevel()) / 2));
+						}
+					}
+				}
+			}
 		}
 	}
 
