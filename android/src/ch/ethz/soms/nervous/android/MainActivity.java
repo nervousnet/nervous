@@ -1,5 +1,8 @@
 package ch.ethz.soms.nervous.android;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
@@ -37,7 +40,9 @@ import ch.ethz.soms.nervous.android.sensors.SensorDescBLEBeacon;
 import ch.ethz.soms.nervous.map.AssetsMbTileSource;
 import ch.ethz.soms.nervous.map.MapGraphLoader;
 import ch.ethz.soms.nervous.map.NervousMap;
+import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
 import ch.ethz.soms.nervous.utils.NervousStatics;
+import ch.ethz.soms.nervous.vm.NervousVM;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -230,8 +235,16 @@ public class MainActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Reload orbits from BLE sensors list
 				nervousMap.selectMapLayer(-1);
+				// Update with BLE encounters from the last 4 minutes
+				List<SensorDescBLEBeacon> beacons = new ArrayList<SensorDescBLEBeacon>();
+				List<SensorData> datas = NervousVM.getInstance(getFilesDir()).retrieve(SensorDescBLEBeacon.SENSOR_ID, System.currentTimeMillis() - 4 * 60 * 1000, System.currentTimeMillis());
+				if (datas != null) {
+					for (SensorData data : datas) {
+						beacons.add(new SensorDescBLEBeacon(data));
+					}
+					nervousMap.updateOrbitView(beacons);
+				}
 			}
 		});
 

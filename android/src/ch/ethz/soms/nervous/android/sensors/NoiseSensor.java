@@ -2,6 +2,8 @@ package ch.ethz.soms.nervous.android.sensors;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import ch.ethz.soms.nervous.utils.FFT;
 import android.media.AudioFormat;
@@ -26,23 +28,36 @@ public class NoiseSensor {
 	private AudioRecord audioRecord;
 
 	private List<NoiseListener> listenerList = new ArrayList<NoiseListener>();
+	private Lock listenerMutex = new ReentrantLock();
 
 	public interface NoiseListener {
 		public void noiseSensorDataReady(long recordTime, float rms, float spl, float[] bands);
 	}
 
 	public void addListener(NoiseListener listener) {
+		listenerMutex.lock();
 		listenerList.add(listener);
+		listenerMutex.unlock();
 	}
 	
 	public void removeListener(NoiseListener listener) {
+		listenerMutex.lock();
 		listenerList.remove(listener);
+		listenerMutex.unlock();
+	}
+	
+	public void clearListeners() {
+		listenerMutex.lock();
+		listenerList.clear();
+		listenerMutex.unlock();
 	}
 
 	public void dataReady(long recordTime, float rms, float spl, float[] bands) {
+		listenerMutex.lock();
 		for (NoiseListener listener : listenerList) {
 			listener.noiseSensorDataReady(recordTime, rms, spl, bands);
 		}
+		listenerMutex.unlock();
 	}
 
 	public class AudioTask extends AsyncTask<Long, Void, Void> {

@@ -71,6 +71,10 @@ public class SensorDescBLEBeacon extends SensorDesc {
 		return major;
 	}
 
+	public int getRssi() {
+		return rssi;
+	}
+
 	public int getMinor() {
 		return minor;
 	}

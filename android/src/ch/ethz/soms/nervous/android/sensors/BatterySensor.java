@@ -2,6 +2,8 @@ package ch.ethz.soms.nervous.android.sensors;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import ch.ethz.soms.nervous.android.sensors.NoiseSensor.NoiseListener;
 import android.content.Context;
@@ -19,23 +21,37 @@ public class BatterySensor {
 	}
 
 	private List<BatteryListener> listenerList = new ArrayList<BatteryListener>();
+	private Lock listenerMutex = new ReentrantLock();
+
 
 	public interface BatteryListener {
 		public void batterySensorDataReady(long timestamp, float batteryPercent, boolean isCharging, boolean isUsbCharge, boolean isAcCharge);
 	}
 
 	public void addListener(BatteryListener listener) {
+		listenerMutex.lock();
 		listenerList.add(listener);
+		listenerMutex.unlock();
 	}
 	
 	public void removeListener(BatteryListener listener) {
+		listenerMutex.lock();
 		listenerList.remove(listener);
+		listenerMutex.unlock();
+	}
+	
+	public void clearListeners() {
+		listenerMutex.lock();
+		listenerList.clear();
+		listenerMutex.unlock();
 	}
 
 	public void dataReady(long timestamp, float batteryPercent, boolean isCharging, boolean isUsbCharge, boolean isAcCharge) {
+		listenerMutex.lock();
 		for (BatteryListener listener : listenerList) {
 			listener.batterySensorDataReady(timestamp, batteryPercent, isCharging, isUsbCharge, isAcCharge);
 		}
+		listenerMutex.unlock();
 	}
 
 	public class BatteryTask extends AsyncTask<Void, Void, Void> {

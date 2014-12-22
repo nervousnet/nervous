@@ -229,6 +229,7 @@ public class SensorService extends Service implements SensorEventListener, Noise
 					scBattery.setMeasureStart(startTime);
 					doCollect = scBattery.isCollect();
 					if (doCollect) {
+						sensorBattery.clearListeners();
 						sensorBattery.addListener(sensorListenerClass);
 						sensorBattery.start();
 					}
@@ -239,6 +240,7 @@ public class SensorService extends Service implements SensorEventListener, Noise
 					scConnectivity.setMeasureStart(startTime);
 					doCollect = scConnectivity.isCollect();
 					if (doCollect) {
+						sensorConnectivity.clearListeners();
 						sensorConnectivity.addListener(sensorListenerClass);
 						sensorConnectivity.start();
 					}
@@ -249,6 +251,7 @@ public class SensorService extends Service implements SensorEventListener, Noise
 					scBLEBeacon.setMeasureStart(startTime);
 					doCollect = scBLEBeacon.isCollect();
 					if (doCollect) {
+						sensorBLEBeacon.clearListeners();
 						sensorBLEBeacon.addListener(sensorListenerClass);
 						// Update this variable if the BLE sensor is currently unavailable
 						doCollect = sensorBLEBeacon.startScanning(Math.max(scBLEBeacon.getMeasureDuration(), 2000));
@@ -260,6 +263,7 @@ public class SensorService extends Service implements SensorEventListener, Noise
 					scNoise.setMeasureStart(startTime);
 					doCollect = scNoise.isCollect();
 					if (doCollect) {
+						sensorNoise.clearListeners();
 						sensorNoise.addListener(sensorListenerClass);
 						// Noise sensor doesn't really make sense with less than 500ms
 						sensorNoise.startRecording(Math.max(scNoise.getMeasureDuration(), 500));

@@ -4,6 +4,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -32,13 +34,24 @@ public class ConnectivitySensor {
 	}
 
 	private List<ConnectivityListener> listenerList = new ArrayList<ConnectivityListener>();
+	private Lock listenerMutex = new ReentrantLock();
 
 	public void addListener(ConnectivityListener listener) {
+		listenerMutex.lock();
 		listenerList.add(listener);
+		listenerMutex.unlock();
 	}
 	
 	public void removeListener(ConnectivityListener listener) {
+		listenerMutex.lock();
 		listenerList.remove(listener);
+		listenerMutex.unlock();
+	}
+	
+	public void clearListeners() {
+		listenerMutex.lock();
+		listenerList.clear();
+		listenerMutex.unlock();
 	}
 
 	public interface ConnectivityListener {
@@ -46,9 +59,11 @@ public class ConnectivitySensor {
 	}
 
 	public void dataReady(long timestamp, boolean isConnected, int networkType, boolean isRoaming, String wifiHashId, int wifiStrength, String mobileHashId) {
+		listenerMutex.lock();
 		for (ConnectivityListener listener : listenerList) {
 			listener.connectivitySensorDataReady(timestamp, isConnected, networkType, isRoaming, wifiHashId, wifiStrength, mobileHashId);
 		}
+		listenerMutex.unlock();
 	}
 
 	public class ConnectivityTask extends AsyncTask<Void, Void, Void> {

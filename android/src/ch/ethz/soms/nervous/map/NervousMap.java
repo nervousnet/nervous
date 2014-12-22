@@ -108,10 +108,12 @@ public class NervousMap {
 
 	public void selectMapLayer(int mapLayer) {
 		if (mapLayer == -1) {
+			orbitView.startAnimation();
 			if (switcher.getCurrentView() != orbitView) {
 				switcher.showNext();
 			}
 		} else {
+			orbitView.stopAnimation();
 			if (switcher.getCurrentView() != mapView) {
 				switcher.showNext();
 			}

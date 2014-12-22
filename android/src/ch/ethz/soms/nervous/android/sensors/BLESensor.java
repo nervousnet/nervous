@@ -3,6 +3,8 @@ package ch.ethz.soms.nervous.android.sensors;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.xml.sax.DTDHandler;
 
@@ -16,6 +18,7 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.BluetoothLeScanner;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -30,17 +33,28 @@ public class BLESensor {
 	private long lastDetectedTime;
 
 	private List<BLEBeaconListener> listenerList = new ArrayList<BLEBeaconListener>();
+	private Lock listenerMutex = new ReentrantLock();
 
 	public interface BLEBeaconListener {
 		public void bleSensorDataReady(List<BLEBeaconRecord> beaconRecordList);
 	}
 
 	public void addListener(BLEBeaconListener listener) {
+		listenerMutex.lock();
 		listenerList.add(listener);
+		listenerMutex.unlock();
 	}
 	
 	public void removeListener(BLEBeaconListener listener) {
+		listenerMutex.lock();
 		listenerList.remove(listener);
+		listenerMutex.unlock();
+	}
+	
+	public void clearListeners() {
+		listenerMutex.lock();
+		listenerList.clear();
+		listenerMutex.unlock();
 	}
 
 	@TargetApi(18)
@@ -54,9 +68,11 @@ public class BLESensor {
 	}
 
 	private void dataReady(List<BLEBeaconRecord> beaconRecordList) {
+		listenerMutex.lock();
 		for (BLEBeaconListener listener : listenerList) {
 			listener.bleSensorDataReady(beaconRecordList);
 		}
+		listenerMutex.unlock();
 	}
 
 	@TargetApi(18)
@@ -113,6 +129,7 @@ public class BLESensor {
 		}
 
 		private void scanLeDevice(long duration) {
+			// Even though this is deprecated, the BluetoothLe functionality requires minSdk 21, which is Android 5.0
 			bluetoothAdapter.startLeScan(leScanCallback);
 			try {
 				Thread.sleep(duration);
