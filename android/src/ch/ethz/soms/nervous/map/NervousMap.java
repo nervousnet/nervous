@@ -27,6 +27,8 @@ public class NervousMap {
 
 	private HashMap<Integer, MapTilesCustomSource> tileSources;
 	private HashMap<Integer, MapGraphContainer> mapGraphContainers;
+	
+	private int selectedMapLayer = -1;
 
 	private Context context;
 	private MapView mapView;
@@ -107,6 +109,7 @@ public class NervousMap {
 	 */
 
 	public void selectMapLayer(int mapLayer) {
+		selectedMapLayer = mapLayer;
 		if (mapLayer == -1) {
 			orbitView.startAnimation();
 			if (switcher.getCurrentView() != orbitView) {
@@ -203,4 +206,15 @@ public class NervousMap {
 	public void removeMapGraph(int mapLayer, MapGraph mapGraph) {
 		mapGraphContainers.get(mapLayer).remove(mapGraph);
 	}
+
+	public int getSelectedMapLayer() {
+		return selectedMapLayer;
+	}
+
+	public void focusYouAndZoom() {
+		if(selectedMapLayer >= 0) {
+			
+		}
+	}
+
 }

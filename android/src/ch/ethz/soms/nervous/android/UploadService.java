@@ -54,8 +54,8 @@ public class UploadService extends Service {
 		wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, LOG_TAG);
 
 		uploadPreferences = getSharedPreferences(NervousStatics.UPLOAD_PREFS, 0);
-		final int delay = uploadPreferences.getInt("UploadDelay", 120 * 1000);
-		final int period = uploadPreferences.getInt("UploadFrequency", 120 * 1000);
+		final int delay = uploadPreferences.getInt("UploadDelay", 10 * 1000);
+		final int period = uploadPreferences.getInt("UploadFrequency", 10 * 1000);
 
 		final Handler handler = new Handler(hthread.getLooper());
 

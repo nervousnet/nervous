@@ -11,6 +11,7 @@ import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.PathOverlay;
 import org.osmdroid.views.overlay.OverlayItem.HotspotPlace;
 
+import ch.ethz.soms.nervous.vm.NervousVM;
 import android.content.Context;
 import android.graphics.Paint;
 
@@ -18,15 +19,18 @@ public class MapGraph {
 
 	private Context context;
 
+	private MapGraphNode youNode;
 	private ArrayList<MapGraphNode> nodes;
 	private ArrayList<MapGraphEdge> edges;
 	private HashMap<String, GeoPoint> positionMap;
+	private String youUuid;
 
-	public MapGraph(Context context) {
+	public MapGraph(Context context, String youUuid) {
 		this.context = context;
 		this.nodes = new ArrayList<MapGraph.MapGraphNode>();
 		this.edges = new ArrayList<MapGraph.MapGraphEdge>();
 		this.positionMap = new HashMap<String, GeoPoint>();
+		this.youUuid = youUuid;
 	}
 
 	public class MapGraphNode extends OverlayItem {
@@ -107,6 +111,7 @@ public class MapGraph {
 		try {
 			while (it.hasNext()) {
 				id = it.next();
+				description = String.valueOf(id);
 				JSONObject attributes = jo.getJSONObject(id);
 				Iterator<String> jt = attributes.keys();
 				while (jt.hasNext()) {
@@ -127,17 +132,32 @@ public class MapGraph {
 
 		positionMap.put(id, pos);
 
-		MapGraphNode mgn = new MapGraphNode(label, description, pos);
+		boolean yourNodeFlag = false;
+		
+		MapGraphMarker mgm = null;
 
-		MapGraphMarker mgm;
-		if (label.equalsIgnoreCase("Phone")) {
+		String labelSplit[] = label.split(" ");
+
+		if (labelSplit[0].equalsIgnoreCase("Phone")) {
+			if (description.equalsIgnoreCase(youUuid)) {
+				description = "YOU";
+				yourNodeFlag = true;
+			} else {
+				description = "  ";
+			}
 			mgm = MapGraphMarker.getMapGrahpMarker(context, MapGraphMarker.TYPE_FULL_CIRCLE_GRAY);
 		} else {
 			mgm = MapGraphMarker.getMapGrahpMarker(context, MapGraphMarker.TYPE_FULL_CIRCLE_ORANGE);
 		}
+
+		MapGraphNode mgn = new MapGraphNode(label, description, pos);
 		mgn.setMarker(mgm);
 		mgn.setMarkerHotspot(HotspotPlace.CENTER);
 
+		if(yourNodeFlag) {
+			youNode = mgn;
+		}
+		
 		nodes.add(mgn);
 	}
 

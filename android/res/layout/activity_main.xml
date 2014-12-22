@@ -28,7 +28,7 @@
             android:src="#00FF0000" />
 
         <ImageButton
-            android:id="@+id/btn_ResetMap"
+            android:id="@+id/btn_centermap"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="bottom|start"

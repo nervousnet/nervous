@@ -238,6 +238,8 @@ public class SensorService extends Service implements SensorEventListener, Noise
 						// Update this variable if the BLE sensor is currently unavailable
 						doCollect = sensorBLEBeacon.startScanning(Math.max(scBLEBeacon.getMeasureDuration(), 2000));
 					}
+					// TODO Fix for now, agressive BLE scanning
+					scBLEBeacon.setMeasureInterval(3000);
 					sensorCollectStatus = scBLEBeacon;
 				} else if (sensorId == SensorDescNoise.SENSOR_ID) {
 					scNoise.setMeasureStart(startTime);
@@ -269,8 +271,8 @@ public class SensorService extends Service implements SensorEventListener, Noise
 
 			}
 		};
-		// 30 seconds initial delay
-		handler.postDelayed(run, 30000);
+		// 10 seconds initial delay
+		handler.postDelayed(run, 10000);
 	}
 
 	@Override

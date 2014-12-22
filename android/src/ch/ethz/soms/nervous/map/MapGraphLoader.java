@@ -30,13 +30,13 @@ public class MapGraphLoader extends AsyncTask<Void, Void, Void> {
 	private MapGraph mapGraph;
 	private boolean success = false;
 
-	public MapGraphLoader(Context context, String uri, NervousMap map, int mapLayer, int identifier) {
+	public MapGraphLoader(Context context, String uri, NervousMap map, int mapLayer, int identifier, String youUuid) {
 		this.uri = uri;
 		this.map = map;
 		this.mapLayer = mapLayer;
 		this.identifier = identifier;
 		this.context = context;
-		this.mapGraph = new MapGraph(context);
+		this.mapGraph = new MapGraph(context, youUuid);
 	}
 
 	@Override

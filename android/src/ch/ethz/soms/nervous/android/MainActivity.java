@@ -77,8 +77,7 @@ public class MainActivity extends ActionBarActivity {
 		nervousMap.addMapLayer(2, new AssetsMbTileSource(getApplicationContext(), "cch2"));
 		nervousMap.addMapLayer(3, new AssetsMbTileSource(getApplicationContext(), "blank"));
 
-		nervousMap.selectMapLayer(3);
-		new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-sn.json", nervousMap, 3, 0).execute();
+		nervousMap.selectMapLayer(-1);
 
 		menuButtonsShowing = false;
 		setupAnimations();
@@ -224,29 +223,34 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	private LinearLayout setupExtraMenuButtons() {
+
 		final LinearLayout layoutExtraMenuButtonGroup = (LinearLayout) findViewById(R.id.layout_extraMenuButtonGroup);
 		layoutExtraMenuButtonGroup.setVisibility(View.INVISIBLE);
 
+		ImageButton btnCenterMap = (ImageButton) findViewById(R.id.btn_centermap);
 		ImageButton btnOrbitalMap = (ImageButton) findViewById(R.id.btn_orbitalmap);
 		ImageButton btnSocialMap = (ImageButton) findViewById(R.id.btn_socialmap);
 		ImageButton btnFloor3Map = (ImageButton) findViewById(R.id.btn_floor3map);
 		ImageButton btnFloor2Map = (ImageButton) findViewById(R.id.btn_floor2map);
 		ImageButton btnFloor1Map = (ImageButton) findViewById(R.id.btn_floor1map);
+		
+		btnCenterMap.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				int layer = nervousMap.getSelectedMapLayer();
+				loadMapGraph(layer);
+				nervousMap.focusYouAndZoom();
+			}
+		});
+		
 
 		btnOrbitalMap.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				nervousMap.selectMapLayer(-1);
-				// Update with BLE encounters from the last 4 minutes
-				List<SensorDescBLEBeacon> beacons = new ArrayList<SensorDescBLEBeacon>();
-				List<SensorData> datas = NervousVM.getInstance(getFilesDir()).retrieve(SensorDescBLEBeacon.SENSOR_ID, System.currentTimeMillis() - 4 * 60 * 1000, System.currentTimeMillis());
-				if (datas != null) {
-					for (SensorData data : datas) {
-						beacons.add(new SensorDescBLEBeacon(data));
-					}
-					nervousMap.updateOrbitView(beacons);
-				}
+				loadMapGraph(-1);
 			}
 		});
 
@@ -255,7 +259,7 @@ public class MainActivity extends ActionBarActivity {
 			@Override
 			public void onClick(View v) {
 				nervousMap.selectMapLayer(3);
-				new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-sn.json", nervousMap, 3, 0).execute();
+				loadMapGraph(3);
 			}
 		});
 
@@ -264,7 +268,7 @@ public class MainActivity extends ActionBarActivity {
 			@Override
 			public void onClick(View v) {
 				nervousMap.selectMapLayer(2);
-				new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-2.json", nervousMap, 2, 0).execute();
+				loadMapGraph(2);
 			}
 		});
 
@@ -273,7 +277,7 @@ public class MainActivity extends ActionBarActivity {
 			@Override
 			public void onClick(View v) {
 				nervousMap.selectMapLayer(1);
-				new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-1.json", nervousMap, 1, 0).execute();
+				loadMapGraph(1);
 			}
 		});
 
@@ -282,11 +286,39 @@ public class MainActivity extends ActionBarActivity {
 			@Override
 			public void onClick(View v) {
 				nervousMap.selectMapLayer(0);
-				new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-0.json", nervousMap, 0, 0).execute();
+				loadMapGraph(0);
 			}
 		});
 
 		return layoutExtraMenuButtonGroup;
+	}
+
+	private void loadMapGraph(int level) {
+		String youUuid = NervousVM.getInstance(getFilesDir()).getUUID().toString();
+		switch (level) {
+		case -1:
+			// Update with BLE encounters from the last minute
+			List<SensorDescBLEBeacon> beacons = new ArrayList<SensorDescBLEBeacon>();
+			List<SensorData> datas = NervousVM.getInstance(getFilesDir()).retrieve(SensorDescBLEBeacon.SENSOR_ID, System.currentTimeMillis() - 20 * 1000, System.currentTimeMillis());
+			if (datas != null) {
+				for (SensorData data : datas) {
+					beacons.add(new SensorDescBLEBeacon(data));
+				}
+				nervousMap.updateOrbitView(beacons);
+			}
+		case 0:
+			new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-0.json", nervousMap, 0, 0, youUuid).execute();
+			break;
+		case 1:
+			new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-1.json", nervousMap, 1, 0, youUuid).execute();
+			break;
+		case 2:
+			new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-2.json", nervousMap, 2, 0, youUuid).execute();
+			break;
+		case 3:
+			new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-sn.json", nervousMap, 3, 0, youUuid).execute();
+			break;
+		}
 	}
 
 	private RelativeLayout setupMainMap(final RelativeLayout layoutNodeExtraInf) {

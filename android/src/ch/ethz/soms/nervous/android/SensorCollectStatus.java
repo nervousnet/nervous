@@ -31,6 +31,14 @@ class SensorCollectStatus {
 		currentCollectAmount += 1;
 	}
 
+	public void setMeasureInterval(int measureInterval) {
+		this.measureInterval = measureInterval;
+	}
+
+	public void setMeasureDuration(long measureDuration) {
+		this.measureDuration = measureDuration;
+	}
+
 	public synchronized boolean isCollect() {
 		return doMeasure;
 	}
