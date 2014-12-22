@@ -264,7 +264,7 @@ public class MainActivity extends ActionBarActivity {
 			@Override
 			public void onClick(View v) {
 				nervousMap.selectMapLayer(2);
-				// TODO Load floor 3 graph
+				new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-2.json", nervousMap, 2, 0).execute();
 			}
 		});
 
@@ -273,7 +273,7 @@ public class MainActivity extends ActionBarActivity {
 			@Override
 			public void onClick(View v) {
 				nervousMap.selectMapLayer(1);
-				// TODO Load floor 2 graph
+				new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-1.json", nervousMap, 1, 0).execute();
 			}
 		});
 

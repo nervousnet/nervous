@@ -5,6 +5,8 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import android.app.Service;
 import android.content.Context;
@@ -17,6 +19,7 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.util.Log;
 import ch.ethz.soms.nervous.android.sensors.SensorDesc;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload;
@@ -27,9 +30,11 @@ import ch.ethz.soms.nervous.vm.NervousVM;
 
 public class UploadService extends Service {
 
+	private PowerManager.WakeLock wakeLock;
+
 	private SharedPreferences uploadPreferences;
 
-	private static final String DEBUG_TAG = UploadService.class.getSimpleName();
+	private static final String LOG_TAG = UploadService.class.getSimpleName();
 
 	private final IBinder mBinder = new UploadBinder();
 
@@ -44,6 +49,10 @@ public class UploadService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 
+		// Prepare the wakelock
+		PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+		wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, LOG_TAG);
+
 		uploadPreferences = getSharedPreferences(NervousStatics.UPLOAD_PREFS, 0);
 		final int delay = uploadPreferences.getInt("UploadDelay", 120 * 1000);
 		final int period = uploadPreferences.getInt("UploadFrequency", 120 * 1000);
@@ -53,8 +62,8 @@ public class UploadService extends Service {
 		final Runnable run = new Runnable() {
 			@Override
 			public void run() {
-				Log.d(DEBUG_TAG, "Upload started");
-
+				Log.d(LOG_TAG, "Upload started");
+				wakeLock.acquire();
 				ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 				NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 				boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
@@ -71,7 +80,7 @@ public class UploadService extends Service {
 
 		handler.postDelayed(run, delay);
 
-		Log.d(DEBUG_TAG, "Service execution started");
+		Log.d(LOG_TAG, "Service execution started");
 		return START_STICKY;
 	}
 
@@ -84,6 +93,9 @@ public class UploadService extends Service {
 	@Override
 	public void onDestroy() {
 		hthread.quit();
+		if (wakeLock.isHeld()) {
+			wakeLock.release();
+		}
 	}
 
 	@Override
@@ -122,6 +134,7 @@ public class UploadService extends Service {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			wakeLock.release();
 			return null;
 		}
 

@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,6 +58,7 @@ public class NervousVM {
 	}
 
 	private synchronized boolean removeOldPages(long sensorID, long currentPage, long maxPages) {
+		boolean stmHasChanged = false;
 		boolean success = true;
 		TreeMap<PageInterval, PageInterval> treeMap = sensorTreeMap.get(sensorID);
 		if (treeMap != null) {
@@ -75,6 +75,7 @@ public class NervousVM {
 			if (maxPages == 0) {
 				// All removed, delete sensor as a whole
 				sensorTreeMap.remove(sensorID);
+				stmHasChanged = true;
 			} else {
 				PageInterval pi = treeMap.get(new PageInterval(new Interval(0, 0), currentPage - maxPages + 1));
 				// Correct so that the time interval is always from 0 to MAX_LONG in the tree
@@ -84,6 +85,9 @@ public class NervousVM {
 					treeMap.put(pi, pi);
 				}
 			}
+		}
+		if(stmHasChanged) {
+			writeSTM();
 		}
 		return success;
 	}
@@ -198,7 +202,8 @@ public class NervousVM {
 			}
 			fis = new FileInputStream(file);
 			ois = new ObjectInputStream(fis);
-			sensorTreeMap = (HashMap<Long, TreeMap<PageInterval, PageInterval>>) (ois.readObject());
+			HashMap<Long, TreeMap<PageInterval, PageInterval>> hashMap = (HashMap<Long, TreeMap<PageInterval, PageInterval>>) (ois.readObject());
+			sensorTreeMap = hashMap;
 			ois.close();
 		} catch (IOException e) {
 			success = false;
@@ -236,6 +241,7 @@ public class NervousVM {
 			oos.flush();
 			oos.close();
 		} catch (IOException ex) {
+			ex.printStackTrace();
 		} finally {
 			// Cleanup
 			if (fos != null) {
@@ -300,104 +306,13 @@ public class NervousVM {
 
 			ssc.setLastWrittenTimestamp(sensorData.getRecordTime());
 			ssc.store();
+			
 			if (stmHasChanged) {
 				writeSTM();
 			}
 			return success;
 		}
 		return false;
-	}
-
-	public class PageInterval implements Comparable<PageInterval>, Serializable {
-
-		private static final long serialVersionUID = -3883324724432537835L;
-
-		private long pageNumber;
-		private Interval interval;
-
-		public long getPageNumber() {
-			return pageNumber;
-		}
-
-		public void setPageNumber(long pageNumber) {
-			this.pageNumber = pageNumber;
-		}
-
-		public Interval getInterval() {
-			return interval;
-		}
-
-		public void setInterval(Interval interval) {
-			this.interval = interval;
-		}
-
-		public PageInterval(Interval interval, long pageNumber) {
-			this.interval = interval;
-			this.pageNumber = pageNumber;
-		}
-
-		public String toString() {
-			return interval.toString() + "->(" + Long.toHexString(pageNumber) + ")";
-		}
-
-		@Override
-		public int compareTo(PageInterval o) {
-			if (this.pageNumber == -1) {
-				return this.interval.compareTo(o.interval);
-			} else {
-				if (this.pageNumber > o.pageNumber) {
-					return 1;
-				} else if (this.pageNumber < o.pageNumber) {
-					return -1;
-				} else {
-					return 0;
-				}
-			}
-		}
-
-	}
-
-	public class Interval implements Comparable<Interval>, Serializable {
-		private static final long serialVersionUID = 1255883524821812371L;
-
-		public Interval(long lower, long upper) {
-			this.lower = lower;
-			this.upper = upper;
-		}
-
-		private long lower;
-		private long upper;
-
-		public Long getLower() {
-			return lower;
-		}
-
-		public void setLower(long lower) {
-			this.lower = lower;
-		}
-
-		public Long getUpper() {
-			return upper;
-		}
-
-		public void setUpper(long upper) {
-			this.upper = upper;
-		}
-
-		@Override
-		public int compareTo(Interval another) {
-			if ((another.lower >= this.lower && another.upper <= this.upper) || (another.lower <= this.lower && another.upper >= this.upper)) {
-				return 0;
-			} else if (another.lower > this.upper) {
-				return -1;
-			} else {
-				return 1;
-			}
-		}
-
-		public String toString() {
-			return "[" + String.valueOf(lower) + "," + String.valueOf(upper) + "]";
-		}
 	}
 
 	public long getLastUploadedTimestamp(long sensorID) {
