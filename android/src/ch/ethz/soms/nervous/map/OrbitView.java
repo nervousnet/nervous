@@ -26,16 +26,9 @@ import ch.ethz.soms.nervous.android.sensors.SensorDescBLEBeacon;
 public class OrbitView extends View {
 
 	private static final float VELOCITY_SCALE = 0.15f;
-	private static final float TEXT_SIZE_YOU = 18.f;
-	private static final float TEXT_SIZE_ORBITER = 14.f;
 	private static final float VELOCITY_MIN = 0.05f;
 
 	private float alpha = 255;
-	private Paint textPaintYou;
-	private Paint textPaintOrbiter;
-	private Paint orbitPaint;
-	private Paint circlePaintYou;
-	private Paint circlePaint[];
 	private List<Orbiter> orbits;
 	private TextShapeDrawable youDrawable;
 	private float scaleFactor = 1.0f;
@@ -44,6 +37,8 @@ public class OrbitView extends View {
 	private Handler viewHandler;
 	private Runnable viewUpdate;
 
+	private PaintCollection paintCollection;
+	
 	private class Orbiter {
 		private TextShapeDrawable drawable;
 		private float velocity;
@@ -70,7 +65,7 @@ public class OrbitView extends View {
 			if (mode) {
 				drawable.draw(canvas, (int) x, (int) y);
 			} else {
-				canvas.drawCircle(width / 2.f, height / 2.f, radius, orbitPaint);
+				canvas.drawCircle(width / 2.f, height / 2.f, radius, paintCollection.getOrbitPaint());
 			}
 		}
 
@@ -101,53 +96,14 @@ public class OrbitView extends View {
 	private void setup() {
 		setWillNotDraw(false);
 
+		paintCollection = PaintCollection.getInstance(getContext());
+		
 		selfReference = this;
 
 		DisplayMetrics metrics = getContext().getResources().getDisplayMetrics();
 		scaleFactor = metrics.density;
 
-		circlePaintYou = new Paint();
-		circlePaintYou.setColor(getContext().getResources().getColor(R.color.orange_nervous));
-		circlePaintYou.setStyle(Paint.Style.FILL);
-		circlePaintYou.setAntiAlias(true);
-
-		circlePaint = new Paint[2];
-
-		circlePaint[0] = new Paint();
-		circlePaint[0].setColor(getContext().getResources().getColor(R.color.blue_nervous));
-		circlePaint[0].setStyle(Paint.Style.FILL);
-		circlePaint[0].setAntiAlias(true);
-
-		circlePaint[1] = new Paint();
-		circlePaint[1].setColor(getContext().getResources().getColor(R.color.green_nervous));
-		circlePaint[1].setStyle(Paint.Style.FILL);
-		circlePaint[1].setAntiAlias(true);
-
-		orbitPaint = new Paint();
-		orbitPaint.setColor(getContext().getResources().getColor(R.color.gray_nervous_dark));
-		orbitPaint.setStyle(Paint.Style.STROKE);
-		orbitPaint.setStrokeWidth(scaleFactor * 3f);
-		orbitPaint.setAntiAlias(true);
-
-		textPaintYou = new Paint();
-		textPaintYou.setColor(Color.WHITE);
-		textPaintYou.setTextSize(TEXT_SIZE_YOU * scaleFactor);
-		textPaintYou.setAntiAlias(true);
-		textPaintYou.setFakeBoldText(true);
-		textPaintYou.setShadowLayer(6f * scaleFactor, 0, 0, Color.BLACK);
-		textPaintYou.setStyle(Paint.Style.FILL);
-		textPaintYou.setTextAlign(Paint.Align.CENTER);
-
-		textPaintOrbiter = new Paint();
-		textPaintOrbiter.setColor(Color.WHITE);
-		textPaintOrbiter.setTextSize(TEXT_SIZE_ORBITER * scaleFactor);
-		textPaintOrbiter.setAntiAlias(true);
-		textPaintOrbiter.setFakeBoldText(true);
-		textPaintOrbiter.setShadowLayer(6f * scaleFactor, 0, 0, Color.BLACK);
-		textPaintOrbiter.setStyle(Paint.Style.FILL);
-		textPaintOrbiter.setTextAlign(Paint.Align.CENTER);
-
-		youDrawable = new TextShapeDrawable(new String[] { getContext().getResources().getString(R.string.you) }, scaleFactor, circlePaintYou, textPaintYou);
+		youDrawable = new TextShapeDrawable(new String[] { getContext().getResources().getString(R.string.you) }, scaleFactor, paintCollection.getCirclePaintYou(), paintCollection.getTextPaintYou());
 		orbits = new ArrayList<OrbitView.Orbiter>();
 
 		viewHandler = new Handler();
@@ -212,7 +168,7 @@ public class OrbitView extends View {
 			float ratio = distance / (0.000001f + maxDistance);
 			float velocity = (float) Math.random() * VELOCITY_SCALE - VELOCITY_SCALE / 2.f;
 			velocity = Math.signum(velocity) * VELOCITY_MIN + velocity;
-			orbits.add(new Orbiter(new TextShapeDrawable(new String[] { String.valueOf(beacon.getMinor()) }, scaleFactor, circlePaint[paintSelect], textPaintOrbiter), velocity, ratio));
+			orbits.add(new Orbiter(new TextShapeDrawable(new String[] { String.valueOf(beacon.getMinor()) }, scaleFactor, paintCollection.getCirclePaint(paintSelect), paintCollection.getTextPaintOrbiter()), velocity, ratio));
 		}
 	}
 
