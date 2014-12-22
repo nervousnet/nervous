@@ -48,7 +48,7 @@ class TextShapeDrawable extends Drawable {
 		canvas.drawCircle(x, y, radius, paint);
 
 		for (int i = 0; i < text.length; ++i) {
-			canvas.drawText(text[i], x, y + (int) ((0.7 + i - (float) text.length / 2.0) * (1.2f * Math.abs((float) height / (float) text.length))), textPaint);
+			canvas.drawText(text[i], x, y + (int) ((0.8 + i - (float) text.length / 2.0) * (1.2f * Math.abs((float) height / (float) text.length))), textPaint);
 		}
 
 	}

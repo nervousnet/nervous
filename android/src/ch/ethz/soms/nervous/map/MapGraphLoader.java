@@ -14,6 +14,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,6 +23,9 @@ import android.os.AsyncTask;
 
 public class MapGraphLoader extends AsyncTask<Void, Void, Void> {
 
+	public final static int PARSE_LINEWISE = 0;
+	public final static int PARSE_WHOLE = 1;
+
 	private NervousMap map;
 	private String uri;
 	private int mapLayer;
@@ -29,14 +33,29 @@ public class MapGraphLoader extends AsyncTask<Void, Void, Void> {
 	private Context context;
 	private MapGraph mapGraph;
 	private boolean success = false;
+	private boolean reload = false;
+	private int parseMode = 0;
 
-	public MapGraphLoader(Context context, String uri, NervousMap map, int mapLayer, int identifier, String youUuid) {
+	public MapGraphLoader(Context context, String uri, NervousMap map, int mapLayer, int identifier, String youUuid, boolean reload) {
 		this.uri = uri;
 		this.map = map;
 		this.mapLayer = mapLayer;
 		this.identifier = identifier;
 		this.context = context;
-		this.mapGraph = new MapGraph(context, youUuid, identifier);
+		this.mapGraph = new MapGraph(context, identifier, youUuid);
+		this.reload = reload;
+		this.parseMode = PARSE_LINEWISE;
+	}
+
+	public MapGraphLoader(Context context, String uri, NervousMap map, int mapLayer, int identifier, int poiLayerSelect, boolean reload) {
+		this.uri = uri;
+		this.map = map;
+		this.mapLayer = mapLayer;
+		this.identifier = identifier;
+		this.context = context;
+		this.mapGraph = new MapGraph(context, identifier, poiLayerSelect);
+		this.reload = reload;
+		this.parseMode = PARSE_WHOLE;
 	}
 
 	@Override
@@ -44,20 +63,43 @@ public class MapGraphLoader extends AsyncTask<Void, Void, Void> {
 		load(uri);
 		File file = new File(context.getCacheDir(), "MapGraph_" + String.valueOf(mapLayer) + "_" + String.valueOf(identifier));
 		if (file.exists()) {
-			try {
-				BufferedReader br = new BufferedReader(new FileReader(file));
-				String jsonLine;
-				while ((jsonLine = br.readLine()) != null) {
+			switch (parseMode) {
+			case PARSE_LINEWISE:
+				try {
+					BufferedReader br = new BufferedReader(new FileReader(file));
+					String jsonLine;
+					while ((jsonLine = br.readLine()) != null) {
+						try {
+							JSONObject jo = new JSONObject(jsonLine);
+							mapGraph.addFromJson(jo);
+						} catch (JSONException e) {
+						}
+					}
+					success = true;
+					br.close();
+				} catch (FileNotFoundException e) {
+				} catch (IOException e) {
+				}
+				break;
+			case PARSE_WHOLE:
+				try {
+					StringBuilder sb = new StringBuilder();
+					BufferedReader br = new BufferedReader(new FileReader(file));
+					String jsonLine;
+					while ((jsonLine = br.readLine()) != null) {
+						sb.append(jsonLine);
+					}
+					br.close();
 					try {
-						JSONObject jo = new JSONObject(jsonLine);
+						JSONArray jo = new JSONArray(sb.toString());
 						mapGraph.addFromJson(jo);
 					} catch (JSONException e) {
 					}
+					success = true;
+				} catch (FileNotFoundException e) {
+				} catch (IOException e) {
 				}
-				success = true;
-				br.close();
-			} catch (FileNotFoundException e) {
-			} catch (IOException e) {
+				break;
 			}
 			return null;
 		}
@@ -69,8 +111,8 @@ public class MapGraphLoader extends AsyncTask<Void, Void, Void> {
 	protected void onPostExecute(Void param) {
 		if (success) {
 			// Add the new graph to the map
-			map.clearMapGraph(mapLayer);
-			map.addMapGraph(mapLayer, mapGraph);
+			map.removeMapGraph(mapLayer, mapGraph.getIdentifier());
+			map.addMapGraph(mapLayer, mapGraph, reload);
 		}
 	}
 

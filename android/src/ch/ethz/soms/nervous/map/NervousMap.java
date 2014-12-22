@@ -149,7 +149,7 @@ public class NervousMap {
 		orbitView.setBeacons(bleBeacons);
 	}
 
-	public void addMapGraph(int mapLayer, MapGraph mapGraph) {
+	public void addMapGraph(int mapLayer, MapGraph mapGraph, boolean reload) {
 		MapGraphContainer mapGraphContainer;
 		if (mapGraphContainers.containsKey(mapLayer)) {
 			mapGraphContainer = mapGraphContainers.get(mapLayer);
@@ -158,7 +158,9 @@ public class NervousMap {
 			mapGraphContainers.put(mapLayer, mapGraphContainer);
 		}
 		mapGraphContainer.add(mapGraph);
-		selectMapLayer(mapLayer);
+		if (reload) {
+			selectMapLayer(mapLayer);
+		}
 	}
 
 	public void clearMapGraph(int mapLayer) {
@@ -227,6 +229,13 @@ public class NervousMap {
 					}
 				}
 			}
+		}
+	}
+
+	public void removeMapGraph(int mapLayer, int identifier) {
+		MapGraphContainer mapGraphContainer = mapGraphContainers.get(mapLayer);
+		if (mapGraphContainer != null) {
+			mapGraphContainer.removeByIdentifier(identifier);
 		}
 	}
 

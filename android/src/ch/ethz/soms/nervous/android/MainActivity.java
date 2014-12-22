@@ -307,16 +307,19 @@ public class MainActivity extends ActionBarActivity {
 			}
 			break;
 		case 0:
-			new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-0.json", nervousMap, 0, 0, youUuid).execute();
+			new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-0.json", nervousMap, 0, 0, youUuid, true).execute();
+			new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/poi.json", nervousMap, 0, 1, 1, true).execute();
 			break;
 		case 1:
-			new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-1.json", nervousMap, 1, 0, youUuid).execute();
+			new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-1.json", nervousMap, 1, 0, youUuid, true).execute();
+			new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/poi.json", nervousMap, 1, 1, 2, true).execute();
 			break;
 		case 2:
-			new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-2.json", nervousMap, 2, 0, youUuid).execute();
+			new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-2.json", nervousMap, 2, 0, youUuid, true).execute();
+			new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/poi.json", nervousMap, 2, 1, 3, true).execute();
 			break;
 		case 3:
-			new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-sn.json", nervousMap, 3, 0, youUuid).execute();
+			new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-sn.json", nervousMap, 3, 0, youUuid, true).execute();
 			break;
 		}
 	}

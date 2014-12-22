@@ -19,6 +19,7 @@ public class PaintCollection {
 	private Paint textPaintYou;
 	private Paint textPaintOrbiter;
 	private Paint circlePaintPeer;
+	private Paint circlePaintPoi;
 
 	private float scaleFactor;
 
@@ -44,6 +45,11 @@ public class PaintCollection {
 		circlePaintPeer.setStyle(Paint.Style.FILL);
 		circlePaintPeer.setAntiAlias(true);
 
+		circlePaintPoi = new Paint();
+		circlePaintPoi.setColor(context.getResources().getColor(R.color.gray_nervous_dark));
+		circlePaintPoi.setStyle(Paint.Style.FILL);
+		circlePaintPoi.setAntiAlias(true);
+		
 		circlePaint = new Paint[2];
 
 		circlePaint[0] = new Paint();
@@ -112,6 +118,10 @@ public class PaintCollection {
 
 	public Paint getCirclePaintPeer() {
 		return circlePaintPeer;
+	}
+
+	public Paint getCirclePaintPoi() {
+		return circlePaintPoi;
 	}
 
 }
