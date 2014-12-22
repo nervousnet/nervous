@@ -47,7 +47,7 @@ public class SensorDescAccelerometer extends SensorDesc {
 	}
 
 	@Override
-	public long getSensorIdentifier() {
+	public long getSensorId() {
 		return SENSOR_ID;
 	}
 

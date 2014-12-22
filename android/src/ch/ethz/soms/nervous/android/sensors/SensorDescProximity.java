@@ -31,7 +31,7 @@ public class SensorDescProximity extends SensorDescSingleValue {
 	}
 
 	@Override
-	public long getSensorIdentifier() {
+	public long getSensorId() {
 		return SENSOR_ID;
 	}
 

@@ -46,7 +46,7 @@ public class SensorDescConnectivity extends SensorDesc {
 	}
 
 	@Override
-	public long getSensorIdentifier() {
+	public long getSensorId() {
 		return SENSOR_ID;
 	}
 

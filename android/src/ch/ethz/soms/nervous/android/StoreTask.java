@@ -19,7 +19,7 @@ public class StoreTask extends AsyncTask<SensorDesc, Void, Void> {
 		if (params != null && params.length > 0) {
 			NervousVM nervousVM = NervousVM.getInstance(context.getFilesDir());
 			for (int i = 0; i < params.length; i++) {
-				nervousVM.storeSensor(params[i].getSensorIdentifier(), params[i].toProtoSensor());
+				nervousVM.storeSensor(params[i].getSensorId(), params[i].toProtoSensor());
 			}
 		}
 		return null;

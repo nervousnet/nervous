@@ -178,6 +178,7 @@ public class MainActivity extends ActionBarActivity {
 		for (int i = 0; i < layout.getChildCount(); i++) {
 			View child = layout.getChildAt(i);
 			child.setEnabled(true);
+			child.setClickable(true);
 		}
 	}
 
@@ -185,6 +186,7 @@ public class MainActivity extends ActionBarActivity {
 		for (int i = 0; i < layout.getChildCount(); i++) {
 			View child = layout.getChildAt(i);
 			child.setEnabled(false);
+			child.setClickable(false);
 		}
 	}
 
@@ -280,7 +282,7 @@ public class MainActivity extends ActionBarActivity {
 			@Override
 			public void onClick(View v) {
 				nervousMap.selectMapLayer(0);
-				// TODO Load floor 1 graph
+				new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-0.json", nervousMap, 0, 0).execute();
 			}
 		});
 

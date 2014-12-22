@@ -1,6 +1,7 @@
 package ch.ethz.soms.nervous.android.sensors;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
@@ -27,6 +28,8 @@ import android.util.Log;
 
 public class BLESensor {
 
+	private static final String LOG_TAG = BLESensor.class.getSimpleName();
+
 	private Context context;
 	private BluetoothManager bluetoothManager;
 	private BluetoothAdapter bluetoothAdapter;
@@ -44,13 +47,13 @@ public class BLESensor {
 		listenerList.add(listener);
 		listenerMutex.unlock();
 	}
-	
+
 	public void removeListener(BLEBeaconListener listener) {
 		listenerMutex.lock();
 		listenerList.remove(listener);
 		listenerMutex.unlock();
 	}
-	
+
 	public void clearListeners() {
 		listenerMutex.lock();
 		listenerList.clear();
@@ -79,6 +82,8 @@ public class BLESensor {
 	public class BLETask extends AsyncTask<Long, Void, Void> {
 
 		private LinkedList<BLEBeaconRecord> beaconRecordList;
+		private HashSet<String> beaconHash;
+		
 		private BluetoothAdapter.LeScanCallback leScanCallback = new BluetoothAdapter.LeScanCallback() {
 			@Override
 			public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
@@ -92,8 +97,19 @@ public class BLESensor {
 			if (lastDetectedTime >= detectionTime) {
 				detectionTime = lastDetectedTime + 1;
 			}
-			beaconRecordList.add(new BLEBeaconRecord(detectionTime, device, rssi, scanRecord));
-			lastDetectedTime = detectionTime;
+
+			BLEBeaconRecord record = new BLEBeaconRecord(detectionTime, device, rssi, scanRecord);
+
+			// Filter for the nervous major IDs
+			if (record.getMajor() == 0x8037 || record.getMajor() == 0x8143) {
+				String hashString = record.getMajor() + "_" + record.getMinor();
+				// Don't record a beacon more than once
+				if(!beaconHash.contains(hashString)) {
+					beaconHash.add(hashString);
+					beaconRecordList.add(record);
+					lastDetectedTime = detectionTime;
+				}
+			}
 		}
 
 		// Currently unused (for iBeacons)
@@ -124,6 +140,7 @@ public class BLESensor {
 		@Override
 		protected Void doInBackground(Long... params) {
 			beaconRecordList = new LinkedList<BLEBeaconRecord>();
+			beaconHash = new HashSet<String>();
 			scanLeDevice(params[0]);
 			return null;
 		}

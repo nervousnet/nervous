@@ -1,5 +1,6 @@
 package ch.ethz.soms.nervous.android;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
@@ -51,6 +52,7 @@ public class SensorService extends Service implements SensorEventListener, Noise
 	private HandlerThread hthread;
 	private Handler handler;
 	private Lock wakeLockMutex;
+	private Lock storeMutex;
 
 	private SensorConfiguration sensorConfiguration;
 	private SensorService sensorListenerClass;
@@ -84,7 +86,7 @@ public class SensorService extends Service implements SensorEventListener, Noise
 	private SensorCollectStatus scConnectivity = null;
 
 	// Threadsafe because handling can get called from different threads
-	private ConcurrentHashMap<Class<? extends SensorDesc>, SensorCollectStatus> sensorCollected;
+	private ConcurrentHashMap<Long, SensorCollectStatus> sensorCollected;
 
 	public class SensorBinder extends Binder {
 		SensorService getService() {
@@ -99,6 +101,7 @@ public class SensorService extends Service implements SensorEventListener, Noise
 		PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
 		wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, LOG_TAG);
 		wakeLockMutex = new ReentrantLock();
+		storeMutex = new ReentrantLock();
 
 		// Reference for inner runnable
 		sensorListenerClass = this;
@@ -108,7 +111,7 @@ public class SensorService extends Service implements SensorEventListener, Noise
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
 		// Hash map to register sensor collect status references
-		sensorCollected = new ConcurrentHashMap<Class<? extends SensorDesc>, SensorCollectStatus>();
+		sensorCollected = new ConcurrentHashMap<Long, SensorCollectStatus>();
 
 		// Initialize sensor collect status from configuration
 		scAccelerometer = sensorConfiguration.getInitialSensorCollectStatus(SensorDescAccelerometer.SENSOR_ID);
@@ -165,7 +168,6 @@ public class SensorService extends Service implements SensorEventListener, Noise
 			public void run() {
 
 				boolean doCollect = false;
-				Class<? extends SensorDesc> sensorDescClass = null;
 				SensorCollectStatus sensorCollectStatus = null;
 				long startTime = System.currentTimeMillis();
 
@@ -174,57 +176,41 @@ public class SensorService extends Service implements SensorEventListener, Noise
 					doCollect = scAccelerometer.isCollect();
 					doCollect = doCollect ? sensorManager.registerListener(sensorListenerClass, sensorAccelerometer, SensorManager.SENSOR_DELAY_NORMAL) : false;
 					sensorCollectStatus = scAccelerometer;
-					sensorDescClass = SensorDescAccelerometer.class;
-
 				} else if (sensorId == SensorDescPressure.SENSOR_ID) {
 					scPressure.setMeasureStart(startTime);
 					doCollect = scPressure.isCollect();
 					doCollect = doCollect ? sensorManager.registerListener(sensorListenerClass, sensorPressure, SensorManager.SENSOR_DELAY_NORMAL) : false;
 					sensorCollectStatus = scPressure;
-					sensorDescClass = SensorDescPressure.class;
-
 				} else if (sensorId == SensorDescGyroscope.SENSOR_ID) {
 					scGyroscope.setMeasureStart(startTime);
 					doCollect = scGyroscope.isCollect();
 					doCollect = doCollect ? sensorManager.registerListener(sensorListenerClass, sensorGyroscope, SensorManager.SENSOR_DELAY_NORMAL) : false;
 					sensorCollectStatus = scGyroscope;
-					sensorDescClass = SensorDescGyroscope.class;
-
 				} else if (sensorId == SensorDescHumidity.SENSOR_ID) {
 					scHumidity.setMeasureStart(startTime);
 					doCollect = scHumidity.isCollect();
 					doCollect = doCollect ? sensorManager.registerListener(sensorListenerClass, sensorHumidity, SensorManager.SENSOR_DELAY_NORMAL) : false;
 					sensorCollectStatus = scHumidity;
-					sensorDescClass = SensorDescHumidity.class;
-
 				} else if (sensorId == SensorDescLight.SENSOR_ID) {
 					scLight.setMeasureStart(startTime);
 					doCollect = scLight.isCollect();
 					doCollect = doCollect ? sensorManager.registerListener(sensorListenerClass, sensorLight, SensorManager.SENSOR_DELAY_NORMAL) : false;
 					sensorCollectStatus = scLight;
-					sensorDescClass = SensorDescLight.class;
-
 				} else if (sensorId == SensorDescMagnetic.SENSOR_ID) {
 					scMagnet.setMeasureStart(startTime);
 					doCollect = scMagnet.isCollect();
 					doCollect = doCollect ? sensorManager.registerListener(sensorListenerClass, sensorMagnet, SensorManager.SENSOR_DELAY_NORMAL) : false;
 					sensorCollectStatus = scMagnet;
-					sensorDescClass = SensorDescMagnetic.class;
-
 				} else if (sensorId == SensorDescProximity.SENSOR_ID) {
 					scProximity.setMeasureStart(startTime);
 					doCollect = scProximity.isCollect();
 					doCollect = doCollect ? sensorManager.registerListener(sensorListenerClass, sensorProximity, SensorManager.SENSOR_DELAY_NORMAL) : false;
 					sensorCollectStatus = scProximity;
-					sensorDescClass = SensorDescProximity.class;
-
 				} else if (sensorId == SensorDescTemperature.SENSOR_ID) {
 					scTemperature.setMeasureStart(startTime);
 					doCollect = scTemperature.isCollect();
 					doCollect = doCollect ? sensorManager.registerListener(sensorListenerClass, sensorTemperature, SensorManager.SENSOR_DELAY_NORMAL) : false;
 					sensorCollectStatus = scTemperature;
-					sensorDescClass = SensorDescTemperature.class;
-
 				} else if (sensorId == SensorDescBattery.SENSOR_ID) {
 					scBattery.setMeasureStart(startTime);
 					doCollect = scBattery.isCollect();
@@ -234,8 +220,6 @@ public class SensorService extends Service implements SensorEventListener, Noise
 						sensorBattery.start();
 					}
 					sensorCollectStatus = scBattery;
-					sensorDescClass = SensorDescBattery.class;
-
 				} else if (sensorId == SensorDescConnectivity.SENSOR_ID) {
 					scConnectivity.setMeasureStart(startTime);
 					doCollect = scConnectivity.isCollect();
@@ -245,8 +229,6 @@ public class SensorService extends Service implements SensorEventListener, Noise
 						sensorConnectivity.start();
 					}
 					sensorCollectStatus = scConnectivity;
-					sensorDescClass = SensorDescConnectivity.class;
-
 				} else if (sensorId == SensorDescBLEBeacon.SENSOR_ID) {
 					scBLEBeacon.setMeasureStart(startTime);
 					doCollect = scBLEBeacon.isCollect();
@@ -257,8 +239,6 @@ public class SensorService extends Service implements SensorEventListener, Noise
 						doCollect = sensorBLEBeacon.startScanning(Math.max(scBLEBeacon.getMeasureDuration(), 2000));
 					}
 					sensorCollectStatus = scBLEBeacon;
-					sensorDescClass = SensorDescBLEBeacon.class;
-
 				} else if (sensorId == SensorDescNoise.SENSOR_ID) {
 					scNoise.setMeasureStart(startTime);
 					doCollect = scNoise.isCollect();
@@ -269,13 +249,11 @@ public class SensorService extends Service implements SensorEventListener, Noise
 						sensorNoise.startRecording(Math.max(scNoise.getMeasureDuration(), 500));
 					}
 					sensorCollectStatus = scNoise;
-					sensorDescClass = SensorDescNoise.class;
-
 				}
 
-				if (doCollect && sensorDescClass != null && sensorCollectStatus != null) {
+				if (doCollect && sensorCollectStatus != null) {
 					wakeLockMutex.lock();
-					sensorCollected.put(sensorDescClass, sensorCollectStatus);
+					sensorCollected.put(sensorId, sensorCollectStatus);
 					// Acquire wakelock, some sensors on some phones need this
 					if (!wakeLock.isHeld()) {
 						wakeLock.acquire();
@@ -324,6 +302,8 @@ public class SensorService extends Service implements SensorEventListener, Noise
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
+		ArrayList<SensorDesc> sensorDescs = new ArrayList<SensorDesc>();
+
 		long timestamp = System.currentTimeMillis();
 		Sensor sensor = event.sensor;
 		SensorDesc sensorDesc = null;
@@ -363,37 +343,46 @@ public class SensorService extends Service implements SensorEventListener, Noise
 			break;
 		}
 
-		store(sensorDesc);
+		sensorDescs.add(sensorDesc);
+		store(sensorDesc.getSensorId(), sensorDescs);
 	}
 
 	@Override
 	public void connectivitySensorDataReady(long timestamp, boolean isConnected, int networkType, boolean isRoaming, String wifiHashId, int wifiStrength, String mobileHashId) {
+		ArrayList<SensorDesc> sensorDescs = new ArrayList<SensorDesc>();
 		SensorDesc sensorDesc = new SensorDescConnectivity(timestamp, isConnected, networkType, isRoaming, wifiHashId, wifiStrength, mobileHashId);
 		Log.d(LOG_TAG, "Connectivity data collected");
-		store(sensorDesc);
+		sensorDescs.add(sensorDesc);
+		store(sensorDesc.getSensorId(), sensorDescs);
 	}
 
 	@Override
 	public void noiseSensorDataReady(long timestamp, float rms, float spl, float[] bands) {
+		ArrayList<SensorDesc> sensorDescs = new ArrayList<SensorDesc>();
 		SensorDesc sensorDesc = new SensorDescNoise(timestamp, rms, spl, bands);
 		Log.d(LOG_TAG, "Noise data collected");
-		store(sensorDesc);
+		sensorDescs.add(sensorDesc);
+		store(sensorDesc.getSensorId(), sensorDescs);
 	}
 
 	@Override
 	public void batterySensorDataReady(long timestamp, float batteryPercent, boolean isCharging, boolean isUsbCharge, boolean isAcCharge) {
+		ArrayList<SensorDesc> sensorDescs = new ArrayList<SensorDesc>();
 		SensorDesc sensorDesc = new SensorDescBattery(timestamp, batteryPercent, isCharging, isUsbCharge, isAcCharge);
 		Log.d(LOG_TAG, "Battery data collected");
-		store(sensorDesc);
+		sensorDescs.add(sensorDesc);
+		store(sensorDesc.getSensorId(), sensorDescs);
 	}
 
 	@Override
 	public void bleSensorDataReady(List<BLEBeaconRecord> beaconRecordList) {
+		ArrayList<SensorDesc> sensorDescs = new ArrayList<SensorDesc>();
 		if (beaconRecordList != null && beaconRecordList.size() > 0) {
 			for (BLEBeaconRecord bbr : beaconRecordList) {
 				SensorDesc sensorDesc = new SensorDescBLEBeacon(bbr.getTokenDetectTime(), bbr.getRssi(), bbr.getMac(), bbr.getAdvertisement().getMostSignificantBits(), bbr.getAdvertisement().getLeastSignificantBits(), bbr.getUuid().getMostSignificantBits(), bbr.getUuid().getLeastSignificantBits(), bbr.getMajor(), bbr.getMinor(), bbr.getTxpower());
-				store(sensorDesc);
+				sensorDescs.add(sensorDesc);
 			}
+			store(SensorDescBLEBeacon.SENSOR_ID, sensorDescs);
 		}
 		Log.d(LOG_TAG, "BLEBeacon data collected");
 		// Kick this sensor out anyways as it is possible to retrieve no data at all after the measurement interval
@@ -402,9 +391,10 @@ public class SensorService extends Service implements SensorEventListener, Noise
 		wakeLockMutex.unlock();
 	}
 
-	private synchronized void store(SensorDesc sensorDesc) {
-		if (sensorDesc != null) {
-			SensorCollectStatus scs = sensorCollected.get(sensorDesc.getClass());
+	private synchronized void store(long sensorId, List<SensorDesc> sensorDescs) {
+		storeMutex.lock();
+		SensorCollectStatus scs = sensorCollected.get(sensorId);
+		if (sensorDescs != null && !sensorDescs.isEmpty()) {
 			if (scs != null) {
 				if (!scs.isDone(System.currentTimeMillis())) {
 					// Collected new data of this type, count it
@@ -412,12 +402,14 @@ public class SensorService extends Service implements SensorEventListener, Noise
 					// Enough collected, remove from list
 					if (scs.isDone(System.currentTimeMillis())) {
 						wakeLockMutex.lock();
-						sensorCollected.remove(sensorDesc.getClass());
+						sensorCollected.remove(scs.getSensorId());
 						wakeLockMutex.unlock();
 						// Remove from listener list
-						unregisterSensor(sensorDesc);
+						unregisterSensor(scs.getSensorId());
 					}
-					new StoreTask(getApplicationContext()).execute(sensorDesc);
+					for (SensorDesc sensorDesc : sensorDescs) {
+						new StoreTask(getApplicationContext()).execute(sensorDesc);
+					}
 				}
 			}
 			// Make sure the list isn't modified at the same time as the list
@@ -430,32 +422,33 @@ public class SensorService extends Service implements SensorEventListener, Noise
 			}
 			wakeLockMutex.unlock();
 		}
+		storeMutex.unlock();
 	}
 
-	private void unregisterSensor(SensorDesc sensorDesc) {
-		if (sensorDesc.getSensorIdentifier() == SensorDescAccelerometer.SENSOR_ID) {
+	private void unregisterSensor(long sensorId) {
+		if (sensorId == SensorDescAccelerometer.SENSOR_ID) {
 			sensorManager.unregisterListener(this, sensorAccelerometer);
-		} else if (sensorDesc.getSensorIdentifier() == SensorDescPressure.SENSOR_ID) {
+		} else if (sensorId == SensorDescPressure.SENSOR_ID) {
 			sensorManager.unregisterListener(this, sensorPressure);
-		} else if (sensorDesc.getSensorIdentifier() == SensorDescGyroscope.SENSOR_ID) {
+		} else if (sensorId == SensorDescGyroscope.SENSOR_ID) {
 			sensorManager.unregisterListener(this, sensorGyroscope);
-		} else if (sensorDesc.getSensorIdentifier() == SensorDescHumidity.SENSOR_ID) {
+		} else if (sensorId == SensorDescHumidity.SENSOR_ID) {
 			sensorManager.unregisterListener(this, sensorHumidity);
-		} else if (sensorDesc.getSensorIdentifier() == SensorDescLight.SENSOR_ID) {
+		} else if (sensorId == SensorDescLight.SENSOR_ID) {
 			sensorManager.unregisterListener(this, sensorLight);
-		} else if (sensorDesc.getSensorIdentifier() == SensorDescMagnetic.SENSOR_ID) {
+		} else if (sensorId == SensorDescMagnetic.SENSOR_ID) {
 			sensorManager.unregisterListener(this, sensorMagnet);
-		} else if (sensorDesc.getSensorIdentifier() == SensorDescProximity.SENSOR_ID) {
+		} else if (sensorId == SensorDescProximity.SENSOR_ID) {
 			sensorManager.unregisterListener(this, sensorProximity);
-		} else if (sensorDesc.getSensorIdentifier() == SensorDescTemperature.SENSOR_ID) {
+		} else if (sensorId == SensorDescTemperature.SENSOR_ID) {
 			sensorManager.unregisterListener(this, sensorTemperature);
-		} else if (sensorDesc.getSensorIdentifier() == SensorDescNoise.SENSOR_ID) {
+		} else if (sensorId == SensorDescNoise.SENSOR_ID) {
 			sensorNoise.removeListener(this);
-		} else if (sensorDesc.getSensorIdentifier() == SensorDescBattery.SENSOR_ID) {
+		} else if (sensorId == SensorDescBattery.SENSOR_ID) {
 			sensorBattery.removeListener(this);
-		} else if (sensorDesc.getSensorIdentifier() == SensorDescBLEBeacon.SENSOR_ID) {
+		} else if (sensorId == SensorDescBLEBeacon.SENSOR_ID) {
 			sensorBLEBeacon.removeListener(this);
-		} else if (sensorDesc.getSensorIdentifier() == SensorDescConnectivity.SENSOR_ID) {
+		} else if (sensorId == SensorDescConnectivity.SENSOR_ID) {
 			sensorConnectivity.removeListener(this);
 		}
 	}

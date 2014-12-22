@@ -57,7 +57,7 @@ public class SensorDescBattery extends SensorDescSingleValue {
 	}
 
 	@Override
-	public long getSensorIdentifier() {
+	public long getSensorId() {
 		return SENSOR_ID;
 	}
 

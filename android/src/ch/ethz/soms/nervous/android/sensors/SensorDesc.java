@@ -21,7 +21,7 @@ public abstract class SensorDesc {
 	}
 	
 	
-	public abstract long getSensorIdentifier();
+	public abstract long getSensorId();
 
 	public long getTimestamp() {
 		return timestamp;

@@ -1,6 +1,7 @@
 package ch.ethz.soms.nervous.map;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -24,9 +25,10 @@ import ch.ethz.soms.nervous.android.sensors.SensorDescBLEBeacon;
 
 public class OrbitView extends View {
 
-	private static final float VELOCITY_SCALE = 0.1f;
+	private static final float VELOCITY_SCALE = 0.15f;
 	private static final float TEXT_SIZE_YOU = 18.f;
 	private static final float TEXT_SIZE_ORBITER = 14.f;
+	private static final float VELOCITY_MIN = 0.05f;
 
 	private float alpha = 255;
 	private Paint textPaintYou;
@@ -58,7 +60,9 @@ public class OrbitView extends View {
 		public void draw(Canvas canvas, boolean mode) {
 			float height = canvas.getHeight();
 			float width = canvas.getWidth();
-			float radius = ratio * 0.9f * Math.min(height / 2.f, width / 2.f);
+			float baseRadius = Math.min(height / 2.f, width / 2.f);
+			float minRadius = 1.3f * (float) youDrawable.getRadius();
+			float radius = ratio * 0.9f * (baseRadius - minRadius) + minRadius;
 
 			float x = width / 2.f + (float) Math.sin(angularPosition) * radius;
 			float y = height / 2.f + (float) Math.cos(angularPosition) * radius;
@@ -86,6 +90,9 @@ public class OrbitView extends View {
 		private float scaleFactor;
 		private Paint paint;
 		private Paint textPaint;
+		private int width;
+		private int height;
+		private int radius;
 
 		public TextShapeDrawable(String[] text, float scaleFactor, Paint paint, Paint textPaint) {
 			this.text = text;
@@ -106,8 +113,8 @@ public class OrbitView extends View {
 
 			Rect bounds = new Rect();
 
-			float height = 0;
-			float width = 0;
+			height = 0;
+			width = 0;
 
 			for (int i = 0; i < text.length; ++i) {
 				textPaint.getTextBounds(text[i], 0, text[i].length(), bounds);
@@ -115,13 +122,25 @@ public class OrbitView extends View {
 				width = Math.max(width, Math.abs(bounds.right - bounds.left));
 			}
 
-			int radius = (int) (0.6 * Math.sqrt(height * height + width * width));
+			radius = (int) (0.6 * Math.sqrt(height * height + width * width));
 			canvas.drawCircle(x, y, radius, paint);
 
 			for (int i = 0; i < text.length; ++i) {
 				canvas.drawText(text[i], x, y + (int) ((0.7 + i - (float) text.length / 2.0) * (1.2f * Math.abs((float) height / (float) text.length))), textPaint);
 			}
 
+		}
+
+		public int getRadius() {
+			return radius;
+		}
+
+		public int getWidth() {
+			return width;
+		}
+
+		public int getHeight() {
+			return height;
 		}
 
 		@Override
@@ -221,15 +240,18 @@ public class OrbitView extends View {
 	}
 
 	public void startAnimation() {
-	    viewHandler.removeCallbacks(viewUpdate);
+		viewHandler.removeCallbacks(viewUpdate);
 		viewHandler.postDelayed(viewUpdate, 40);
 	}
-	
+
 	void stopAnimation() {
-	    viewHandler.removeCallbacks(viewUpdate);
+		viewHandler.removeCallbacks(viewUpdate);
 	}
 
 	public void setBeacons(List<SensorDescBLEBeacon> bleBeacons) {
+
+		// Reverse the list (new to new)
+		Collections.reverse(bleBeacons);
 
 		// Remove duplicates in time
 		HashSet<String> duplicateSet = new HashSet<String>();
@@ -248,7 +270,6 @@ public class OrbitView extends View {
 		orbits.clear();
 
 		// Add new ones, without duplicates
-		Random random = new Random();
 
 		float maxDistance = 0.0f;
 
@@ -260,12 +281,14 @@ public class OrbitView extends View {
 		}
 
 		for (SensorDescBLEBeacon beacon : bleBeacons) {
-			int paintSelect = random.nextInt(circlePaint.length);
+			int paintSelect = beacon.getMajor() == 0x8037 ? 0 : 1;
 			float txpower = beacon.getTxpower();
 			float rssi = beacon.getRssi();
 			float distance = calculateDistance(txpower, rssi);
 			float ratio = distance / (0.000001f + maxDistance);
-			orbits.add(new Orbiter(new TextShapeDrawable(new String[] { String.valueOf(beacon.getMinor()) }, scaleFactor, circlePaint[paintSelect], textPaintOrbiter), (float) Math.random() * VELOCITY_SCALE - VELOCITY_SCALE / 2.f, ratio));
+			float velocity = (float) Math.random() * VELOCITY_SCALE - VELOCITY_SCALE / 2.f;
+			velocity = Math.signum(velocity) * VELOCITY_MIN + velocity;
+			orbits.add(new Orbiter(new TextShapeDrawable(new String[] { String.valueOf(beacon.getMinor()) }, scaleFactor, circlePaint[paintSelect], textPaintOrbiter), velocity, ratio));
 		}
 	}
 

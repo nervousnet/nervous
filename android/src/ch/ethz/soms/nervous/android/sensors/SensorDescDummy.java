@@ -34,7 +34,7 @@ public class SensorDescDummy extends SensorDesc {
 	}
 
 	@Override
-	public long getSensorIdentifier() {
+	public long getSensorId() {
 		return SENSOR_ID;
 	}
 
