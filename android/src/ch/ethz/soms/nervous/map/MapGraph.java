@@ -142,10 +142,11 @@ public class MapGraph {
 			if (description.equalsIgnoreCase(youUuid)) {
 				description = "YOU";
 				yourNodeFlag = true;
+				mgm = MapGraphMarker.getMapGrahpMarker(context, MapGraphMarker.TYPE_EMPTY_CIRCLE_GRAY);
 			} else {
 				description = "  ";
+				mgm = MapGraphMarker.getMapGrahpMarker(context, MapGraphMarker.TYPE_FULL_CIRCLE_GRAY);
 			}
-			mgm = MapGraphMarker.getMapGrahpMarker(context, MapGraphMarker.TYPE_FULL_CIRCLE_GRAY);
 		} else {
 			mgm = MapGraphMarker.getMapGrahpMarker(context, MapGraphMarker.TYPE_FULL_CIRCLE_ORANGE);
 		}

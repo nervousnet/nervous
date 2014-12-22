@@ -233,9 +233,9 @@ public class MainActivity extends ActionBarActivity {
 		ImageButton btnFloor3Map = (ImageButton) findViewById(R.id.btn_floor3map);
 		ImageButton btnFloor2Map = (ImageButton) findViewById(R.id.btn_floor2map);
 		ImageButton btnFloor1Map = (ImageButton) findViewById(R.id.btn_floor1map);
-		
+
 		btnCenterMap.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				int layer = nervousMap.getSelectedMapLayer();
@@ -243,7 +243,6 @@ public class MainActivity extends ActionBarActivity {
 				nervousMap.focusYouAndZoom();
 			}
 		});
-		
 
 		btnOrbitalMap.setOnClickListener(new OnClickListener() {
 
@@ -294,7 +293,7 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	private void loadMapGraph(int level) {
-		String youUuid = NervousVM.getInstance(getFilesDir()).getUUID().toString();
+		String youUuid = NervousVM.getInstance(getFilesDir()).getUUID().toString().replace("-", "");
 		switch (level) {
 		case -1:
 			// Update with BLE encounters from the last minute
@@ -306,6 +305,7 @@ public class MainActivity extends ActionBarActivity {
 				}
 				nervousMap.updateOrbitView(beacons);
 			}
+			break;
 		case 0:
 			new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-0.json", nervousMap, 0, 0, youUuid).execute();
 			break;
