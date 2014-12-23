@@ -1,6 +1,21 @@
 package ch.ethz.soms.nervous.android;
 
+import ch.ethz.soms.nervous.android.sensors.SensorDescAccelerometer;
+import ch.ethz.soms.nervous.android.sensors.SensorDescBLEBeacon;
+import ch.ethz.soms.nervous.android.sensors.SensorDescBattery;
+import ch.ethz.soms.nervous.android.sensors.SensorDescConnectivity;
+import ch.ethz.soms.nervous.android.sensors.SensorDescGyroscope;
+import ch.ethz.soms.nervous.android.sensors.SensorDescHumidity;
+import ch.ethz.soms.nervous.android.sensors.SensorDescLight;
+import ch.ethz.soms.nervous.android.sensors.SensorDescMagnetic;
+import ch.ethz.soms.nervous.android.sensors.SensorDescNoise;
+import ch.ethz.soms.nervous.android.sensors.SensorDescPressure;
+import ch.ethz.soms.nervous.android.sensors.SensorDescProximity;
+import ch.ethz.soms.nervous.android.sensors.SensorDescTemperature;
+import ch.ethz.soms.nervous.utils.NervousStatics;
 import android.app.Activity;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,22 +23,29 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ListView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class SensorLoggingToggleActivity extends Activity {
 
 	ListView listSensorLoggingToggle;
+	String[] sensorNames = { "Accelerometer", "Battery", "BLEBeacon",
+			"Connectivity", "Gyroscope", "Humidity", "Light", "Magnetic",
+			"Noise", "Pressure", "Proximity", "Temperature" };
+	long[] sensorIds = { SensorDescAccelerometer.SENSOR_ID,
+			SensorDescBattery.SENSOR_ID, SensorDescBLEBeacon.SENSOR_ID,
+			SensorDescConnectivity.SENSOR_ID, SensorDescGyroscope.SENSOR_ID,
+			SensorDescHumidity.SENSOR_ID, SensorDescLight.SENSOR_ID,
+			SensorDescMagnetic.SENSOR_ID, SensorDescNoise.SENSOR_ID,
+			SensorDescPressure.SENSOR_ID, SensorDescProximity.SENSOR_ID,
+			SensorDescTemperature.SENSOR_ID };
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_sensor_logging_toggle);
-
-		final String[] sensorNames = getSensorNames();
-		int numOfSensors = sensorNames.length;
 
 		CustomListAdapter adapter = new CustomListAdapter(
 				SensorLoggingToggleActivity.this, sensorNames);
@@ -40,13 +62,6 @@ public class SensorLoggingToggleActivity extends Activity {
 					}
 				});
 
-	}
-
-	private String[] getSensorNames() {
-		String[] sensorList = { "Accelerometer", "Battery", "BLEBeacon",
-				"Connectivity", "Gyroscope", "Humidity", "Light", "Magnetic",
-				"Noise", "Pressure", "Proximity", "Temperature" };
-		return sensorList;
 	}
 
 	public class CustomListAdapter extends ArrayAdapter<String> {
@@ -69,28 +84,39 @@ public class SensorLoggingToggleActivity extends Activity {
 			final TextView txtTitle = (TextView) rowView
 					.findViewById(R.id.txt_SensorItem);
 
-			final Switch switchLog = (Switch) rowView
-					.findViewById(R.id.switch_log);
-			final Switch switchShare = (Switch) rowView
-					.findViewById(R.id.switch_share);
+			final CheckBox checkBoxLog = (CheckBox) rowView
+					.findViewById(R.id.checkBox_Log);
+			final CheckBox checkBoxShare = (CheckBox) rowView
+					.findViewById(R.id.checkBox_Share);
 
 			txtTitle.setText(sensorName[position]);
-			// TODO: Set toggle on or off
-			switchLog.setChecked(true);
-			switchShare.setChecked(false);
 
-			// TODO: set onClickListeners to change settings
-			switchLog.setOnClickListener(new OnClickListener() {
+			final SharedPreferences settings = context.getSharedPreferences(
+					NervousStatics.SENSOR_PREFS, 0);
+			boolean doMeasure = settings.getBoolean(
+					Long.toHexString(sensorIds[position]) + "_doMeasure", true);
+			boolean doShare = settings.getBoolean(
+					Long.toHexString(sensorIds[position]) + "_doShare", true);
+			checkBoxLog.setChecked(doMeasure);
+			checkBoxShare.setChecked(doShare);
+
+			checkBoxLog.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					toastToScreen("Hit Log: " + position, false);
+					Editor edit = settings.edit();
+					edit.putBoolean(Long.toHexString(sensorIds[position])
+							+ "_doMeasure", checkBoxShare.isChecked());
+					edit.commit();
 				}
 			});
 
-			switchShare.setOnClickListener(new OnClickListener() {
+			checkBoxShare.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					toastToScreen("Hit Share: " + position, false);
+					Editor edit = settings.edit();
+					edit.putBoolean(Long.toHexString(sensorIds[position])
+							+ "_doShare", checkBoxShare.isChecked());
+					edit.commit();
 				}
 			});
 			return rowView;

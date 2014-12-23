@@ -494,29 +494,14 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		toastToScreen("MENUPRESSED", false);
-		switch (keyCode) {
-		case KeyEvent.KEYCODE_MENU:
-			Intent intent = new Intent(this, SensorLoggingToggleActivity.class);
-			startActivity(intent);
-			return true;
-		default:
-			return super.onKeyDown(keyCode, event);
-		}
-	}
-
-	
-	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.main, menu);
+		getMenuInflater().inflate(R.menu.ccc_menu, menu);
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		
-		
+
 		TestQueries tq = new TestQueries(getApplicationContext(), getFilesDir());
 
 		Intent intent;
@@ -525,7 +510,7 @@ public class MainActivity extends ActionBarActivity implements
 			intent = new Intent(this, IfThisThenThatActivity.class);
 			startActivity(intent);
 			break;
-		case R.id.menu_SensorLoggingToggle:
+		case R.id.menu_PrivacySettings:
 			intent = new Intent(this, SensorLoggingToggleActivity.class);
 			startActivity(intent);
 			break;
@@ -580,7 +565,7 @@ public class MainActivity extends ActionBarActivity implements
 			break;
 		default:
 			break;
-			
+
 		}
 		return super.onOptionsItemSelected(item);
 	}
