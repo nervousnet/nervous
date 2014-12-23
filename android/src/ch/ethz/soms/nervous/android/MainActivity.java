@@ -574,19 +574,19 @@ public class MainActivity extends ActionBarActivity implements NervousMapListene
 		return false;
 	}
 
-//	@Override
-//	public void onTouchEvent(MapGraphNode oi) {
-//		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//		builder.setMessage(oi.getTitle() + ": " +oi.getSnippet());
-//		Dialog dialog = builder.create();
-//		dialog.setCancelable(true);
-//		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//		WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
-//		params.y += 100;
-//		dialog.getWindow().setAttributes(params);
-//	    dialog.getWindow().setGravity(Gravity.TOP);
-//		dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-//		dialog.show();
-//	}
+	@Override
+	public void onTouchEvent(MapGraphNode oi) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(oi.getTitle() + ": " +oi.getSnippet());
+		Dialog dialog = builder.create();
+		dialog.setCancelable(true);
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+		params.y += 100;
+		dialog.getWindow().setAttributes(params);
+	    dialog.getWindow().setGravity(Gravity.TOP);
+		dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+		dialog.show();
+	}
 
 }
