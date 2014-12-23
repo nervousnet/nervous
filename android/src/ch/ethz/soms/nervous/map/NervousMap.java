@@ -4,19 +4,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.osmdroid.DefaultResourceProxyImpl;
 import org.osmdroid.ResourceProxy;
+import org.osmdroid.api.Marker;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.tileprovider.tilesource.XYTileSource;
+import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedIconOverlay.OnItemGestureListener;
 import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.TilesOverlay;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.widget.ViewSwitcher;
 import ch.ethz.soms.nervous.android.sensors.SensorDescBLEBeacon;
 import ch.ethz.soms.nervous.map.MapGraph.MapGraphEdge;
@@ -58,7 +63,7 @@ public class NervousMap {
 	}
 
 	public interface NervousMapListener {
-		public void onTouchEvent(NervousMapEvent event);
+		public void onTouchEvent(MapGraphNode oi);
 	}
 
 	private LinkedList<NervousMapListener> listenerList;
@@ -71,9 +76,9 @@ public class NervousMap {
 		listenerList.remove(listener);
 	}
 
-	private void onTouchEvent(NervousMapEvent event) {
+	private void onTouchEvent(MapGraphNode oi) {
 		for (NervousMapListener listener : listenerList) {
-			listener.onTouchEvent(event);
+			listener.onTouchEvent(oi);
 		}
 	}
 
@@ -149,7 +154,7 @@ public class NervousMap {
 		orbitView.setBeacons(bleBeacons);
 	}
 
-	public void addMapGraph(int mapLayer, MapGraph mapGraph) {
+	public void addMapGraph(int mapLayer, MapGraph mapGraph, boolean reload) {
 		MapGraphContainer mapGraphContainer;
 		if (mapGraphContainers.containsKey(mapLayer)) {
 			mapGraphContainer = mapGraphContainers.get(mapLayer);
@@ -158,7 +163,9 @@ public class NervousMap {
 			mapGraphContainers.put(mapLayer, mapGraphContainer);
 		}
 		mapGraphContainer.add(mapGraph);
-		selectMapLayer(mapLayer);
+		if (reload) {
+			selectMapLayer(mapLayer);
+		}
 	}
 
 	public void clearMapGraph(int mapLayer) {
@@ -179,8 +186,8 @@ public class NervousMap {
 				// Add graph nodes to map
 				for (MapGraphNode mgn : mg.getNodes()) {
 					overlayItems.add(mgn);
-				}
-
+				}		
+				
 				Overlay overlay = new ItemizedIconOverlay<OverlayItem>(overlayItems, new OnItemGestureListener<OverlayItem>() {
 
 					@Override
@@ -190,9 +197,9 @@ public class NervousMap {
 
 					@Override
 					public boolean onItemSingleTapUp(int arg, OverlayItem oi) {
-						// TODO
+						Log.d("TEST", "TEST");
 						if (oi instanceof MapGraphNode) {
-							onTouchEvent(null);
+							onTouchEvent((MapGraphNode) oi);
 						}
 						return true;
 					}
@@ -227,6 +234,13 @@ public class NervousMap {
 					}
 				}
 			}
+		}
+	}
+
+	public void removeMapGraph(int mapLayer, int identifier) {
+		MapGraphContainer mapGraphContainer = mapGraphContainers.get(mapLayer);
+		if (mapGraphContainer != null) {
+			mapGraphContainer.removeByIdentifier(identifier);
 		}
 	}
 

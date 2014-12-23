@@ -31,8 +31,6 @@ class TextShapeDrawable extends Drawable {
 
 	@Override
 	public void draw(Canvas canvas) {
-		
-
 		Rect bounds = new Rect();
 
 		height = 0;
@@ -48,9 +46,8 @@ class TextShapeDrawable extends Drawable {
 		canvas.drawCircle(x, y, radius, paint);
 
 		for (int i = 0; i < text.length; ++i) {
-			canvas.drawText(text[i], x, y + (int) ((0.7 + i - (float) text.length / 2.0) * (1.2f * Math.abs((float) height / (float) text.length))), textPaint);
+			canvas.drawText(text[i], x, y + (int) ((0.8 + i - (float) text.length / 2.0) * (1.2f * Math.abs((float) height / (float) text.length))), textPaint);
 		}
-
 	}
 
 	public int getRadius() {
@@ -72,29 +69,28 @@ class TextShapeDrawable extends Drawable {
 
 	@Override
 	public void setBounds(int left, int top, int right, int bottom) {
-		x = left;
-		y = top;
+		super.setBounds(left, top, right, bottom);
+		x = (left + right) / 2;
+		y = (top + bottom) / 2;
 	}
 
 	@Override
 	public void setBounds(android.graphics.Rect bounds) {
-		x = bounds.left;
-		y = bounds.top;
+		setBounds(bounds.left, bounds.top, bounds.right, bounds.bottom);
 	}
 
 	@Override
 	public int getIntrinsicHeight() {
-		return (int) radius;
+		return 2 * radius;
 	}
 
 	@Override
 	public int getIntrinsicWidth() {
-		return (int) radius;
+		return 2 * radius;
 	}
-	
+
 	@Override
 	public void setAlpha(int alpha) {
-
 	}
 
 	@Override
