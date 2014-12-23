@@ -24,6 +24,7 @@ desktop.ini
 /android/bin
 /android/.settings
 /android/gen
+/android/build
 /javanervousvm/bin
 /javanervousvm/.settings
 /javanervousvmtest/bin
