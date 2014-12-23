@@ -7,6 +7,7 @@ import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.ActivityManager.RunningServiceInfo;
+import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
@@ -18,11 +19,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
@@ -38,13 +42,15 @@ import android.widget.Switch;
 import android.widget.Toast;
 import ch.ethz.soms.nervous.android.sensors.SensorDescBLEBeacon;
 import ch.ethz.soms.nervous.map.AssetsMbTileSource;
+import ch.ethz.soms.nervous.map.MapGraph.MapGraphNode;
 import ch.ethz.soms.nervous.map.MapGraphLoader;
 import ch.ethz.soms.nervous.map.NervousMap;
+import ch.ethz.soms.nervous.map.NervousMap.NervousMapListener;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
 import ch.ethz.soms.nervous.utils.NervousStatics;
 import ch.ethz.soms.nervous.vm.NervousVM;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements NervousMapListener {
 
 	public static final String LOG_TAG = MainActivity.class.getSimpleName();
 
@@ -78,6 +84,8 @@ public class MainActivity extends ActionBarActivity {
 		nervousMap.addMapLayer(3, new AssetsMbTileSource(getApplicationContext(), "blank"));
 
 		nervousMap.selectMapLayer(-1);
+		
+		nervousMap.addListener(this);
 
 		menuButtonsShowing = false;
 		setupAnimations();
@@ -105,8 +113,7 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	private void setupAnimations() {
-		final RelativeLayout layoutNodeExtraInf = setupNodeExtraInf();
-		layoutMainMap = setupMainMap(layoutNodeExtraInf);
+		layoutMainMap = setupMainMap();
 		layoutExtraMenuButtonGroup = setupExtraMenuButtons();
 		setupMainMenuButton();
 	}
@@ -324,29 +331,13 @@ public class MainActivity extends ActionBarActivity {
 		}
 	}
 
-	private RelativeLayout setupMainMap(final RelativeLayout layoutNodeExtraInf) {
+	private RelativeLayout setupMainMap() {
 		final RelativeLayout layoutMainMap = (RelativeLayout) findViewById(R.id.layout_map);
 
 		layoutMainMap.addView(nervousMap.getViewSwitcher());
 		return layoutMainMap;
 	}
-
-	private RelativeLayout setupNodeExtraInf() {
-		final RelativeLayout layoutNodeExtraInf = (RelativeLayout) findViewById(R.id.layout_NodeInformation);
-		layoutNodeExtraInf.setVisibility(View.INVISIBLE);
-
-		ImageButton btn_NodeOptions = (ImageButton) findViewById(R.id.btn_NodeOptions);
-		btn_NodeOptions.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				toastToScreen("Options", false);
-			}
-		});
-
-		return layoutNodeExtraInf;
-	}
-
+	
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -524,6 +515,21 @@ public class MainActivity extends ActionBarActivity {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public void onTouchEvent(MapGraphNode oi) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(oi.getTitle() + ": " +oi.getSnippet());
+		Dialog dialog = builder.create();
+		dialog.setCancelable(true);
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+		params.y += 100;
+		dialog.getWindow().setAttributes(params);
+	    dialog.getWindow().setGravity(Gravity.TOP);
+		dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+		dialog.show();
 	}
 
 }

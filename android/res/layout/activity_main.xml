@@ -40,7 +40,7 @@
             android:background="@drawable/circle"
             android:padding="8dp"
             android:scaleType="fitXY"
-            android:src="@drawable/refresh"/>
+            android:src="@drawable/refresh" />
 
         <RelativeLayout
             android:id="@+id/layout_buttonsGroup"
@@ -62,7 +62,7 @@
                 android:background="@drawable/circle"
                 android:padding="8dp"
                 android:scaleType="fitXY"
-                android:src="@drawable/relations"/>
+                android:src="@drawable/relations" />
 
             <LinearLayout
                 android:id="@+id/layout_extraMenuButtonGroup"
@@ -131,48 +131,6 @@
                     android:scaleType="fitXY"
                     android:src="@drawable/floor_1" />
             </LinearLayout>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/layout_NodeInformation"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:background="#EAFFFFFF"
-            android:paddingBottom="5dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="5dp"
-            android:paddingTop="10dp" >
-
-            <TextView
-                android:id="@+id/txt_NodeInfo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/txt_NodeName"
-                android:text="Java, Haskel, Logo, Notepad"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="#333333" />
-
-            <TextView
-                android:id="@+id/txt_NodeName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:text="BadBoy96"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-
-            <ImageButton
-                android:id="@+id/btn_NodeOptions"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_alignParentRight="true"
-                android:layout_marginEnd="2dp"
-                android:layout_marginRight="2dp"
-                android:background="#00000000"
-                android:padding="8dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/circle" />
         </RelativeLayout>
     </FrameLayout>
 

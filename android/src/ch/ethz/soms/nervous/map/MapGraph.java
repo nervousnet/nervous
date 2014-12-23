@@ -66,14 +66,34 @@ public class MapGraph {
 		private GeoPoint pos;
 
 		MapGraphNode(String label, String description, GeoPoint pos) {
-			super(label, description, pos);
+			super(description, label, pos);
 			this.pos = pos;
 		}
 
 		public GeoPoint getPos() {
 			return pos;
 		}
+		
+		@Override
+		public GeoPoint getPoint() {
+			return pos;
+		}
+		
+        public int getWidth() {
+        	 
+            return this.mMarker.getIntrinsicWidth();
 
+    }
+
+
+
+    public int getHeight() {
+
+            return this.mMarker.getIntrinsicHeight();
+
+    } 
+
+		
 	}
 
 	public class MapGraphEdge extends PathOverlay {
@@ -98,7 +118,7 @@ public class MapGraph {
 		public GeoPoint getStop() {
 			return stop;
 		}
-
+		
 	}
 
 	public void addFromJson(JSONArray ja) {
@@ -200,6 +220,7 @@ public class MapGraph {
 		TextShapeDrawable marker = new TextShapeDrawable(new String[] { description }, paintCollection.getCirclePaintPoi(), paintCollection.getTextPaintOrbiter());
 
 		mgn.setMarker(marker);
+		mgn.setMarkerHotspot(HotspotPlace.CENTER);
 
 		nodes.add(mgn);
 	}
