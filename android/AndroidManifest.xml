@@ -42,21 +42,25 @@
             android:name=".UploadService"
             android:enabled="true" />
 
+        <!--
         <activity
             android:name=".IfThisThenThatActivity"
             android:label="@string/title_activity_if_this_then_that"
             android:theme="@style/AppTheme" >
-        </activity>
+        </activity>
+        -->
         <activity
             android:name=".SensorLoggingToggleActivity"
             android:label="@string/title_activity_sensor_logging_toggle"
-            android:theme="@style/AppTheme" >
+            android:theme="@style/AppThemeTransparent">
         </activity>
+        <!--
         <activity
             android:name=".SettingsActivity"
             android:label="SettingsTest"
             android:theme="@style/AppTheme" >
-        </activity>
+        </activity>
+        -->
     </application>
 
 </manifest>

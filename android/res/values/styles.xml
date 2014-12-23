@@ -9,6 +9,14 @@
         <item name="actionOverflowButtonStyle">@style/OverFlow</item>
     </style>
 
+    <style name="AppThemeTransparent" parent="AppTheme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@color/white_nervous_transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
     <style name="ActionBar" parent="ThemeOverlay.AppCompat.ActionBar">
         <item name="android:background">@color/white_nervous</item>
     </style>

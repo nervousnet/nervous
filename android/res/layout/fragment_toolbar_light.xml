@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
 
-    <RelativeLayout
+   <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
@@ -14,14 +14,6 @@
             android:scaleType="fitStart"
             android:antialias="true"
             android:src="@drawable/nn" />
-
-        <Switch
-            android:id="@+id/service_switch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:onClick="onServiceSwitchClick" />
     </RelativeLayout>
 
 </android.support.v7.widget.Toolbar>

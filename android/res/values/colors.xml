@@ -12,5 +12,6 @@
     <color name="gray_nervous_dark">#555555</color>
     <color name="gray_nervous_light">#DDDDDD</color>
     <color name="white_nervous">#FFFFFF</color>
-
+	<color name="white_nervous_transparent">#CCFFFFFF</color>
+    
 </resources>

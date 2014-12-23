@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.annotation.TargetApi;
-import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.app.ActivityManager.RunningServiceInfo;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
@@ -20,7 +18,6 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,8 +48,7 @@ import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorD
 import ch.ethz.soms.nervous.utils.NervousStatics;
 import ch.ethz.soms.nervous.vm.NervousVM;
 
-public class MainActivity extends ActionBarActivity implements
-		NervousMapListener {
+public class MainActivity extends ActionBarActivity implements NervousMapListener {
 
 	public static final String LOG_TAG = MainActivity.class.getSimpleName();
 
@@ -66,8 +62,7 @@ public class MainActivity extends ActionBarActivity implements
 	private Switch serviceSwitch;
 	private LinearLayout layoutExtraMenuButtonGroup;
 
-	private ImageButton mainMenuButton, btnFloor2Map, btnFloor3Map,
-			btnSocialMap, btnOrbitalMap, btnFloor1Map;
+	private ImageButton mainMenuButton, btnFloor2Map, btnFloor3Map, btnSocialMap, btnOrbitalMap, btnFloor1Map;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -82,14 +77,10 @@ public class MainActivity extends ActionBarActivity implements
 
 		nervousMap = new NervousMap(getApplicationContext());
 
-		nervousMap.addMapLayer(0, new AssetsMbTileSource(
-				getApplicationContext(), "cch0"));
-		nervousMap.addMapLayer(1, new AssetsMbTileSource(
-				getApplicationContext(), "cch1"));
-		nervousMap.addMapLayer(2, new AssetsMbTileSource(
-				getApplicationContext(), "cch2"));
-		nervousMap.addMapLayer(3, new AssetsMbTileSource(
-				getApplicationContext(), "blank"));
+		nervousMap.addMapLayer(0, new AssetsMbTileSource(getApplicationContext(), "cch0"));
+		nervousMap.addMapLayer(1, new AssetsMbTileSource(getApplicationContext(), "cch1"));
+		nervousMap.addMapLayer(2, new AssetsMbTileSource(getApplicationContext(), "cch2"));
+		nervousMap.addMapLayer(3, new AssetsMbTileSource(getApplicationContext(), "blank"));
 
 		nervousMap.selectMapLayer(-1);
 
@@ -127,15 +118,12 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	private void moveOutButtons(final MainActivity context) {
-		final Animation flyOutToRightAnimation = AnimationUtils.loadAnimation(
-				context, R.anim.menu_button_group_animation_out);
+		final Animation flyOutToRightAnimation = AnimationUtils.loadAnimation(context, R.anim.menu_button_group_animation_out);
 		final AlphaAnimation alphaAnimFadeOut = new AlphaAnimation(1, 0);
 		final AlphaAnimation alphaAnimSemiFadeIn = new AlphaAnimation(0.5f, 1);
 
-		alphaAnimFadeOut.setDuration(getResources().getInteger(
-				R.integer.menuButtonsGroup_animationDuration));
-		alphaAnimSemiFadeIn.setDuration(getResources().getInteger(
-				R.integer.menuButtonsGroup_animationDuration));
+		alphaAnimFadeOut.setDuration(getResources().getInteger(R.integer.menuButtonsGroup_animationDuration));
+		alphaAnimSemiFadeIn.setDuration(getResources().getInteger(R.integer.menuButtonsGroup_animationDuration));
 		alphaAnimSemiFadeIn.setFillAfter(true);
 		alphaAnimSemiFadeIn.setFillEnabled(true);
 
@@ -152,37 +140,29 @@ public class MainActivity extends ActionBarActivity implements
 		enableLayout(layoutMainMap);
 		imgOverlay.setEnabled(false);
 		imgOverlay.setVisibility(View.INVISIBLE);
-		layoutExtraMenuButtonGroup.postDelayed(
-				new Runnable() {
-					@Override
-					public void run() {
-						setExtraButtonsVisibility(false);
-					}
-				},
-				getResources().getInteger(
-						R.integer.menuButtonsGroup_animationDuration));
+		layoutExtraMenuButtonGroup.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				setExtraButtonsVisibility(false);
+			}
+		}, getResources().getInteger(R.integer.menuButtonsGroup_animationDuration));
 	}
 
 	private void moveInButtons(final MainActivity context) {
 		setExtraButtonsVisibility(true);
 
-		final Animation flyInFromRightAnimation = AnimationUtils.loadAnimation(
-				context, R.anim.menu_button_group_animation_in);
+		final Animation flyInFromRightAnimation = AnimationUtils.loadAnimation(context, R.anim.menu_button_group_animation_in);
 		final AlphaAnimation alphaAnimFadeIn = new AlphaAnimation(0, 1);
 		final AlphaAnimation alphaAnimFadeOut = new AlphaAnimation(1, 0);
 		final AlphaAnimation alphaAnimSemiFadeOut = new AlphaAnimation(1, 0.5f);
 		final AlphaAnimation alphaAnimSemiFadeIn = new AlphaAnimation(0.5f, 1);
 
-		alphaAnimFadeIn.setDuration(getResources().getInteger(
-				R.integer.menuButtonsGroup_animationDuration));
-		alphaAnimFadeOut.setDuration(getResources().getInteger(
-				R.integer.menuButtonsGroup_animationDuration));
-		alphaAnimSemiFadeIn.setDuration(getResources().getInteger(
-				R.integer.menuButtonsGroup_animationDuration));
+		alphaAnimFadeIn.setDuration(getResources().getInteger(R.integer.menuButtonsGroup_animationDuration));
+		alphaAnimFadeOut.setDuration(getResources().getInteger(R.integer.menuButtonsGroup_animationDuration));
+		alphaAnimSemiFadeIn.setDuration(getResources().getInteger(R.integer.menuButtonsGroup_animationDuration));
 		alphaAnimSemiFadeIn.setFillAfter(true);
 		alphaAnimSemiFadeIn.setFillEnabled(true);
-		alphaAnimSemiFadeOut.setDuration(getResources().getInteger(
-				R.integer.menuButtonsGroup_animationDuration));
+		alphaAnimSemiFadeOut.setDuration(getResources().getInteger(R.integer.menuButtonsGroup_animationDuration));
 		alphaAnimSemiFadeOut.setFillAfter(true);
 		alphaAnimSemiFadeOut.setFillEnabled(true);
 
@@ -337,16 +317,12 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	private void loadMapGraph(int level) {
-		String youUuid = NervousVM.getInstance(getFilesDir()).getUUID()
-				.toString().replace("-", "");
+		String youUuid = NervousVM.getInstance(getFilesDir()).getUUID().toString().replace("-", "");
 		switch (level) {
 		case -1:
 			// Update with BLE encounters from the last minute
 			List<SensorDescBLEBeacon> beacons = new ArrayList<SensorDescBLEBeacon>();
-			List<SensorData> datas = NervousVM.getInstance(getFilesDir())
-					.retrieve(SensorDescBLEBeacon.SENSOR_ID,
-							System.currentTimeMillis() - 20 * 1000,
-							System.currentTimeMillis());
+			List<SensorData> datas = NervousVM.getInstance(getFilesDir()).retrieve(SensorDescBLEBeacon.SENSOR_ID, System.currentTimeMillis() - 20 * 1000, System.currentTimeMillis());
 			if (datas != null) {
 				for (SensorData data : datas) {
 					beacons.add(new SensorDescBLEBeacon(data));
@@ -355,33 +331,19 @@ public class MainActivity extends ActionBarActivity implements
 			}
 			break;
 		case 0:
-			new MapGraphLoader(getApplicationContext(),
-					"http://nervous.ethz.ch/app_data/map-0.json", nervousMap,
-					0, 0, youUuid, true).execute();
-			new MapGraphLoader(getApplicationContext(),
-					"http://nervous.ethz.ch/app_data/poi.json", nervousMap, 0,
-					1, 1, true).execute();
+			new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-0.json", nervousMap, 0, 0, youUuid, true).execute();
+			new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/poi.json", nervousMap, 0, 1, 1, true).execute();
 			break;
 		case 1:
-			new MapGraphLoader(getApplicationContext(),
-					"http://nervous.ethz.ch/app_data/map-1.json", nervousMap,
-					1, 0, youUuid, true).execute();
-			new MapGraphLoader(getApplicationContext(),
-					"http://nervous.ethz.ch/app_data/poi.json", nervousMap, 1,
-					1, 2, true).execute();
+			new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-1.json", nervousMap, 1, 0, youUuid, true).execute();
+			new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/poi.json", nervousMap, 1, 1, 2, true).execute();
 			break;
 		case 2:
-			new MapGraphLoader(getApplicationContext(),
-					"http://nervous.ethz.ch/app_data/map-2.json", nervousMap,
-					2, 0, youUuid, true).execute();
-			new MapGraphLoader(getApplicationContext(),
-					"http://nervous.ethz.ch/app_data/poi.json", nervousMap, 2,
-					1, 3, true).execute();
+			new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-2.json", nervousMap, 2, 0, youUuid, true).execute();
+			new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/poi.json", nervousMap, 2, 1, 3, true).execute();
 			break;
 		case 3:
-			new MapGraphLoader(getApplicationContext(),
-					"http://nervous.ethz.ch/app_data/map-sn.json", nervousMap,
-					3, 0, youUuid, true).execute();
+			new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-sn.json", nervousMap, 3, 0, youUuid, true).execute();
 			break;
 		}
 	}
@@ -400,17 +362,14 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	private void askServiceEnable() {
-		final SharedPreferences prefs = getSharedPreferences(
-				NervousStatics.SERVICE_PREFS, 0);
+		final SharedPreferences prefs = getSharedPreferences(NervousStatics.SERVICE_PREFS, 0);
 		boolean showServiceDialog = prefs.getBoolean("ShowServiceDialog", true);
 		if (showServiceDialog) {
 			View checkBoxView = View.inflate(this, R.layout.checkbox, null);
-			CheckBox checkBox = (CheckBox) checkBoxView
-					.findViewById(R.id.checkbox);
+			CheckBox checkBox = (CheckBox) checkBoxView.findViewById(R.id.checkbox);
 			checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 				@Override
-				public void onCheckedChanged(CompoundButton buttonView,
-						boolean isChecked) {
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 					Editor edit = prefs.edit();
 					edit.putBoolean("ShowServiceDialog", !isChecked);
 					edit.commit();
@@ -423,23 +382,21 @@ public class MainActivity extends ActionBarActivity implements
 			builder.setTitle(getString(R.string.contribute));
 			builder.setView(checkBoxView);
 			builder.setMessage(getString(R.string.contribute_long));
-			builder.setPositiveButton(getString(R.string.yes),
-					new DialogInterface.OnClickListener() {
+			builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
 
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							dialog.cancel();
-							startStopSensorService(true);
-						}
-					});
-			builder.setNegativeButton(getString(R.string.no),
-					new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.cancel();
+					startStopSensorService(true);
+				}
+			});
+			builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
 
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							dialog.cancel();
-						}
-					});
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.cancel();
+				}
+			});
 			builder.create().show();
 		}
 	}
@@ -451,45 +408,36 @@ public class MainActivity extends ActionBarActivity implements
 			BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
 
 			if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
-				Intent enableBtIntent = new Intent(
-						BluetoothAdapter.ACTION_REQUEST_ENABLE);
+				Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
 				startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
 			}
 		}
 	}
 
 	public void startStopSensorService(boolean on) {
-		Intent sensorIntent = new Intent(getApplicationContext(),
-				SensorService.class);
-		Intent uploadIntent = new Intent(getApplicationContext(),
-				UploadService.class);
 		if (on) {
-			startService(sensorIntent);
-			startService(uploadIntent);
+			SensorService.startService(this);
+			UploadService.startService(this);
 			serviceRunning = true;
 
-			// If the user wants to collect BT/BLE data, ask to enable bluetooth
-			// if disabled
-			SensorConfiguration sc = SensorConfiguration
-					.getInstance(getApplicationContext());
-			SensorCollectStatus scs = sc
-					.getInitialSensorCollectStatus(SensorDescBLEBeacon.SENSOR_ID);
+			// If the user wants to collect BT/BLE data, ask to enable bluetooth if disabled
+			SensorConfiguration sc = SensorConfiguration.getInstance(getApplicationContext());
+			SensorCollectStatus scs = sc.getInitialSensorCollectStatus(SensorDescBLEBeacon.SENSOR_ID);
 			if (scs.isCollect()) {
 				// This will only work on API level 18 or higher
 				initializeBluetooth();
 			}
 
 		} else {
-			stopService(sensorIntent);
-			stopService(uploadIntent);
+			SensorService.stopService(this);
+			UploadService.stopService(this);
 			serviceRunning = false;
 		}
 		updateServiceInfo();
 	}
 
 	public void updateServiceInfo() {
-		serviceRunning = isServiceRunning(SensorService.class)
-				&& isServiceRunning(UploadService.class);
+		serviceRunning = SensorService.isServiceRunning(this) && UploadService.isServiceRunning(this);
 		serviceSwitch.setChecked(serviceRunning);
 	}
 
@@ -576,17 +524,6 @@ public class MainActivity extends ActionBarActivity implements
 		Toast.makeText(getApplicationContext(), msg, toastLength).show();
 	}
 
-	private boolean isServiceRunning(Class<?> serviceClass) {
-		ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-		for (RunningServiceInfo service : manager
-				.getRunningServices(Integer.MAX_VALUE)) {
-			if (serviceClass.getName().equals(service.service.getClassName())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	@Override
 	public void onTouchEvent(MapGraphNode oi) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -598,8 +535,7 @@ public class MainActivity extends ActionBarActivity implements
 		params.y += 100;
 		dialog.getWindow().setAttributes(params);
 		dialog.getWindow().setGravity(Gravity.TOP);
-		dialog.getWindow().clearFlags(
-				WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+		dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
 		dialog.show();
 	}
 

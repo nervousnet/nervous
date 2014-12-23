@@ -6,7 +6,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import android.app.ActivityManager;
 import android.app.Service;
+import android.app.ActivityManager.RunningServiceInfo;
+import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -435,6 +438,26 @@ public class SensorService extends Service implements SensorEventListener, Noise
 		} else if (sensorId == SensorDescConnectivity.SENSOR_ID) {
 			sensorConnectivity.removeListener(this);
 		}
+	}
+
+	public static boolean isServiceRunning(Context context) {
+		ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+		for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+			if (SensorService.class.getName().equals(service.service.getClassName())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static void startService(Context context) {
+		Intent sensorIntent = new Intent(context, SensorService.class);
+		context.startService(sensorIntent);
+	}
+
+	public static void stopService(Context context) {
+		Intent sensorIntent = new Intent(context, SensorService.class);
+		context.stopService(sensorIntent);
 	}
 
 }
