@@ -50,7 +50,8 @@ import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorD
 import ch.ethz.soms.nervous.utils.NervousStatics;
 import ch.ethz.soms.nervous.vm.NervousVM;
 
-public class MainActivity extends ActionBarActivity implements NervousMapListener {
+public class MainActivity extends ActionBarActivity implements
+		NervousMapListener {
 
 	public static final String LOG_TAG = MainActivity.class.getSimpleName();
 
@@ -90,7 +91,7 @@ public class MainActivity extends ActionBarActivity implements NervousMapListene
 				getApplicationContext(), "blank"));
 
 		nervousMap.selectMapLayer(-1);
-		
+
 		nervousMap.addListener(this);
 
 		menuButtonsShowing = false;
@@ -353,24 +354,33 @@ public class MainActivity extends ActionBarActivity implements NervousMapListene
 			}
 			break;
 		case 0:
-			new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-0.json", nervousMap, 0, 0, youUuid, true).execute();
-			new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/poi.json", nervousMap, 0, 1, 1, true).execute();
-					0, 0, youUuid).execute();
+			new MapGraphLoader(getApplicationContext(),
+					"http://nervous.ethz.ch/app_data/map-0.json", nervousMap,
+					0, 0, youUuid, true).execute();
+			new MapGraphLoader(getApplicationContext(),
+					"http://nervous.ethz.ch/app_data/poi.json", nervousMap, 0,
+					1, 1, true).execute();
 			break;
 		case 1:
-			new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-1.json", nervousMap, 1, 0, youUuid, true).execute();
-			new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/poi.json", nervousMap, 1, 1, 2, true).execute();
-					1, 0, youUuid).execute();
+			new MapGraphLoader(getApplicationContext(),
+					"http://nervous.ethz.ch/app_data/map-1.json", nervousMap,
+					1, 0, youUuid, true).execute();
+			new MapGraphLoader(getApplicationContext(),
+					"http://nervous.ethz.ch/app_data/poi.json", nervousMap, 1,
+					1, 2, true).execute();
 			break;
 		case 2:
-			new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-2.json", nervousMap, 2, 0, youUuid, true).execute();
-			new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/poi.json", nervousMap, 2, 1, 3, true).execute();
-					2, 0, youUuid).execute();
+			new MapGraphLoader(getApplicationContext(),
+					"http://nervous.ethz.ch/app_data/map-2.json", nervousMap,
+					2, 0, youUuid, true).execute();
+			new MapGraphLoader(getApplicationContext(),
+					"http://nervous.ethz.ch/app_data/poi.json", nervousMap, 2,
+					1, 3, true).execute();
 			break;
 		case 3:
-			new MapGraphLoader(getApplicationContext(), "http://nervous.ethz.ch/app_data/map-sn.json", nervousMap, 3, 0, youUuid, true).execute();
+			new MapGraphLoader(getApplicationContext(),
 					"http://nervous.ethz.ch/app_data/map-sn.json", nervousMap,
-					3, 0, youUuid).execute();
+					3, 0, youUuid, true).execute();
 			break;
 		}
 	}
@@ -381,7 +391,7 @@ public class MainActivity extends ActionBarActivity implements NervousMapListene
 		layoutMainMap.addView(nervousMap.getViewSwitcher());
 		return layoutMainMap;
 	}
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -577,15 +587,16 @@ public class MainActivity extends ActionBarActivity implements NervousMapListene
 	@Override
 	public void onTouchEvent(MapGraphNode oi) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage(oi.getTitle() + ": " +oi.getSnippet());
+		builder.setMessage(oi.getTitle() + ": " + oi.getSnippet());
 		Dialog dialog = builder.create();
 		dialog.setCancelable(true);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
 		params.y += 100;
 		dialog.getWindow().setAttributes(params);
-	    dialog.getWindow().setGravity(Gravity.TOP);
-		dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+		dialog.getWindow().setGravity(Gravity.TOP);
+		dialog.getWindow().clearFlags(
+				WindowManager.LayoutParams.FLAG_DIM_BEHIND);
 		dialog.show();
 	}
 
