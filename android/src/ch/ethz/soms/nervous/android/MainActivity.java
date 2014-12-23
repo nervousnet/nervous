@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -493,6 +494,20 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		toastToScreen("MENUPRESSED", false);
+		switch (keyCode) {
+		case KeyEvent.KEYCODE_MENU:
+			Intent intent = new Intent(this, SensorLoggingToggleActivity.class);
+			startActivity(intent);
+			return true;
+		default:
+			return super.onKeyDown(keyCode, event);
+		}
+	}
+
+	
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
@@ -500,6 +515,8 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		
+		
 		TestQueries tq = new TestQueries(getApplicationContext(), getFilesDir());
 
 		Intent intent;
@@ -563,6 +580,7 @@ public class MainActivity extends ActionBarActivity implements
 			break;
 		default:
 			break;
+			
 		}
 		return super.onOptionsItemSelected(item);
 	}

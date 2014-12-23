@@ -4,91 +4,26 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal" >
 
-    <LinearLayout
-        android:id="@+id/layoutButtonLog"
-        android:layout_width="0dp"
-        android:layout_height="fill_parent"
-        android:layout_marginLeft="2dp"
-        android:layout_weight="1"
-        android:background="#00FF00"
-        android:orientation="vertical" >
+    <Switch
+        android:id="@+id/switch_log"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="Log" />
 
-        <TextView
-            android:id="@+id/txt_LogOnOff"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:text="On"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#000000"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:typeface="monospace" />
-
-        <TextView
-            android:id="@+id/text_log"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_marginBottom="-5dp"
-            android:layout_weight="1"
-            android:gravity="top|center_horizontal"
-            android:text="log"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#000000"
-            android:textSize="15sp"
-            android:textStyle="bold|italic"
-            android:typeface="monospace" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layoutButtonShare"
-        android:layout_width="0dp"
-        android:layout_height="fill_parent"
-        android:layout_marginLeft="2dp"
-        android:layout_weight="1.3"
-        android:background="#00FF00"
-        android:orientation="vertical"
-        android:weightSum="2" >
-
-        <TextView
-            android:id="@+id/txt_ShareOnOff"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:text="On"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#000000"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:typeface="monospace" />
-
-        <TextView
-            android:id="@+id/txt_Share"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_marginBottom="-5dp"
-            android:layout_weight="1"
-            android:gravity="top|center_horizontal"
-            android:text="share"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#000000"
-            android:textSize="15sp"
-            android:textStyle="bold|italic"
-            android:typeface="monospace" />
-    </LinearLayout>
-
+        <Switch
+        android:id="@+id/switch_share"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="Share" />
     <TextView
         android:id="@+id/txt_SensorItem"
-        android:layout_width="0dp"
-        android:layout_height="fill_parent"
-        android:layout_weight="5.5"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:gravity="center_vertical"
         android:maxLines="1"
         android:paddingLeft="5dp"
         android:text="Accelerometer"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="28sp" />
+        android:textSize="20sp" />
 
 </LinearLayout>

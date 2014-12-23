@@ -1,7 +1,6 @@
 package ch.ethz.soms.nervous.android;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,10 +8,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,9 +43,9 @@ public class SensorLoggingToggleActivity extends Activity {
 	}
 
 	private String[] getSensorNames() {
-		String[] sensorList = { "Accelerometer", "Light", "Temperature",
-				"Humidity", "Gyroscope", "Proximity", "Battery",
-				"Atm. Pressure", "Magnetic", "Noise" };
+		String[] sensorList = { "Accelerometer", "Battery", "BLEBeacon",
+				"Connectivity", "Gyroscope", "Humidity", "Light", "Magnetic",
+				"Noise", "Pressure", "Proximity", "Temperature" };
 		return sensorList;
 	}
 
@@ -65,56 +62,45 @@ public class SensorLoggingToggleActivity extends Activity {
 		}
 
 		@Override
-		public View getView(int position, View view, ViewGroup parent) {
+		public View getView(final int position, View view, ViewGroup parent) {
 			LayoutInflater inflater = context.getLayoutInflater();
 			View rowView = inflater.inflate(
-					R.layout.sensor_logging_toggle_listitem, null, true);
-			TextView txtTitle = (TextView) rowView
+					R.layout.sensor_logging_toggle_listitem, null);
+			final TextView txtTitle = (TextView) rowView
 					.findViewById(R.id.txt_SensorItem);
-			final LinearLayout logLayoutButton = (LinearLayout) rowView
-					.findViewById(R.id.layoutButtonLog);
-			final LinearLayout shareLayoutButton = (LinearLayout) rowView
-					.findViewById(R.id.layoutButtonShare);
-			final TextView txtLogOnOff = (TextView) rowView
-					.findViewById(R.id.txt_LogOnOff);
-			final TextView txtShareOnOff = (TextView) rowView
-					.findViewById(R.id.txt_ShareOnOff);
+
+			final Switch switchLog = (Switch) rowView
+					.findViewById(R.id.switch_log);
+			final Switch switchShare = (Switch) rowView
+					.findViewById(R.id.switch_share);
 
 			txtTitle.setText(sensorName[position]);
-			logLayoutButton.setBackgroundColor(Color.GREEN);
-			txtLogOnOff.setText("ON");
-			shareLayoutButton.setBackgroundColor(Color.GREEN);
-			txtShareOnOff.setText("ON");
+			// TODO: Set toggle on or off
+			switchLog.setChecked(true);
+			switchShare.setChecked(false);
 
-			logLayoutButton.setOnClickListener(new OnClickListener() {
-
+			// TODO: set onClickListeners to change settings
+			switchLog.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					if (txtLogOnOff.getText().equals("ON")) {
-						txtLogOnOff.setText("OFF");
-						logLayoutButton.setBackgroundColor(Color.RED);
-					} else {
-						txtLogOnOff.setText("ON");
-						logLayoutButton.setBackgroundColor(Color.GREEN);
-					}
+					toastToScreen("Hit Log: " + position, false);
 				}
 			});
 
-			shareLayoutButton.setOnClickListener(new OnClickListener() {
-
+			switchShare.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					if (txtShareOnOff.getText().equals("ON")) {
-						txtShareOnOff.setText("OFF");
-						shareLayoutButton.setBackgroundColor(Color.RED);
-					} else {
-						txtShareOnOff.setText("ON");
-						shareLayoutButton.setBackgroundColor(Color.GREEN);
-					}
+					toastToScreen("Hit Share: " + position, false);
 				}
 			});
 			return rowView;
 		}
+	}
+
+	public void toastToScreen(String msg, boolean lengthLong) {
+
+		int toastLength = lengthLong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT;
+		Toast.makeText(getApplicationContext(), msg, toastLength).show();
 	}
 
 }
