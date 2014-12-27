@@ -1,0 +1,23 @@
+### BEGIN INIT INFO
+# Provides:          nervousRouter
+# Required-Start:    $local_fs $network
+# Required-Stop:     $local_fs $network
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start and stop NervousRouter
+# Description:       Start and stop NervousRouter
+### END INIT INFO
+
+case $1 in
+    start)
+        /bin/bash /root/router/router-start.sh
+    ;;
+    stop)
+        /bin/bash /root/router/router-stop.sh
+    ;;
+    restart)
+        /bin/bash /root/router/router-stop.sh
+        /bin/bash /root/router/router-start.sh
+    ;;
+esac
+exit 0
