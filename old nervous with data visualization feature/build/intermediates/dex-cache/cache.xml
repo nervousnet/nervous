@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/Users/marica/nervous_android/nervous/libs/protobuf-java-2.5.0-javadoc.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="171889df161dcd7d2947cd7885e2616f4f3ebe14">
+        <dex dex="/Users/marica/nervous_android/nervous/build/intermediates/pre-dexed/debug/protobuf-java-2.5.0-javadoc-d7e40bbfbf44109fa3dd11b2519b0dfcb3e60dfe.jar" />
+    </item>
+    <item
+        jar="/Users/marica/nervous_android/nervous/libs/protobuf-java-2.5.0.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="a10732c76bfacdbd633a7eb0f7968b1059a65dfa">
+        <dex dex="/Users/marica/nervous_android/nervous/build/intermediates/pre-dexed/debug/protobuf-java-2.5.0-c3d5bfeb4cde9e67958ac7728faab188012cb652.jar" />
+    </item>
+    <item
+        jar="/Users/marica/nervous_android/nervous/libs/android-support-v4.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="db0f122c99ef9f90dbab3fada6d191f2880cbb8e">
+        <dex dex="/Users/marica/nervous_android/nervous/build/intermediates/pre-dexed/debug/android-support-v4-0827a8d3f2f9f2852eaa7557f25bb7917736797c.jar" />
+    </item>
+    <item
+        jar="/Users/marica/nervous_android/javanervousvm/build/libs/javanervousvm.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="88462a93f51ce78f0e47acd982df91e75cef8e37">
+        <dex dex="/Users/marica/nervous_android/nervous/build/intermediates/pre-dexed/debug/javanervousvm-d8388ac7cdb7dbd80a73af87ce0222eaf3f0b820.jar" />
+    </item>
+
+</items>
