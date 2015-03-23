@@ -54,6 +54,14 @@
             android:label="@string/title_activity_sensor_logging_toggle"
             android:theme="@style/AppThemeTransparent">
         </activity>
+        <activity
+            android:name=".SensorsStatisticsActivity"
+            android:label="@string/title_activity_sensors_statistics" >
+        </activity>
+        <activity
+            android:name=".ChartsWebViewActivity"
+            android:label="@string/title_activity_charts_webview" >
+        </activity>
         <!--
         <activity
             android:name=".SettingsActivity"

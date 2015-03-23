@@ -5,4 +5,8 @@
         android:title="Privacy Settings">
     </item>
 
+    <item
+        android:id="@+id/menu_SensorsStatistics"
+        android:title="Sensor statistics">
+    </item>
 </menu>

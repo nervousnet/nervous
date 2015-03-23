@@ -511,6 +511,10 @@ public class MainActivity extends ActionBarActivity implements NervousMapListene
 			intent = new Intent(this, SettingsActivity.class);
 			startActivity(intent);
 			break;
+		case R.id.menu_SensorsStatistics:
+	            intent = new Intent(this, SensorsStatisticsActivity.class);
+	            startActivity(intent);
+	            break;
 		default:
 			break;
 
