@@ -54,3 +54,6 @@ Buttons/
 PlayGround/
 Self_Todo.docx
 nervousnet/.metadata/
+.idea
+.recommenders
+*.iml
