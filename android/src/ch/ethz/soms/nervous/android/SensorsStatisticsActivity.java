@@ -32,7 +32,9 @@ import java.util.Calendar;
 import java.util.Date;
 
 import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesAccelerometer;
+import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesBattery;
 import ch.ethz.soms.nervous.android.sensors.SensorDescAccelerometer;
+import ch.ethz.soms.nervous.android.sensors.SensorDescBattery;
 
 public class SensorsStatisticsActivity extends Activity {
 
@@ -219,6 +221,7 @@ public class SensorsStatisticsActivity extends Activity {
                             "var x_axis_data_arrays = " + x_axis_data_arrays +
                             "var y_axis_data_arrays = " + y_axis_data_arrays +
                             "var z_axis_data_arrays = " + z_axis_data_arrays + 
+                            "var unit_of_meas = " + "'m/s^2';" +
                             "var first_curve_name = " + "'X axis';" +
                             "var second_curve_name = " +"'Y axis';" + 
                             "var third_curve_name = " + "'Z axis';" +
@@ -228,6 +231,50 @@ public class SensorsStatisticsActivity extends Activity {
                             "var plot_subtitle = " + "'along axes x,y,z';");
 
                     webView.putExtra("type_of_plot", "3_lines_plot_over_time");
+                    startActivity(webView);
+                } else Toast.makeText(getApplicationContext(), "No data found in this range.", Toast.LENGTH_LONG).show();
+            } else if (selected_sensor.equalsIgnoreCase("Battery"))
+            {
+                SensorQueriesBattery sensorQ_Battery = new SensorQueriesBattery(
+                        fromTimestamp, toTimestamp, getFilesDir());
+                if (sensorQ_Battery.containsReadings())
+                {
+                    ArrayList<SensorDescBattery> sensorDescs = sensorQ_Battery.getSensorDescriptorList();
+                    SensorDescBattery sensorDesc;
+
+                    String data_array = "[";
+
+                    Calendar c = Calendar.getInstance();
+
+                    Log.i("datapoints size: ",""+sensorDescs.size());
+                    int increment = Math.round(sensorDescs.size()/MAX_NUMBER_PLOT_POINTS);
+
+                    //TODO move extraction of year month day hr min sec into sensor maybe or in one unique place, don't replicate code
+                    for(int i=0;i<sensorDescs.size();i+=increment)
+                    {
+                        sensorDesc = sensorDescs.get(i);
+                        c.setTimeInMillis(sensorDesc.getTimestamp());
+                        int mYear = c.get(Calendar.YEAR);
+                        int mMonth = c.get(Calendar.MONTH);
+                        int mDay = c.get(Calendar.DAY_OF_MONTH);
+                        int hr = c.get(Calendar.HOUR_OF_DAY);
+                        int min = c.get(Calendar.MINUTE);
+                        int sec = c.get(Calendar.SECOND);
+
+                        data_array+="[Date.UTC("+mYear+","+mMonth+","+mDay+","+hr+","+min+","+sec+"),"+sensorDesc.getBatteryPercent()+"],";
+                    }
+                    data_array = data_array.substring(0,data_array.length()-1)+"]; ";
+
+                    webView.putExtra("javascript_global_variables",
+                            "var data_array = " + data_array +
+                            "var curve_name = " + "'Battery %';" +
+                            "var unit_of_meas = " + "'%';" +
+                            "var x_axis_title = " + "'Date';" +
+                            "var y_axis_title = " + "'Battery percentage %';" +
+                            "var plot_title = " + "'Battery data';" +
+                            "var plot_subtitle = " + "'%';");
+
+                    webView.putExtra("type_of_plot", "1_line_plot_over_time");
                     startActivity(webView);
                 } else Toast.makeText(getApplicationContext(), "No data found in this range.", Toast.LENGTH_LONG).show();
             }

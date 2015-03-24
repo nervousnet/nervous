@@ -31,8 +31,7 @@ $(function () {
             }
         },
         tooltip: {
-            headerFormat: '<b>{series.name}</b><br>',
-            pointFormat: '{point.x:%e %b %H:%M:%S}: {point.y:.2f} ' + unit_of_meas
+            pointFormat: '{point.y:.2f} ' + unit_of_meas
         },
 
         plotOptions: {
@@ -46,17 +45,9 @@ $(function () {
         exporting: { enabled: false },
 
         series: [{
-            name: first_curve_name,
-            // Define the data points. All series have a dummy year
-            // of 1970/71 in order to be compared on the same x axis. Note
-            // that in JavaScript, months start at 0 for January, 1 for February etc.
-            data: x_axis_data_arrays
-        }, {
-            name: second_curve_name,
-            data: y_axis_data_arrays
-        }, {
-            name: third_curve_name,
-            data: z_axis_data_arrays
+        	name: curve_name,
+            data: data_array,
+            showInLegend: false
         }]
     });
 });
