@@ -9,10 +9,10 @@ $(function () {
             type: 'spline'
         },
         title: {
-            text: 'Acceleration data'
+            text: plot_title
         },
         subtitle: {
-            text: 'along axes x,y,z'
+            text: plot_subtitle
         },
         xAxis: {
             type: 'datetime',
@@ -22,12 +22,12 @@ $(function () {
                 month: '%m \'%y',
             },
             title: {
-                text: 'Date'
+                text: x_axis_title
             }
         },
         yAxis: {
             title: {
-                text: 'Acceleration (m/s^2)'
+                text: y_axis_title
             }
         },
         tooltip: {
@@ -46,16 +46,16 @@ $(function () {
         exporting: { enabled: false },
 
         series: [{
-            name: 'X axis',
+            name: first_curve_name,
             // Define the data points. All series have a dummy year
             // of 1970/71 in order to be compared on the same x axis. Note
             // that in JavaScript, months start at 0 for January, 1 for February etc.
             data: x_axis_data_arrays
         }, {
-            name: 'Y axis',
+            name: second_curve_name,
             data: y_axis_data_arrays
         }, {
-            name: 'Z axis',
+            name: third_curve_name,
             data: z_axis_data_arrays
         }]
     });

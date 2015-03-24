@@ -23,11 +23,11 @@ public class ChartsWebViewActivity extends Activity {
 
         String javascript_global_variables = getIntent().getStringExtra("javascript_global_variables");
         Log.i("javascript var: ",javascript_global_variables);
-        String selected_sensor = getIntent().getStringExtra("selected_sensor");
+        String type_of_plot = getIntent().getStringExtra("type_of_plot");
 
 		webView = (WebView) findViewById(R.id.webView_charts);
 		webView.getSettings().setJavaScriptEnabled(true);
         webView.loadUrl("javascript:" + javascript_global_variables);
-        webView.loadUrl("file:///android_asset/webview_charts_"+selected_sensor+".html");
+        webView.loadUrl("file:///android_asset/webview_charts_"+type_of_plot+".html");
 	}
 }

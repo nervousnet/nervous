@@ -218,9 +218,16 @@ public class SensorsStatisticsActivity extends Activity {
                     webView.putExtra("javascript_global_variables",
                             "var x_axis_data_arrays = " + x_axis_data_arrays +
                             "var y_axis_data_arrays = " + y_axis_data_arrays +
-                            "var z_axis_data_arrays = " + z_axis_data_arrays);
+                            "var z_axis_data_arrays = " + z_axis_data_arrays + 
+                            "var first_curve_name = " + "'X axis';" +
+                            "var second_curve_name = " +"'Y axis';" + 
+                            "var third_curve_name = " + "'Z axis';" +
+                            "var x_axis_title = " + "'Date';" +
+                            "var y_axis_title = " + "'Acceleration (m/s^2)';" +
+                            "var plot_title = " + "'Acceleration data';" +
+                            "var plot_subtitle = " + "'along axes x,y,z';");
 
-                    webView.putExtra("selected_sensor", selected_sensor.toLowerCase());
+                    webView.putExtra("type_of_plot", "3_lines_plot_over_time");
                     startActivity(webView);
                 } else Toast.makeText(getApplicationContext(), "No data found in this range.", Toast.LENGTH_LONG).show();
             }
