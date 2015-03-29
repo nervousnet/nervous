@@ -14,6 +14,8 @@ public class ChartsWebViewActivity extends Activity {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		/* Load the webview that shows the plot from the corresponding html file in assets */
+		
 		setContentView(R.layout.charts_webview);
 
 		//To debug webview
@@ -21,6 +23,7 @@ public class ChartsWebViewActivity extends Activity {
 //            WebView.setWebContentsDebuggingEnabled(true);
 //        }
 
+		// Get javascript variable from intent and set it into the webview
         String javascript_global_variables = getIntent().getStringExtra("javascript_global_variables");
         Log.i("javascript var: ",javascript_global_variables);
         String type_of_plot = getIntent().getStringExtra("type_of_plot");

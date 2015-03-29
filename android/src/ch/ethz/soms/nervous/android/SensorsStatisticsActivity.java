@@ -33,8 +33,22 @@ import java.util.Date;
 
 import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesAccelerometer;
 import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesBattery;
+import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesGyroscope;
+import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesHumidity;
+import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesLight;
+import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesMagnetic;
+import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesPressure;
+import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesProximity;
+import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesTemperature;
 import ch.ethz.soms.nervous.android.sensors.SensorDescAccelerometer;
 import ch.ethz.soms.nervous.android.sensors.SensorDescBattery;
+import ch.ethz.soms.nervous.android.sensors.SensorDescGyroscope;
+import ch.ethz.soms.nervous.android.sensors.SensorDescHumidity;
+import ch.ethz.soms.nervous.android.sensors.SensorDescLight;
+import ch.ethz.soms.nervous.android.sensors.SensorDescMagnetic;
+import ch.ethz.soms.nervous.android.sensors.SensorDescPressure;
+import ch.ethz.soms.nervous.android.sensors.SensorDescProximity;
+import ch.ethz.soms.nervous.android.sensors.SensorDescTemperature;
 
 public class SensorsStatisticsActivity extends Activity {
 
@@ -48,6 +62,8 @@ public class SensorsStatisticsActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        /* Initialize view components */
         setContentView(R.layout.activity_sensors_statistics);
 
         fromTimePicker = ((TimePicker) findViewById(R.id.fromTimePicker));
@@ -90,6 +106,7 @@ public class SensorsStatisticsActivity extends Activity {
 
     public void nextButtonClicked(View view)
     {
+    	/* Button to show charts clicked */
         fromTimeHour = fromTimePicker.getCurrentHour();
         fromTimeMin = fromTimePicker.getCurrentMinute();
         fromDateDayOfMonth = fromDatePicker.getDayOfMonth();
@@ -105,6 +122,7 @@ public class SensorsStatisticsActivity extends Activity {
         Time now = new Time();
         now.setToNow();
 
+        //Checks for selected dates (that are before current one and from is not after to)
         if(fromDateYear > now.year || (fromDateYear == now.year && fromDateMonth > (now.month+1))
                 || (fromDateYear == now.year && fromDateMonth == (now.month+1) && fromDateDayOfMonth > now.monthDay)
                 || (fromDateYear == now.year && fromDateMonth == (now.month+1)&& fromDateDayOfMonth == now.monthDay && fromTimeHour > now.hour)
@@ -139,6 +157,7 @@ public class SensorsStatisticsActivity extends Activity {
 
         if(selectedViewOnListView == null)
         {
+            // If none of the sensors is selected
             new AlertDialog.Builder(this)
                     .setTitle("One more step!")
                     .setMessage("Please, select a sensor from the list.")
@@ -153,6 +172,7 @@ public class SensorsStatisticsActivity extends Activity {
         }
         else
         {
+        	/* Date/time input is ok, sensor readings and javascript variables are set and passed to chart webview*/ 
             String selected_sensor = ((TextView) selectedViewOnListView).getText().toString();
             Intent webView = new Intent(this, ChartsWebViewActivity.class);
 
@@ -179,6 +199,7 @@ public class SensorsStatisticsActivity extends Activity {
             }
             long toTimestamp = date.getTime();
 
+            /* Basing on different selected sensor it shows a different kind of plot and label on axis, legend and so on */
             if (selected_sensor.equalsIgnoreCase("Accelerometer"))
             {
                 SensorQueriesAccelerometer sensorQ_Accel = new SensorQueriesAccelerometer(
@@ -277,7 +298,382 @@ public class SensorsStatisticsActivity extends Activity {
                     webView.putExtra("type_of_plot", "1_line_plot_over_time");
                     startActivity(webView);
                 } else Toast.makeText(getApplicationContext(), "No data found in this range.", Toast.LENGTH_LONG).show();
-            }
+            } else if (selected_sensor.equalsIgnoreCase("Gyroscope"))
+            {
+                SensorQueriesGyroscope sensorQ_Gyroscope = new SensorQueriesGyroscope(
+                        fromTimestamp, toTimestamp, getFilesDir());
+                if (sensorQ_Gyroscope.containsReadings())
+                {
+                    ArrayList<SensorDescGyroscope> sensorDescs = sensorQ_Gyroscope.getSensorDescriptorList();
+                    SensorDescGyroscope sensorDesc;
+
+                    String x_axis_data_arrays = "[";
+                    String y_axis_data_arrays = "[";
+                    String z_axis_data_arrays = "[";
+
+                    Calendar c = Calendar.getInstance();
+
+                    int increment = Math.round(sensorDescs.size()/MAX_NUMBER_PLOT_POINTS);
+
+                    for(int i=0;i<sensorDescs.size();i+=increment)
+                    {
+                        sensorDesc = sensorDescs.get(i);
+                        c.setTimeInMillis(sensorDesc.getTimestamp());
+                        int mYear = c.get(Calendar.YEAR);
+                        int mMonth = c.get(Calendar.MONTH);
+                        int mDay = c.get(Calendar.DAY_OF_MONTH);
+                        int hr = c.get(Calendar.HOUR_OF_DAY);
+                        int min = c.get(Calendar.MINUTE);
+                        int sec = c.get(Calendar.SECOND);
+
+                        x_axis_data_arrays+="[Date.UTC("+mYear+","+mMonth+","+mDay+","+hr+","+min+","+sec+"),"+sensorDesc.getGyrX()+"],";
+                        y_axis_data_arrays+="[Date.UTC("+mYear+","+mMonth+","+mDay+","+hr+","+min+","+sec+"),"+sensorDesc.getGyrY()+"],";
+                        z_axis_data_arrays+="[Date.UTC("+mYear+","+mMonth+","+mDay+","+hr+","+min+","+sec+"),"+sensorDesc.getGyrZ()+"],";
+                    }
+                    x_axis_data_arrays = x_axis_data_arrays.substring(0,x_axis_data_arrays.length()-1)+"]; ";
+                    y_axis_data_arrays = y_axis_data_arrays.substring(0,y_axis_data_arrays.length()-1)+"]; ";
+                    z_axis_data_arrays = z_axis_data_arrays.substring(0,z_axis_data_arrays.length()-1)+"]; ";
+
+
+                    webView.putExtra("javascript_global_variables",
+                            "var x_axis_data_arrays = " + x_axis_data_arrays +
+                            "var y_axis_data_arrays = " + y_axis_data_arrays +
+                            "var z_axis_data_arrays = " + z_axis_data_arrays + 
+                            "var unit_of_meas = " + "'°';" +
+                            "var first_curve_name = " + "'° around X axis';" +
+                            "var second_curve_name = " +"'° around Y axis';" + 
+                            "var third_curve_name = " + "'° around Z axis';" +
+                            "var x_axis_title = " + "'Date';" +
+                            "var y_axis_title = " + "'Angle (°)';" +
+                            "var plot_title = " + "'Gyroscope data';" +
+                            "var plot_subtitle = " + "'angles around axes x,y,z';");
+
+                    webView.putExtra("type_of_plot", "3_lines_plot_over_time");
+                    startActivity(webView);
+                } else Toast.makeText(getApplicationContext(), "No data found in this range.", Toast.LENGTH_LONG).show();
+            } else if (selected_sensor.equalsIgnoreCase("Humidity"))
+            {
+                SensorQueriesHumidity sensorQ_Humidity = new SensorQueriesHumidity(
+                        fromTimestamp, toTimestamp, getFilesDir());
+                if (sensorQ_Humidity.containsReadings())
+                {
+                    ArrayList<SensorDescHumidity> sensorDescs = sensorQ_Humidity.getSensorDescriptorList();
+                    SensorDescHumidity sensorDesc;
+
+                    String data_array = "[";
+
+                    Calendar c = Calendar.getInstance();
+
+                    int increment = Math.round(sensorDescs.size()/MAX_NUMBER_PLOT_POINTS);
+
+                    //TODO move extraction of year month day hr min sec into sensor maybe or in one unique place, don't replicate code
+                    for(int i=0;i<sensorDescs.size();i+=increment)
+                    {
+                        sensorDesc = sensorDescs.get(i);
+                        c.setTimeInMillis(sensorDesc.getTimestamp());
+                        int mYear = c.get(Calendar.YEAR);
+                        int mMonth = c.get(Calendar.MONTH);
+                        int mDay = c.get(Calendar.DAY_OF_MONTH);
+                        int hr = c.get(Calendar.HOUR_OF_DAY);
+                        int min = c.get(Calendar.MINUTE);
+                        int sec = c.get(Calendar.SECOND);
+
+                        data_array+="[Date.UTC("+mYear+","+mMonth+","+mDay+","+hr+","+min+","+sec+"),"+sensorDesc.getHumidity()+"],";
+                    }
+                    data_array = data_array.substring(0,data_array.length()-1)+"]; ";
+
+                    webView.putExtra("javascript_global_variables",
+                            "var data_array = " + data_array +
+                            "var curve_name = " + "'Humidity %';" +
+                            "var unit_of_meas = " + "'%';" +
+                            "var x_axis_title = " + "'Date';" +
+                            "var y_axis_title = " + "'Ambient relative humidity';" +
+                            "var plot_title = " + "'Humidity data';" +
+                            "var plot_subtitle = " + "'%';");
+
+                    webView.putExtra("type_of_plot", "1_line_plot_over_time");
+                    startActivity(webView);
+                } else Toast.makeText(getApplicationContext(), "No data found in this range.", Toast.LENGTH_LONG).show();
+            } else if (selected_sensor.equalsIgnoreCase("Light"))
+            {
+                SensorQueriesLight sensorQ_Light = new SensorQueriesLight(
+                        fromTimestamp, toTimestamp, getFilesDir());
+                if (sensorQ_Light.containsReadings())
+                {
+                    ArrayList<SensorDescLight> sensorDescs = sensorQ_Light.getSensorDescriptorList();
+                    SensorDescLight sensorDesc;
+
+                    String data_array = "[";
+
+                    Calendar c = Calendar.getInstance();
+
+                    int increment = Math.round(sensorDescs.size()/MAX_NUMBER_PLOT_POINTS);
+
+                    //TODO move extraction of year month day hr min sec into sensor maybe or in one unique place, don't replicate code
+                    for(int i=0;i<sensorDescs.size();i+=increment)
+                    {
+                        sensorDesc = sensorDescs.get(i);
+                        c.setTimeInMillis(sensorDesc.getTimestamp());
+                        int mYear = c.get(Calendar.YEAR);
+                        int mMonth = c.get(Calendar.MONTH);
+                        int mDay = c.get(Calendar.DAY_OF_MONTH);
+                        int hr = c.get(Calendar.HOUR_OF_DAY);
+                        int min = c.get(Calendar.MINUTE);
+                        int sec = c.get(Calendar.SECOND);
+
+                        data_array+="[Date.UTC("+mYear+","+mMonth+","+mDay+","+hr+","+min+","+sec+"),"+sensorDesc.getLight()+"],";
+                    }
+                    data_array = data_array.substring(0,data_array.length()-1)+"]; ";
+
+                    webView.putExtra("javascript_global_variables",
+                            "var data_array = " + data_array +
+                            "var curve_name = " + "'Illuminance';" +
+                            "var unit_of_meas = " + "'lx';" +
+                            "var x_axis_title = " + "'Date';" +
+                            "var y_axis_title = " + "'Illuminance (lx)';" +
+                            "var plot_title = " + "'Illuminance data';" +
+                            "var plot_subtitle = " + "'';");
+
+                    webView.putExtra("type_of_plot", "1_line_plot_over_time");
+                    startActivity(webView);
+                } else Toast.makeText(getApplicationContext(), "No data found in this range.", Toast.LENGTH_LONG).show();
+            } else if (selected_sensor.equalsIgnoreCase("Magnetic"))
+            {
+                SensorQueriesMagnetic sensorQ_Magnetic = new SensorQueriesMagnetic(
+                        fromTimestamp, toTimestamp, getFilesDir());
+                if (sensorQ_Magnetic.containsReadings())
+                {
+                    ArrayList<SensorDescMagnetic> sensorDescs = sensorQ_Magnetic.getSensorDescriptorList();
+                    SensorDescMagnetic sensorDesc;
+
+                    String x_axis_data_arrays = "[";
+                    String y_axis_data_arrays = "[";
+                    String z_axis_data_arrays = "[";
+
+                    Calendar c = Calendar.getInstance();
+
+                    int increment = Math.round(sensorDescs.size()/MAX_NUMBER_PLOT_POINTS);
+
+                    for(int i=0;i<sensorDescs.size();i+=increment)
+                    {
+                        sensorDesc = sensorDescs.get(i);
+                        c.setTimeInMillis(sensorDesc.getTimestamp());
+                        int mYear = c.get(Calendar.YEAR);
+                        int mMonth = c.get(Calendar.MONTH);
+                        int mDay = c.get(Calendar.DAY_OF_MONTH);
+                        int hr = c.get(Calendar.HOUR_OF_DAY);
+                        int min = c.get(Calendar.MINUTE);
+                        int sec = c.get(Calendar.SECOND);
+
+                        x_axis_data_arrays+="[Date.UTC("+mYear+","+mMonth+","+mDay+","+hr+","+min+","+sec+"),"+sensorDesc.getMagX()+"],";
+                        y_axis_data_arrays+="[Date.UTC("+mYear+","+mMonth+","+mDay+","+hr+","+min+","+sec+"),"+sensorDesc.getMagY()+"],";
+                        z_axis_data_arrays+="[Date.UTC("+mYear+","+mMonth+","+mDay+","+hr+","+min+","+sec+"),"+sensorDesc.getMagZ()+"],";
+                    }
+                    x_axis_data_arrays = x_axis_data_arrays.substring(0,x_axis_data_arrays.length()-1)+"]; ";
+                    y_axis_data_arrays = y_axis_data_arrays.substring(0,y_axis_data_arrays.length()-1)+"]; ";
+                    z_axis_data_arrays = z_axis_data_arrays.substring(0,z_axis_data_arrays.length()-1)+"]; ";
+
+
+                    webView.putExtra("javascript_global_variables",
+                            "var x_axis_data_arrays = " + x_axis_data_arrays +
+                            "var y_axis_data_arrays = " + y_axis_data_arrays +
+                            "var z_axis_data_arrays = " + z_axis_data_arrays + 
+                            "var unit_of_meas = " + "'μT';" +
+                            "var first_curve_name = " + "'μT along X axis';" +
+                            "var second_curve_name = " +"'μT along Y axis';" + 
+                            "var third_curve_name = " + "'μT along Z axis';" +
+                            "var x_axis_title = " + "'Date';" +
+                            "var y_axis_title = " + "'Field strength (μT)';" +
+                            "var plot_title = " + "'Geomagnetic field data';" +
+                            "var plot_subtitle = " + "'strength along axes x,y,z';");
+
+                    webView.putExtra("type_of_plot", "3_lines_plot_over_time");
+                    startActivity(webView);
+                } else Toast.makeText(getApplicationContext(), "No data found in this range.", Toast.LENGTH_LONG).show();
+            } else if (selected_sensor.equalsIgnoreCase("Proximity"))
+            {
+                SensorQueriesProximity sensorQ_Proximity = new SensorQueriesProximity(
+                        fromTimestamp, toTimestamp, getFilesDir());
+                if (sensorQ_Proximity.containsReadings())
+                {
+                    ArrayList<SensorDescProximity> sensorDescs = sensorQ_Proximity.getSensorDescriptorList();
+                    SensorDescProximity sensorDesc;
+
+                    String data_array = "[";
+
+                    Calendar c = Calendar.getInstance();
+
+                    int increment = Math.round(sensorDescs.size()/MAX_NUMBER_PLOT_POINTS);
+
+                    //TODO move extraction of year month day hr min sec into sensor maybe or in one unique place, don't replicate code
+                    for(int i=0;i<sensorDescs.size();i+=increment)
+                    {
+                        sensorDesc = sensorDescs.get(i);
+                        c.setTimeInMillis(sensorDesc.getTimestamp());
+                        int mYear = c.get(Calendar.YEAR);
+                        int mMonth = c.get(Calendar.MONTH);
+                        int mDay = c.get(Calendar.DAY_OF_MONTH);
+                        int hr = c.get(Calendar.HOUR_OF_DAY);
+                        int min = c.get(Calendar.MINUTE);
+                        int sec = c.get(Calendar.SECOND);
+
+                        data_array+="[Date.UTC("+mYear+","+mMonth+","+mDay+","+hr+","+min+","+sec+"),"+sensorDesc.getProximity()+"],";
+                    }
+                    data_array = data_array.substring(0,data_array.length()-1)+"]; ";
+
+                    webView.putExtra("javascript_global_variables",
+                            "var data_array = " + data_array +
+                            "var curve_name = " + "'Proximity';" +
+                            "var unit_of_meas = " + "'cm';" +
+                            "var x_axis_title = " + "'Date';" +
+                            "var y_axis_title = " + "'Proximity (cm)';" +
+                            "var plot_title = " + "'Proximity data';" +
+                            "var plot_subtitle = " + "'';");
+
+                    webView.putExtra("type_of_plot", "1_line_plot_over_time");
+                    startActivity(webView);
+                } else Toast.makeText(getApplicationContext(), "No data found in this range.", Toast.LENGTH_LONG).show();
+            } else if (selected_sensor.equalsIgnoreCase("Temperature"))
+            {
+                SensorQueriesTemperature sensorQ_Temperature= new SensorQueriesTemperature(
+                        fromTimestamp, toTimestamp, getFilesDir());
+                if (sensorQ_Temperature.containsReadings())
+                {
+                    ArrayList<SensorDescTemperature> sensorDescs = sensorQ_Temperature.getSensorDescriptorList();
+                    SensorDescTemperature sensorDesc;
+
+                    String data_array = "[";
+
+                    Calendar c = Calendar.getInstance();
+
+                    int increment = Math.round(sensorDescs.size()/MAX_NUMBER_PLOT_POINTS);
+
+                    //TODO move extraction of year month day hr min sec into sensor maybe or in one unique place, don't replicate code
+                    for(int i=0;i<sensorDescs.size();i+=increment)
+                    {
+                        sensorDesc = sensorDescs.get(i);
+                        c.setTimeInMillis(sensorDesc.getTimestamp());
+                        int mYear = c.get(Calendar.YEAR);
+                        int mMonth = c.get(Calendar.MONTH);
+                        int mDay = c.get(Calendar.DAY_OF_MONTH);
+                        int hr = c.get(Calendar.HOUR_OF_DAY);
+                        int min = c.get(Calendar.MINUTE);
+                        int sec = c.get(Calendar.SECOND);
+
+                        data_array+="[Date.UTC("+mYear+","+mMonth+","+mDay+","+hr+","+min+","+sec+"),"+sensorDesc.getTemperature()+"],";
+                    }
+                    data_array = data_array.substring(0,data_array.length()-1)+"]; ";
+
+                    webView.putExtra("javascript_global_variables",
+                            "var data_array = " + data_array +
+                            "var curve_name = " + "'Temperature';" +
+                            "var unit_of_meas = " + "'cm';" +
+                            "var x_axis_title = " + "'Date';" +
+                            "var y_axis_title = " + "'Proximity (cm)';" +
+                            "var plot_title = " + "'Proximity data';" +
+                            "var plot_subtitle = " + "'';");
+
+                    webView.putExtra("type_of_plot", "1_line_plot_over_time");
+                    startActivity(webView);
+                } else Toast.makeText(getApplicationContext(), "No data found in this range.", Toast.LENGTH_LONG).show();
+            } else if (selected_sensor.equalsIgnoreCase("Pressure"))
+            {
+                SensorQueriesPressure sensorQ_Pressure= new SensorQueriesPressure(
+                        fromTimestamp, toTimestamp, getFilesDir());
+                if (sensorQ_Pressure.containsReadings())
+                {
+                    ArrayList<SensorDescPressure> sensorDescs = sensorQ_Pressure.getSensorDescriptorList();
+                    SensorDescPressure sensorDesc;
+
+                    String data_array = "[";
+
+                    Calendar c = Calendar.getInstance();
+
+                    int increment = Math.round(sensorDescs.size()/MAX_NUMBER_PLOT_POINTS);
+
+                    //TODO move extraction of year month day hr min sec into sensor maybe or in one unique place, don't replicate code
+                    for(int i=0;i<sensorDescs.size();i+=increment)
+                    {
+                        sensorDesc = sensorDescs.get(i);
+                        c.setTimeInMillis(sensorDesc.getTimestamp());
+                        int mYear = c.get(Calendar.YEAR);
+                        int mMonth = c.get(Calendar.MONTH);
+                        int mDay = c.get(Calendar.DAY_OF_MONTH);
+                        int hr = c.get(Calendar.HOUR_OF_DAY);
+                        int min = c.get(Calendar.MINUTE);
+                        int sec = c.get(Calendar.SECOND);
+
+                        data_array+="[Date.UTC("+mYear+","+mMonth+","+mDay+","+hr+","+min+","+sec+"),"+sensorDesc.getPressure()+"],";
+                    }
+                    data_array = data_array.substring(0,data_array.length()-1)+"]; ";
+
+                    webView.putExtra("javascript_global_variables",
+                            "var data_array = " + data_array +
+                            "var curve_name = " + "'Temperature';" +
+                            "var unit_of_meas = " + "'cm';" +
+                            "var x_axis_title = " + "'Date';" +
+                            "var y_axis_title = " + "'Proximity (cm)';" +
+                            "var plot_title = " + "'Proximity data';" +
+                            "var plot_subtitle = " + "'';");
+
+                    webView.putExtra("type_of_plot", "1_line_plot_over_time");
+                    startActivity(webView);
+                } else Toast.makeText(getApplicationContext(), "No data found in this range.", Toast.LENGTH_LONG).show();
+            } 
+//                else if (selected_sensor.equalsIgnoreCase("Microphone"))
+//            {
+//                SensorQueriesMicrophone sensorQ_Microphone= new SensorQueriesMicrophone(
+//                        fromTimestamp, toTimestamp, getFilesDir());
+//                if (sensorQ_Microphone.containsReadings())
+//                {
+//                    ArrayList<SensorDescMagnetic> sensorDescs = sensorQ_Microphone.getSensorDescriptorList();
+//                    SensorDescMagnetic sensorDesc;
+//
+//                    String x_axis_data_arrays = "[";
+//                    String y_axis_data_arrays = "[";
+//                    String z_axis_data_arrays = "[";
+//
+//                    Calendar c = Calendar.getInstance();
+//
+//                    int increment = Math.round(sensorDescs.size()/MAX_NUMBER_PLOT_POINTS);
+//
+//                    for(int i=0;i<sensorDescs.size();i+=increment)
+//                    {
+//                        sensorDesc = sensorDescs.get(i);
+//                        c.setTimeInMillis(sensorDesc.getTimestamp());
+//                        int mYear = c.get(Calendar.YEAR);
+//                        int mMonth = c.get(Calendar.MONTH);
+//                        int mDay = c.get(Calendar.DAY_OF_MONTH);
+//                        int hr = c.get(Calendar.HOUR_OF_DAY);
+//                        int min = c.get(Calendar.MINUTE);
+//                        int sec = c.get(Calendar.SECOND);
+//
+//                        x_axis_data_arrays+="[Date.UTC("+mYear+","+mMonth+","+mDay+","+hr+","+min+","+sec+"),"+sensorDesc.getMagX()+"],";
+//                        y_axis_data_arrays+="[Date.UTC("+mYear+","+mMonth+","+mDay+","+hr+","+min+","+sec+"),"+sensorDesc.getMagY()+"],";
+//                        z_axis_data_arrays+="[Date.UTC("+mYear+","+mMonth+","+mDay+","+hr+","+min+","+sec+"),"+sensorDesc.getMagZ()+"],";
+//                    }
+//                    x_axis_data_arrays = x_axis_data_arrays.substring(0,x_axis_data_arrays.length()-1)+"]; ";
+//                    y_axis_data_arrays = y_axis_data_arrays.substring(0,y_axis_data_arrays.length()-1)+"]; ";
+//                    z_axis_data_arrays = z_axis_data_arrays.substring(0,z_axis_data_arrays.length()-1)+"]; ";
+//
+//
+//                    webView.putExtra("javascript_global_variables",
+//                            "var x_axis_data_arrays = " + x_axis_data_arrays +
+//                            "var y_axis_data_arrays = " + y_axis_data_arrays +
+//                            "var z_axis_data_arrays = " + z_axis_data_arrays + 
+//                            "var unit_of_meas = " + "'μT';" +
+//                            "var first_curve_name = " + "'μT along X axis';" +
+//                            "var second_curve_name = " +"'μT along Y axis';" + 
+//                            "var third_curve_name = " + "'μT along Z axis';" +
+//                            "var x_axis_title = " + "'Date';" +
+//                            "var y_axis_title = " + "'Field strength (μT)';" +
+//                            "var plot_title = " + "'Geomagnetic field data';" +
+//                            "var plot_subtitle = " + "'strength along axes x,y,z';");
+//
+//                    webView.putExtra("type_of_plot", "3_lines_plot_over_time");
+//                    startActivity(webView);
+//                } else Toast.makeText(getApplicationContext(), "No data found in this range.", Toast.LENGTH_LONG).show();
+//            } 
         }
     }
 }
