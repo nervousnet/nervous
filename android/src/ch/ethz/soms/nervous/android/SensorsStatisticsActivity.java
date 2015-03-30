@@ -518,6 +518,11 @@ public class SensorsStatisticsActivity extends Activity {
                         int sec = c.get(Calendar.SECOND);
 
                         data_array+="[Date.UTC("+mYear+","+mMonth+","+mDay+","+hr+","+min+","+sec+"),"+sensorDesc.getProximity()+"],";
+//TODO for connectivity plot
+//                        if(sensorDesc.getProximity()>966)
+//                        	data_array+="{x: Date.UTC("+mYear+","+mMonth+","+mDay+","+hr+","+min+","+sec+"), y: "+sensorDesc.getProximity()+", color: 'red'},";
+//                        else
+//                        	data_array+="{x: Date.UTC("+mYear+","+mMonth+","+mDay+","+hr+","+min+","+sec+"), y: "+sensorDesc.getProximity()+"},";
                     }
                     data_array = data_array.substring(0,data_array.length()-1)+"]; ";
 

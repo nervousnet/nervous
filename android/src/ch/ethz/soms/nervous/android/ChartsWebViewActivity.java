@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.Display;
 import android.webkit.WebView;
@@ -32,5 +34,23 @@ public class ChartsWebViewActivity extends Activity {
 		webView.getSettings().setJavaScriptEnabled(true);
         webView.loadUrl("javascript:" + javascript_global_variables);
         webView.loadUrl("file:///android_asset/webview_charts_"+type_of_plot+".html");
+        
+        updateData();
+	}
+	
+	private void updateData()
+	{
+		new CountDownTimer(30000, 1000) {
+
+		     public void onTick(long millisUntilFinished) {
+		    	 Time now = new Time();
+			     now.setToNow();
+		         webView.loadUrl("javascript:" + "point = " + "[Date.UTC("+now.year+","+now.month+","+now.monthDay+","+now.hour+","+now.minute+","+now.second+"),"+(now.second+2)+"];"); 
+		     }
+
+		     public void onFinish() {
+		        updateData();
+		     }
+		  }.start();
 	}
 }

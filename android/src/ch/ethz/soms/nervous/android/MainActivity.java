@@ -17,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.format.Time;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -515,6 +516,15 @@ public class MainActivity extends ActionBarActivity implements NervousMapListene
 	            intent = new Intent(this, SensorsStatisticsActivity.class);
 	            startActivity(intent);
 	            break;
+		case R.id.menu_RealTimePlot:
+			intent = new Intent(this, ChartsWebViewActivity.class);
+			Time now = new Time();
+	        now.setToNow();
+			intent.putExtra("javascript_global_variables",
+                    "var point = " + "[Date.UTC("+now.year+","+now.month+","+now.monthDay+","+now.hour+","+now.minute+","+now.second+"),"+(now.second+2)+"];");
+            intent.putExtra("type_of_plot", "live_data_over_time");
+            startActivity(intent);
+            break;
 		default:
 			break;
 
