@@ -95,6 +95,7 @@ public class MainActivity extends Activity {
 //		btnColFreq = (ImageButton) findViewById(R.id.btn_collectionFrequency);
 //
 		btnMain.startAnimation(animIn);
+		b1.startAnimation(animIn);
 //		btnPrivacy.startAnimation(animIn);
 //		btnDataVis.startAnimation(animIn);
 //		btnColFreq.startAnimation(animIn);
@@ -216,12 +217,6 @@ public class MainActivity extends Activity {
 		
 		btnMain.setX(newW);
 //		toastToScreen("adjusted buttons" + newW + ", " + newH, false);
-	}
-	
-	@Override
-	protected void onPostResume() {
-		// TODO Auto-generated method stub
-		super.onPostResume();
 	}
 	
 	public void toastToScreen(String msg, boolean lengthLong) {
