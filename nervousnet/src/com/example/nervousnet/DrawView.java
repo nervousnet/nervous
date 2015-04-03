@@ -1,5 +1,7 @@
 package com.example.nervousnet;
 
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -7,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Toast;
 
@@ -56,21 +59,46 @@ public class DrawView extends View {
 
 	@Override
 	public void onDraw(Canvas canvas) {
-		canvas.drawCircle((maxW * 4 / 7), maxH / 3, Math.min(maxW, maxH) / 5,
+		canvas.drawCircle(maxW * 0.6f, maxH * 0.3f,
+				Math.min(maxW, maxH) * 0.2f, paintCircles);
+
+		// canvas.drawLine(0, 0, maxW, maxH, paintEdges);
+		// canvas.drawLine(maxW, maxH, maxW - 100, 200, paintEdges);
+
+		float centerX = maxW * 0.2f, centerY = maxH * 0.1f;
+		canvas.drawCircle(centerX, centerY, Math.min(maxW, maxH) * 0.25f,
 				paintCircles);
-		canvas.drawCircle((maxW * 1 / 8), maxH * 13 / 100,
-				Math.min(maxW, maxH) * 200 / 750, paintCircles);
+		float r = Math.min(maxW, maxH) * 0.14f;
+		for (float i = 0.2f; i < 1.5; i += 0.2) {
+			drawCircleNode(canvas, centerX, centerY, r, Math.PI * i);
+		}
 
-		canvas.drawLine(0, 0, maxW, maxH, paintEdges);
-		canvas.drawLine(maxW, maxH, maxW - 100, 200, paintEdges);
+		ArrayList<Pair<Float, Float>> path = new ArrayList<Pair<Float, Float>>();
 
-		float x1 = maxW / 3, x2 = maxW / 2, y1 = maxH / 5, y2 = maxH / 2;
-		drawNodeEdge(canvas, x1, x2, y1, y2);
+		path.add(new Pair<Float, Float>(centerX, centerY));
+		path.add(new Pair<Float, Float>(maxW * 0.3f, maxH * 0.2f));
+		path.add(new Pair<Float, Float>(maxW * 0.34f, maxH * 0.15f));
+		path.add(new Pair<Float, Float>(maxW * 0.36f, maxH * 0.21f));
+		path.add(new Pair<Float, Float>(maxW * 0.3f, maxH * 0.2f));
+		path.add(new Pair<Float, Float>(maxW * 0.36f, maxH * 0.21f));
+		path.add(new Pair<Float, Float>(maxW * 0.7f, maxH * 0.2f));
+
+		for (int i = 0; i < path.size() - 1; i++) {
+			Pair<Float, Float> a = path.get(i);
+			Pair<Float, Float> b = path.get(i + 1);
+			drawNodeEdge(canvas, a.first, a.second, b.first, b.second);
+		}
 
 		mainAc.resetButtons(maxW, maxH);
 	}
 
-	private void drawNodeEdge(Canvas canvas, float x1, float x2, float y1,
+	private void drawCircleNode(Canvas canvas, float centerX, float centerY,
+			float r, double angle) {
+		drawNodeEdge(canvas, (float) (centerX + (r * Math.cos(angle))),
+				(float) (centerY - (r * Math.sin(angle))), centerX, centerY);
+	}
+
+	private void drawNodeEdge(Canvas canvas, float x1, float y1, float x2,
 			float y2) {
 		int radius = Math.min(maxH, maxW) / 50;
 
@@ -83,7 +111,7 @@ public class DrawView extends View {
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		setMaxWidth(w);
 		setMaxHeight(h);
-		// toastToScreen("size CHanged " + w + " " + h, false);
+		// toastToScreen("size Changed " + w + " " + h, false);
 		super.onSizeChanged(w, h, oldw, oldh);
 	}
 
