@@ -28,10 +28,10 @@ public class DrawView extends View {
 		// and we set a new Paint with the desired attributes
 		paintEdges = new Paint();
 		paintEdges.setAntiAlias(true);
-		paintEdges.setColor(Color.BLACK);
+		paintEdges.setColor(0xFFBBBBBB);
 		paintEdges.setStyle(Paint.Style.STROKE);
 		paintEdges.setStrokeJoin(Paint.Join.ROUND);
-		paintEdges.setStrokeWidth(4);
+		paintEdges.setStrokeWidth(3);
 
 		paintCircles = new Paint();
 		paintCircles.setAntiAlias(true);
@@ -59,34 +59,66 @@ public class DrawView extends View {
 
 	@Override
 	public void onDraw(Canvas canvas) {
-		canvas.drawCircle(maxW * 0.6f, maxH * 0.3f,
-				Math.min(maxW, maxH) * 0.2f, paintCircles);
+		float centerX = maxW * 0.8f, centerY = maxH * 0.4f;
+		canvas.drawCircle(centerX, centerY, Math.min(maxW, maxH) * 0.18f,
+				paintCircles);
+		
+		centerX = maxW * 0.6f;
+		centerY = maxH * 0.68f;
+		canvas.drawCircle(centerX, centerY, Math.min(maxW, maxH) * 0.3f,
+				paintCircles);
 
-		// canvas.drawLine(0, 0, maxW, maxH, paintEdges);
-		// canvas.drawLine(maxW, maxH, maxW - 100, 200, paintEdges);
+		centerX = maxW * 0.22f;
+		centerY = maxH * 0.75f;
+		canvas.drawCircle(centerX, centerY, Math.min(maxW, maxH) * 0.18f,
+				paintCircles);
 
-		float centerX = maxW * 0.2f, centerY = maxH * 0.1f;
+		centerX = maxW * 0.2f;
+		centerY = maxH * 0.1f;
 		canvas.drawCircle(centerX, centerY, Math.min(maxW, maxH) * 0.25f,
 				paintCircles);
+
+
 		float r = Math.min(maxW, maxH) * 0.14f;
 		for (float i = 0.2f; i < 1.5; i += 0.2) {
 			drawCircleNode(canvas, centerX, centerY, r, Math.PI * i);
 		}
 
+		//Draw Path
 		ArrayList<Pair<Float, Float>> path = new ArrayList<Pair<Float, Float>>();
-
 		path.add(new Pair<Float, Float>(centerX, centerY));
 		path.add(new Pair<Float, Float>(maxW * 0.3f, maxH * 0.2f));
 		path.add(new Pair<Float, Float>(maxW * 0.34f, maxH * 0.15f));
 		path.add(new Pair<Float, Float>(maxW * 0.36f, maxH * 0.21f));
 		path.add(new Pair<Float, Float>(maxW * 0.3f, maxH * 0.2f));
 		path.add(new Pair<Float, Float>(maxW * 0.36f, maxH * 0.21f));
+		path.add(new Pair<Float, Float>(maxW * 0.5f, maxH * 0.3f));
 		path.add(new Pair<Float, Float>(maxW * 0.7f, maxH * 0.2f));
+
+		// "N"
+		path.add(new Pair<Float, Float>(maxW * 0.85f, maxH * 0.35f));
+		path.add(new Pair<Float, Float>(maxW * 0.85f, maxH * 0.45f));
+		path.add(new Pair<Float, Float>(maxW * 0.75f, maxH * 0.35f));
+		path.add(new Pair<Float, Float>(maxW * 0.75f, maxH * 0.45f));
+		
+		path.add(new Pair<Float, Float>(maxW * 0.6f, maxH * 0.68f));
+		path.add(new Pair<Float, Float>(maxW * 0.22f, maxH * 0.75f));
+		path.add(new Pair<Float, Float>(maxW * 0.5f, maxH * 0.8f));
+		path.add(new Pair<Float, Float>(maxW * 0.6f, maxH * 0.68f));
+		path.add(new Pair<Float, Float>(maxW * 0.6f, maxH * 0.68f));
 
 		for (int i = 0; i < path.size() - 1; i++) {
 			Pair<Float, Float> a = path.get(i);
 			Pair<Float, Float> b = path.get(i + 1);
 			drawNodeEdge(canvas, a.first, a.second, b.first, b.second);
+		}
+		
+		
+		centerX = maxW * 0.7f;
+		centerY = maxH * 0.2f;
+		r = Math.min(maxW, maxH) * 0.2f;
+		for (float i = 0.1f; i < 0.5; i += 0.2) {
+			drawCircleNode(canvas, centerX, centerY, r, Math.PI * i);
 		}
 
 		mainAc.resetButtons(maxW, maxH);
