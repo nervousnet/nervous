@@ -1,0 +1,115 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/menu_settings"
+        android:title="Settings">
+    </item>
+    <item
+        android:id="@+id/menu_IfThisThenThat"
+        android:title="If This Then That">
+    </item>
+    <item
+        android:id="@+id/menu_SensorLoggingToggle"
+        android:title="Sensor Logging Toggle">
+    </item>
+    <item
+        android:id="@+id/menu_TestQuery"
+        android:title="Test Query">
+        <menu>
+            <item
+                android:id="@+id/menu_Accelerometer"
+                android:title="Accelerometer">
+                <menu>
+                    <item
+                        android:id="@+id/menu_TestQuery_Accelerometer_MinAccAverage"
+                        android:title="Min Accerometer Average"/>
+                    <item
+                        android:id="@+id/menu_TestQuery_Accelerometer_MaxAccAverage"
+                        android:title="Max Accerometer Average"/>
+                </menu>
+            </item>
+            <item
+                android:id="@+id/menu_Battery"
+                android:title="Battery">
+                <menu>
+                    <item
+                        android:id="@+id/menu_TestQuery_Battery_MinBattery"
+                        android:title="Min Battery"/>
+                    <item
+                        android:id="@+id/menu_TestQuery_Battery_MaxBattery"
+                        android:title="Max Battery"/>
+                    <item
+                        android:id="@+id/menu_TestQuery_Battery_Top10"
+                        android:title="Top 10 Battery"/>
+                    <item
+                        android:id="@+id/menu_TestQuery_Battery_Bottom10"
+                        android:title="Bottom 10 Battery"/>
+                </menu>
+            </item>
+            <item
+                android:id="@+id/menu_Gyroscope"
+                android:title="Gyroscope">
+                <menu>
+                    <item
+                        android:id="@+id/menu_TestQuery_Gyroscope_MinGyroscope"
+                        android:title="Min Gyroscope"/>
+                    <item
+                        android:id="@+id/menu_TestQuery_Gyroscope_MaxGyroscope"
+                        android:title="Max Gyroscope"/>
+                </menu>
+            </item>
+            <item
+                android:id="@+id/menu_Light"
+                android:title="Light">
+                <menu>
+                    <item
+                        android:id="@+id/menu_TestQuery_Light_MinLight"
+                        android:title="Min Light"/>
+                    <item
+                        android:id="@+id/menu_TestQuery_Light_MaxLight"
+                        android:title="Max Light"/>
+                    <item
+                        android:id="@+id/menu_TestQuery_Light_Top10Light"
+                        android:title="Top 10 Light"/>
+                    <item
+                        android:id="@+id/menu_TestQuery_Light_Bottom10Light"
+                        android:title="Bottom 10 Light"/>
+                     <item
+                        android:id="@+id/menu_TestQuery_Light_Prox_Kmean"
+                        android:title="LightProx k Mean"/>
+                </menu>
+            </item>
+            <item
+                android:id="@+id/menu_Proximity"
+                android:title="Proximity">
+                <menu>
+                    <item
+                        android:id="@+id/menu_TestQuery_Proximity_MinProx"
+                        android:title="Min Prox"/>
+                    <item
+                        android:id="@+id/menu_TestQuery_Proximity_MaxProx"
+                        android:title="Max Prox"/>
+                    <item
+                        android:id="@+id/menu_TestQuery_Proximity_Top10Prox"
+                        android:title="Top 10 Prox"/>
+                    <item
+                        android:id="@+id/menu_TestQuery_Proximity_Bottom10Prox"
+                        android:title="Bottom 10 Prox"/>
+                </menu>
+            </item>
+            <item
+                android:id="@+id/menu_SoundLevel"
+                android:title="Sound Level">
+                <menu>
+                    <item
+                        android:id="@+id/menu_TestQuery_SoundLevel_MinSoundLevel"
+                        android:title="Min Sound Level"/>
+                    <item
+                        android:id="@+id/menu_TestQuery_SoundLevel_MaxSoundLevel"
+                        android:title="Max Sound Level"/>
+                </menu>
+            </item>
+        </menu>
+    </item>
+
+</menu>

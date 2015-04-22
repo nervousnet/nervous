@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<config>
+    <configPath>config.xml</configPath>
+    <logDisplayVerbosity>15</logDisplayVerbosity>
+    <logPath>log.txt</logPath>
+    <logWriteVerbosity>15</logWriteVerbosity>
+    <serverPort>25600</serverPort>
+    <serverThreads>15</serverThreads>
+    <sqlHostname>localhost</sqlHostname>
+    <sqlPassword></sqlPassword>
+    <sqlPort>3306</sqlPort>
+    <sqlUsername>nervous1</sqlUsername>
+    <sqlDatabase>nervous1</sqlDatabase>
+    <sqlsensors>
+        <sensor>
+            <sensorName>Accelerometer</sensorName>
+            <sensorID>0000000000000000</sensorID>
+            <attributes>
+                <attribute>
+                    <name>X</name>
+                    <type>3</type>
+                </attribute>
+                <attribute>
+                    <name>Y</name>
+                    <type>3</type>
+                </attribute>
+                <attribute>
+                    <name>Z</name>
+                    <type>3</type>
+                </attribute>
+                <attribute>
+                    <name>Accuracy</name>
+                    <type>1</type>
+                </attribute>
+            </attributes>
+        </sensor>
+    </sqlsensors>
+</config>

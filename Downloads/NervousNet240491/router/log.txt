@@ -1,0 +1,248 @@
+2014-08-21 17:24:42.331 - [I] - Reading configuration file
+2014-08-21 17:26:22.692 - [I] - Reading configuration file done
+2014-08-21 17:26:22.692 - [I] - Setting up concurrent server done
+2014-08-22 15:59:27.298 - [I] - Reading configuration file done
+2014-08-22 15:59:27.304 - [I] - Setting up concurrent server done
+2014-08-22 16:18:57.891 - [I] - Reading configuration file done
+2014-08-22 16:18:57.899 - [I] - Establishing connection to SQL database done
+2014-08-22 16:18:57.905 - [I] - Setting up concurrent server done
+2014-08-22 16:52:01.192 - [I] - Reading configuration file done
+2014-08-22 16:52:01.301 - [I] - Establishing connection to SQL database done
+2014-08-22 16:52:01.307 - [I] - Setting up concurrent server done
+2014-08-22 16:57:35.716 - [I] - Reading configuration file done
+2014-08-22 16:57:35.824 - [I] - Establishing connection to SQL database done
+2014-08-22 16:57:35.829 - [I] - Setting up concurrent server done
+2014-08-22 17:17:09.793 - [I] - Reading configuration file done
+2014-08-22 17:17:09.901 - [I] - Establishing connection to SQL database done
+2014-08-22 17:17:09.906 - [I] - Setting up concurrent server done
+2014-08-23 00:57:56.607 - [I] - Reading configuration file done
+2014-08-23 00:57:56.704 - [I] - Establishing connection to SQL database done
+2014-08-23 01:00:05.891 - [I] - Reading configuration file done
+2014-08-23 01:00:32.793 - [I] - Establishing connection to SQL database done
+2014-08-23 01:02:28.953 - [I] - Reading configuration file done
+2014-08-23 01:02:31.055 - [I] - Establishing connection to SQL database done
+2014-08-23 01:03:42.616 - [I] - Reading configuration file done
+2014-08-23 01:05:47.718 - [I] - Reading configuration file done
+2014-08-23 01:05:47.817 - [I] - Establishing connection to SQL database done
+2014-08-23 01:06:02.347 - [I] - Reading configuration file done
+2014-08-23 01:10:53.613 - [I] - Establishing connection to SQL database done
+2014-08-23 01:12:20.258 - [I] - Reading configuration file done
+2014-08-23 01:12:27.219 - [I] - Establishing connection to SQL database done
+2014-08-23 01:12:52.045 - [I] - Setting up concurrent server done
+2014-08-23 01:13:36.347 - [I] - Reading configuration file done
+2014-08-23 01:13:40.292 - [I] - Establishing connection to SQL database done
+2014-08-23 01:14:23.698 - [I] - Reading configuration file done
+2014-08-23 01:14:23.825 - [I] - Establishing connection to SQL database done
+2014-08-23 01:14:51.526 - [I] - Reading configuration file done
+2014-08-23 01:14:51.626 - [I] - Establishing connection to SQL database done
+2014-08-23 01:14:52.019 - [I] - Setting up concurrent server done
+2014-08-26 01:36:42.451 - [I] - Reading configuration file done
+2014-08-26 01:36:42.657 - [I] - Establishing connection to SQL database done
+2014-09-01 01:02:48.557 - [I] - Reading configuration file done
+2014-09-01 01:02:48.627 - [I] - Establishing connection to SQL database done
+2014-09-01 01:02:49.357 - [I] - Setting up concurrent server done
+2014-09-01 14:55:45.25 - [I] - Reading configuration file done
+2014-09-01 14:55:45.31 - [I] - Establishing connection to SQL database done
+2014-09-01 14:55:45.54 - [I] - Setting up concurrent server done
+2014-09-01 15:59:10.57 - [I] - Reading configuration file done
+2014-09-01 15:59:10.63 - [I] - Establishing connection to SQL database done
+2014-09-01 16:05:41.663 - [I] - Reading configuration file done
+2014-09-01 16:05:41.723 - [I] - Establishing connection to SQL database done
+2014-09-01 16:05:41.913 - [I] - Setting up concurrent server done
+2014-09-01 23:43:46.302 - [I] - Reading configuration file done
+2014-09-01 23:43:46.372 - [I] - Establishing connection to SQL database done
+2014-09-01 23:43:46.572 - [I] - Setting up concurrent server done
+2014-09-01 23:45:22.063 - [I] - Reading configuration file done
+2014-09-01 23:45:22.123 - [I] - Establishing connection to SQL database done
+2014-09-01 23:45:22.398 - [I] - Setting up concurrent server done
+2014-09-14 17:10:30.548 - [I] - Reading configuration file done
+2014-09-14 17:10:30.626 - [I] - Establishing connection to SQL database done
+2014-09-14 17:10:30.87 - [I] - Setting up concurrent server done
+2014-09-14 17:46:12.939 - [I] - Reading configuration file done
+2014-09-14 17:46:13.004 - [I] - Establishing connection to SQL database done
+2014-09-14 17:46:13.228 - [I] - Setting up concurrent server done
+2014-09-14 18:21:20.309 - [I] - Reading configuration file done
+2014-09-14 18:21:20.363 - [I] - Establishing connection to SQL database done
+2014-09-14 18:21:20.54 - [I] - Setting up concurrent server done
+2014-09-14 18:25:02.564 - [I] - Reading configuration file done
+2014-09-14 18:25:02.618 - [I] - Establishing connection to SQL database done
+2014-09-14 18:25:02.794 - [I] - Setting up concurrent server done
+2014-09-14 18:35:56.323 - [I] - Reading configuration file done
+2014-09-14 18:35:56.379 - [I] - Establishing connection to SQL database done
+2014-09-14 18:35:56.56 - [I] - Setting up concurrent server done
+2014-09-19 15:48:15.101 - [I] - Reading configuration file done
+2014-09-19 15:48:15.422 - [I] - Establishing connection to SQL database done
+2014-09-27 13:19:40.558 - [I] - Reading configuration file done
+2014-09-27 13:19:40.638 - [I] - Establishing connection to SQL database done
+2014-09-27 13:20:14.148 - [I] - Reading configuration file done
+2014-09-27 13:20:14.213 - [I] - Establishing connection to SQL database done
+2014-09-27 13:52:36.073 - [I] - Reading configuration file done
+2014-09-27 13:52:36.133 - [I] - Establishing connection to SQL database done
+2014-09-27 13:52:52.346 - [I] - Reading configuration file done
+2014-09-27 13:52:52.409 - [I] - Establishing connection to SQL database done
+2014-09-27 13:55:03.388 - [I] - Reading configuration file done
+2014-09-27 13:55:03.456 - [I] - Establishing connection to SQL database done
+2014-09-27 13:56:41.518 - [I] - Reading configuration file done
+2014-09-27 13:56:41.578 - [I] - Establishing connection to SQL database done
+2014-09-27 13:57:11.538 - [I] - Reading configuration file done
+2014-09-27 13:57:11.598 - [I] - Establishing connection to SQL database done
+2014-09-27 13:58:43.058 - [I] - Reading configuration file done
+2014-09-27 13:58:43.125 - [I] - Establishing connection to SQL database done
+2014-09-27 13:58:46.27 - [I] - Setting up concurrent server done
+2014-09-28 17:24:56.094 - [I] - Reading configuration file done
+2014-09-28 17:24:56.208 - [I] - Establishing connection to SQL database done
+2014-09-28 17:24:56.538 - [I] - Setting up concurrent server done
+2014-09-28 17:26:57.255 - [I] - Reading configuration file done
+2014-09-28 17:26:57.327 - [I] - Establishing connection to SQL database done
+2014-09-28 17:26:57.57 - [I] - Setting up concurrent server done
+2014-09-28 17:36:41.391 - [I] - Reading configuration file done
+2014-09-28 17:36:41.45 - [I] - Establishing connection to SQL database done
+2014-09-28 17:36:41.692 - [I] - Setting up concurrent server done
+2014-09-28 17:52:45.389 - [I] - Reading configuration file done
+2014-09-28 17:52:45.444 - [I] - Establishing connection to SQL database done
+2014-09-28 17:52:45.646 - [I] - Setting up concurrent server done
+2014-09-28 17:53:12.251 - [I] - Reading configuration file done
+2014-09-28 17:53:12.337 - [I] - Establishing connection to SQL database done
+2014-09-28 17:53:12.562 - [I] - Setting up concurrent server done
+2014-09-28 17:53:40.122 - [I] - Reading configuration file done
+2014-09-28 17:53:40.186 - [I] - Establishing connection to SQL database done
+2014-09-28 17:53:40.387 - [I] - Setting up concurrent server done
+2014-09-28 17:54:32.761 - [I] - Reading configuration file done
+2014-09-28 17:54:32.816 - [I] - Establishing connection to SQL database done
+2014-09-28 17:54:33.009 - [I] - Setting up concurrent server done
+2014-09-28 17:57:40.191 - [I] - Reading configuration file done
+2014-09-28 17:57:40.271 - [I] - Establishing connection to SQL database done
+2014-09-28 17:57:40.47 - [I] - Setting up concurrent server done
+2014-09-28 17:57:57.902 - [I] - Reading configuration file done
+2014-09-28 17:57:57.971 - [I] - Establishing connection to SQL database done
+2014-09-28 17:57:58.175 - [I] - Setting up concurrent server done
+2014-09-28 18:00:13.521 - [I] - Reading configuration file done
+2014-09-28 18:00:13.585 - [I] - Establishing connection to SQL database done
+2014-09-28 18:00:13.809 - [I] - Setting up concurrent server done
+2014-09-28 18:01:51.854 - [I] - Reading configuration file done
+2014-09-28 18:01:51.925 - [I] - Establishing connection to SQL database done
+2014-09-28 18:01:52.137 - [I] - Setting up concurrent server done
+2014-09-28 18:01:57.72 - [I] - Reading configuration file done
+2014-09-28 18:01:57.809 - [I] - Establishing connection to SQL database done
+2014-09-28 18:01:58.046 - [I] - Setting up concurrent server done
+2014-09-28 18:04:18.498 - [I] - Reading configuration file done
+2014-09-28 18:04:18.553 - [I] - Establishing connection to SQL database done
+2014-09-28 18:04:18.757 - [I] - Setting up concurrent server done
+2014-09-28 18:04:34.309 - [I] - Reading configuration file done
+2014-09-28 18:04:34.391 - [I] - Establishing connection to SQL database done
+2014-09-28 18:04:34.609 - [I] - Setting up concurrent server done
+2014-09-28 18:05:11.384 - [I] - Reading configuration file done
+2014-09-28 18:05:11.461 - [I] - Establishing connection to SQL database done
+2014-09-28 18:05:11.665 - [I] - Setting up concurrent server done
+2014-09-28 18:09:16.872 - [I] - Reading configuration file done
+2014-09-28 18:09:16.934 - [I] - Establishing connection to SQL database done
+2014-09-28 18:09:17.155 - [I] - Setting up concurrent server done
+2014-09-28 18:09:27.79 - [I] - Reading configuration file done
+2014-09-28 18:09:27.858 - [I] - Establishing connection to SQL database done
+2014-09-28 18:09:28.055 - [I] - Setting up concurrent server done
+2014-09-28 18:11:21.575 - [I] - Reading configuration file done
+2014-09-28 18:11:21.631 - [I] - Establishing connection to SQL database done
+2014-09-28 18:11:21.845 - [I] - Setting up concurrent server done
+2014-09-28 18:11:33.333 - [I] - Reading configuration file done
+2014-09-28 18:11:33.404 - [I] - Establishing connection to SQL database done
+2014-09-28 18:11:33.625 - [I] - Setting up concurrent server done
+2014-09-28 18:12:46.936 - [I] - Reading configuration file done
+2014-09-28 18:12:47.013 - [I] - Establishing connection to SQL database done
+2014-09-28 18:12:47.214 - [I] - Setting up concurrent server done
+2014-09-28 18:14:37.718 - [I] - Reading configuration file done
+2014-09-28 18:14:37.785 - [I] - Establishing connection to SQL database done
+2014-09-28 18:14:38.006 - [I] - Setting up concurrent server done
+2014-09-28 18:23:50.343 - [I] - Reading configuration file done
+2014-09-28 18:23:50.408 - [I] - Establishing connection to SQL database done
+2014-09-28 18:23:50.614 - [I] - Setting up concurrent server done
+2014-09-28 18:23:59.305 - [I] - Reading configuration file done
+2014-09-28 18:23:59.393 - [I] - Establishing connection to SQL database done
+2014-09-28 18:23:59.618 - [I] - Setting up concurrent server done
+2014-09-28 18:26:44.023 - [I] - Reading configuration file done
+2014-09-28 18:26:44.099 - [I] - Establishing connection to SQL database done
+2014-09-28 18:26:44.304 - [I] - Setting up concurrent server done
+2014-09-28 18:26:51.037 - [I] - Reading configuration file done
+2014-09-28 18:26:51.109 - [I] - Establishing connection to SQL database done
+2014-09-28 18:26:51.309 - [I] - Setting up concurrent server done
+2014-09-28 18:27:06.281 - [I] - Reading configuration file done
+2014-09-28 18:27:06.369 - [I] - Establishing connection to SQL database done
+2014-09-28 18:27:06.609 - [I] - Setting up concurrent server done
+2014-09-28 18:27:13.832 - [I] - Reading configuration file done
+2014-09-28 18:27:13.908 - [I] - Establishing connection to SQL database done
+2014-09-28 18:27:14.11 - [I] - Setting up concurrent server done
+2014-09-28 18:27:28.713 - [I] - Reading configuration file done
+2014-09-28 18:27:28.781 - [I] - Establishing connection to SQL database done
+2014-09-28 18:27:28.98 - [I] - Setting up concurrent server done
+2014-09-28 18:28:38.025 - [I] - Reading configuration file done
+2014-09-28 18:28:38.112 - [I] - Establishing connection to SQL database done
+2014-09-28 18:28:38.346 - [I] - Setting up concurrent server done
+2014-09-28 18:35:04.072 - [I] - Reading configuration file done
+2014-09-28 18:35:04.158 - [I] - Establishing connection to SQL database done
+2014-09-28 18:35:04.39 - [I] - Setting up concurrent server done
+2014-09-28 23:19:45.124 - [I] - Reading configuration file done
+2014-09-28 23:19:45.199 - [I] - Establishing connection to SQL database done
+2014-09-28 23:19:45.448 - [I] - Setting up concurrent server done
+2014-09-28 23:19:58.481 - [I] - Reading configuration file done
+2014-09-28 23:19:58.574 - [I] - Establishing connection to SQL database done
+2014-09-28 23:20:27.09 - [I] - Reading configuration file done
+2014-09-28 23:20:27.169 - [I] - Establishing connection to SQL database done
+2014-09-28 23:20:27.433 - [I] - Setting up concurrent server done
+2014-09-28 23:21:07.457 - [I] - Reading configuration file done
+2014-09-28 23:21:07.548 - [I] - Establishing connection to SQL database done
+2014-09-28 23:24:07.12 - [I] - Reading configuration file done
+2014-09-28 23:24:07.208 - [I] - Establishing connection to SQL database done
+2014-09-28 23:25:39.822 - [I] - Reading configuration file done
+2014-09-28 23:25:39.905 - [I] - Establishing connection to SQL database done
+2014-09-28 23:27:50.41 - [I] - Reading configuration file done
+2014-09-28 23:27:50.484 - [I] - Establishing connection to SQL database done
+2014-09-28 23:33:43.109 - [I] - Reading configuration file done
+2014-09-28 23:33:43.182 - [I] - Establishing connection to SQL database done
+2014-09-28 23:33:45.585 - [I] - Setting up concurrent server done
+2014-09-28 23:33:54.02 - [I] - Reading configuration file done
+2014-09-28 23:33:54.092 - [I] - Establishing connection to SQL database done
+2014-09-28 23:34:40.181 - [I] - Reading configuration file done
+2014-09-28 23:34:40.249 - [I] - Establishing connection to SQL database done
+2014-09-28 23:38:14.383 - [I] - Reading configuration file done
+2014-09-28 23:38:14.461 - [I] - Establishing connection to SQL database done
+2014-09-28 23:44:52.747 - [I] - Reading configuration file done
+2014-09-28 23:44:52.82 - [I] - Establishing connection to SQL database done
+2014-09-28 23:45:26.248 - [I] - Setting up concurrent server done
+2014-09-28 23:47:49.35 - [I] - Reading configuration file done
+2014-09-28 23:47:49.428 - [I] - Establishing connection to SQL database done
+2014-09-28 23:48:03.498 - [I] - Setting up concurrent server done
+2014-09-28 23:58:18.315 - [I] - Reading configuration file done
+2014-09-28 23:58:18.383 - [I] - Establishing connection to SQL database done
+2014-09-28 23:58:18.588 - [I] - Setting up concurrent server done
+2014-09-29 00:12:40.228 - [I] - Reading configuration file done
+2014-09-29 00:12:40.285 - [I] - Establishing connection to SQL database done
+2014-09-29 00:12:40.686 - [I] - Setting up concurrent server done
+2014-10-06 02:20:09.542 - [I] - Reading configuration file done
+2014-10-06 02:20:09.597 - [I] - Establishing connection to SQL database done
+2014-10-06 02:20:10.94 - [I] - Setting up concurrent server done
+2014-10-06 02:20:59.848 - [I] - Reading configuration file done
+2014-10-06 02:20:59.91 - [I] - Establishing connection to SQL database done
+2014-10-06 02:21:00.125 - [I] - Setting up concurrent server done
+2014-10-06 02:21:06.704 - [I] - Reading configuration file done
+2014-10-06 02:21:06.757 - [I] - Establishing connection to SQL database done
+2014-10-06 02:21:06.975 - [I] - Setting up concurrent server done
+2014-10-06 02:23:36.12 - [I] - Reading configuration file done
+2014-10-06 02:23:36.185 - [I] - Establishing connection to SQL database done
+2014-10-06 02:23:36.397 - [I] - Setting up concurrent server done
+2014-10-06 02:30:32.288 - [I] - Reading configuration file done
+2014-10-06 02:30:32.378 - [I] - Establishing connection to SQL database done
+2014-10-06 02:30:32.615 - [I] - Setting up concurrent server done
+2014-10-06 02:39:27.884 - [I] - Reading configuration file done
+2014-10-06 02:39:27.944 - [I] - Establishing connection to SQL database done
+2014-10-06 02:39:29.293 - [I] - Setting up concurrent server done
+2014-10-06 02:39:58.966 - [I] - Reading configuration file done
+2014-10-06 02:39:59.03 - [I] - Establishing connection to SQL database done
+2014-10-06 02:39:59.236 - [I] - Setting up concurrent server done
+2014-10-06 02:45:02.484 - [I] - Reading configuration file done
+2014-10-06 02:45:02.542 - [I] - Establishing connection to SQL database done
+2014-10-06 02:45:02.86 - [I] - Setting up concurrent server done
+2014-10-06 02:48:10.439 - [I] - Reading configuration file done
+2014-10-06 02:48:10.507 - [I] - Establishing connection to SQL database done
+2014-10-06 02:48:10.73 - [I] - Setting up concurrent server done
+2014-10-06 02:48:48.678 - [I] - Reading configuration file done
+2014-10-06 02:48:48.737 - [I] - Establishing connection to SQL database done
+2014-10-06 02:48:48.97 - [I] - Setting up concurrent server done
