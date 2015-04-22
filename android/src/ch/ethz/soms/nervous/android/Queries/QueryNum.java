@@ -11,7 +11,7 @@ public abstract class QueryNum<G extends SensorDesc> extends Query<G>{
 
 	public QueryNum(long timestamp_from, long timestamp_to, File file) {
 		super(timestamp_from, timestamp_to, file);
-		// TODO Auto-generated constructor stub
+		// TODO Auto-generaaaated constructor stub
 	}
 	
 	// even some singlevaluedsensor functions give out an arraylist!!!
