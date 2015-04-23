@@ -4,13 +4,12 @@
     android:layout_height="match_parent"
     tools:context="com.example.nervousnet.SensorLoggingToggleActivity" >
 
-    <ImageView
-        android:id="@+id/imgView_background_SensorLoggingToggle"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:scaleType="center"
-        android:src="@drawable/background_graph_mockup_s" />
-
+    <com.example.nervousnet.DrawView
+        android:id="@+id/canvas_privacySettings"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textColor="#FFFFFF" />
+    
     <ListView
         android:id="@+id/list_SensorLoggingToggle"
         android:layout_width="match_parent"

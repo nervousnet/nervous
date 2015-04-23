@@ -18,12 +18,18 @@ public class DrawView extends View {
 	private int maxH;
 	private Context context;
 	private MainActivity mainAc;
+	private SensorLoggingToggleActivity sensLogTogAc;
 	private Paint paintEdges, paintCircles, paintNodeLine, paintNodeFill;
 
 	public DrawView(Context c, AttributeSet attrs) {
 		super(c, attrs);
 		context = c;
-		mainAc = (MainActivity) c;
+
+		if (c instanceof MainActivity) {
+			mainAc = (MainActivity) c;
+		} else if (c instanceof SensorLoggingToggleActivity) {
+			sensLogTogAc = (SensorLoggingToggleActivity) c;
+		}
 
 		// and we set a new Paint with the desired attributes
 		paintEdges = new Paint();
@@ -62,7 +68,7 @@ public class DrawView extends View {
 		float centerX = maxW * 0.8f, centerY = maxH * 0.4f;
 		canvas.drawCircle(centerX, centerY, Math.min(maxW, maxH) * 0.18f,
 				paintCircles);
-		
+
 		centerX = maxW * 0.6f;
 		centerY = maxH * 0.68f;
 		canvas.drawCircle(centerX, centerY, Math.min(maxW, maxH) * 0.3f,
@@ -78,13 +84,12 @@ public class DrawView extends View {
 		canvas.drawCircle(centerX, centerY, Math.min(maxW, maxH) * 0.25f,
 				paintCircles);
 
-
 		float r = Math.min(maxW, maxH) * 0.14f;
 		for (float i = 0.2f; i < 1.5; i += 0.2) {
 			drawCircleNode(canvas, centerX, centerY, r, Math.PI * i);
 		}
 
-		//Draw Path
+		// Draw Path
 		ArrayList<Pair<Float, Float>> path = new ArrayList<Pair<Float, Float>>();
 		path.add(new Pair<Float, Float>(centerX, centerY));
 		path.add(new Pair<Float, Float>(maxW * 0.3f, maxH * 0.2f));
@@ -100,7 +105,7 @@ public class DrawView extends View {
 		path.add(new Pair<Float, Float>(maxW * 0.85f, maxH * 0.45f));
 		path.add(new Pair<Float, Float>(maxW * 0.75f, maxH * 0.35f));
 		path.add(new Pair<Float, Float>(maxW * 0.75f, maxH * 0.45f));
-		
+
 		path.add(new Pair<Float, Float>(maxW * 0.6f, maxH * 0.68f));
 		path.add(new Pair<Float, Float>(maxW * 0.22f, maxH * 0.75f));
 		path.add(new Pair<Float, Float>(maxW * 0.5f, maxH * 0.8f));
@@ -112,8 +117,7 @@ public class DrawView extends View {
 			Pair<Float, Float> b = path.get(i + 1);
 			drawNodeEdge(canvas, a.first, a.second, b.first, b.second);
 		}
-		
-		
+
 		centerX = maxW * 0.7f;
 		centerY = maxH * 0.2f;
 		r = Math.min(maxW, maxH) * 0.2f;
@@ -121,7 +125,11 @@ public class DrawView extends View {
 			drawCircleNode(canvas, centerX, centerY, r, Math.PI * i);
 		}
 
-		mainAc.resetButtons(maxW, maxH);
+		if (mainAc != null) {
+			mainAc.resetButtons(maxW, maxH);
+		} else if (sensLogTogAc != null) {
+
+		}
 	}
 
 	private void drawCircleNode(Canvas canvas, float centerX, float centerY,

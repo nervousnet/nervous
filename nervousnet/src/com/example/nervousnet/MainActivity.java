@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
@@ -22,15 +21,11 @@ public class MainActivity extends Activity {
 	private static final int vibDuration = 50;
 	int selectedActivity;
 	private ImageButton btnMain, btnPrivacy, btnDataVis, btnColFreq;
-	DrawView drawView;
-	private DrawView dw;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
-		dw = (DrawView) findViewById(R.id.signature_canvas);
 
 		// // Setup
 		// Buttons-------------------------------------------------------
@@ -100,7 +95,6 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-
 
 	public void resetButtons(int maxX, int maxY) {
 		// Main Button
@@ -184,77 +178,75 @@ public class MainActivity extends Activity {
 
 	private void animateButtonOutSelected(ImageButton btn) {
 		ScaleAnimation s1, s2;
-		s1 = new ScaleAnimation(1, 2, 1, 2, btn.getX()
-				+ (btn.getWidth() / 2), btn.getY()
-				+ (btn.getHeight() / 2));
+		s1 = new ScaleAnimation(1, 2, 1, 2, btn.getX() + (btn.getWidth() / 2),
+				btn.getY() + (btn.getHeight() / 2));
 		s1.setDuration(200);
-		
-		s2 = new ScaleAnimation(1, 0, 1, 0, btn.getX()
-				+ (btn.getWidth() / 2), btn.getY()
-				+ (btn.getHeight() / 2));
+
+		s2 = new ScaleAnimation(1, 0, 1, 0, btn.getX() + (btn.getWidth() / 2),
+				btn.getY() + (btn.getHeight() / 2));
 		s2.setDuration(400);
 		s2.setStartOffset(s1.getStartOffset() + s1.getDuration());
-		
+
 		AnimationSet s = new AnimationSet(false);
 		s.addAnimation(s1);
 		s.addAnimation(s2);
 		s.setFillAfter(true);
 		s.setAnimationListener(new AnimationListener() {
-			
+
 			@Override
 			public void onAnimationStart(Animation animation) {
 			}
-			
+
 			@Override
 			public void onAnimationRepeat(Animation animation) {
 			}
-			
+
 			@Override
 			public void onAnimationEnd(Animation animation) {
-				// TODO: Connect Activities here
-				String msg = "";
 				Intent intent = null;
 				switch (selectedActivity) {
 				case 0:
-					msg = "Selected Main Apps";
-					break;
-				case 1:
-					msg = "Selected Privacy Settings";
 					intent = new Intent(MainActivity.this,
 							SensorLoggingToggleActivity.class);
+					intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+					break;
+				case 1:
+					intent = new Intent(MainActivity.this,
+							SensorLoggingToggleActivity.class);
+					intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 					break;
 				case 2:
-					msg = "Selected Data Visualization";
+					intent = new Intent(MainActivity.this,
+							SensorLoggingToggleActivity.class);
+					intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 					break;
 				case 3:
-					msg = "Selected Collection Frequency";
+					intent = new Intent(MainActivity.this,
+							SensorLoggingToggleActivity.class);
+					intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 					break;
 
 				default:
 					break;
 				}
-				if (intent == null) {
-					intent = new Intent(MainActivity.this,
-							SensorLoggingToggleActivity.class);
+				if (intent != null) {
+					startActivity(intent);
 				}
-//				toastToScreen(msg, false);
-				startActivity(intent);
+				// toastToScreen(msg, false);
 			}
 		});
 		btn.startAnimation(s);
 	}
 
-	
 	private void animateButtonOut(ImageButton btn) {
 		ScaleAnimation scaleAnimMinus;
 		scaleAnimMinus = new ScaleAnimation(1, 0, 1, 0, btn.getX()
-				+ (btn.getWidth() / 2), btn.getY()
-				+ (btn.getHeight() / 2));
+				+ (btn.getWidth() / 2), btn.getY() + (btn.getHeight() / 2));
 		scaleAnimMinus.setDuration(500);
 		scaleAnimMinus.setFillAfter(true);
 		btn.startAnimation(scaleAnimMinus);
 	}
-	
+
 	public void toastToScreen(String msg, boolean lengthLong) {
 
 		int toastLength = lengthLong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT;
