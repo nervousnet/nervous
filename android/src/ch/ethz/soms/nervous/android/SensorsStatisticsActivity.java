@@ -216,7 +216,7 @@ public class SensorsStatisticsActivity extends Activity {
                     Calendar c = Calendar.getInstance();
 
                     Log.i("datapoints size: ",""+sensorDescs.size());
-                    int increment = Math.round(sensorDescs.size()/MAX_NUMBER_PLOT_POINTS);
+                    int increment = (int)Math.ceil(sensorDescs.size()/MAX_NUMBER_PLOT_POINTS);
 
                     for(int i=0;i<sensorDescs.size();i+=increment)
                     {
@@ -255,7 +255,10 @@ public class SensorsStatisticsActivity extends Activity {
                     startActivity(webView);
                 } else Toast.makeText(getApplicationContext(), "No data found in this range.", Toast.LENGTH_LONG).show();
             } else if (selected_sensor.equalsIgnoreCase("Battery"))
-            {
+            { 
+            	//todo this is a trial, delete from here and put somewhere else, but works here
+			    toTimestamp = System.currentTimeMillis();
+			    fromTimestamp = toTimestamp-60000;
                 SensorQueriesBattery sensorQ_Battery = new SensorQueriesBattery(
                         fromTimestamp, toTimestamp, getFilesDir());
                 if (sensorQ_Battery.containsReadings())
@@ -268,12 +271,13 @@ public class SensorsStatisticsActivity extends Activity {
                     Calendar c = Calendar.getInstance();
 
                     Log.i("datapoints size: ",""+sensorDescs.size());
-                    int increment = Math.round(sensorDescs.size()/MAX_NUMBER_PLOT_POINTS);
+                    int increment = (int)Math.ceil(sensorDescs.size()/MAX_NUMBER_PLOT_POINTS);
 
                     //TODO move extraction of year month day hr min sec into sensor maybe or in one unique place, don't replicate code
-                    for(int i=0;i<sensorDescs.size();i+=increment)
-                    {
-                        sensorDesc = sensorDescs.get(i);
+//                    for(int i=0;i<sensorDescs.size();i+=increment)
+//                    {
+                        sensorDesc = sensorDescs.get(sensorDescs.size()-1);
+//                        sensorDesc = sensorDescs.get(i);
                         c.setTimeInMillis(sensorDesc.getTimestamp());
                         int mYear = c.get(Calendar.YEAR);
                         int mMonth = c.get(Calendar.MONTH);
@@ -283,10 +287,12 @@ public class SensorsStatisticsActivity extends Activity {
                         int sec = c.get(Calendar.SECOND);
 
                         data_array+="[Date.UTC("+mYear+","+mMonth+","+mDay+","+hr+","+min+","+sec+"),"+sensorDesc.getBatteryPercent()+"],";
-                    }
+//                    }
                     data_array = data_array.substring(0,data_array.length()-1)+"]; ";
+                   
 
                     webView.putExtra("javascript_global_variables",
+                    		"point = " + "[Date.UTC("+mYear+","+mMonth+","+mDay+","+hr+","+min+","+sec+"),"+sensorDesc.getBatteryPercent()+"];"+
                             "var data_array = " + data_array +
                             "var curve_name = " + "'Battery %';" +
                             "var unit_of_meas = " + "'%';" +
@@ -295,9 +301,10 @@ public class SensorsStatisticsActivity extends Activity {
                             "var plot_title = " + "'Battery data';" +
                             "var plot_subtitle = " + "'%';");
 
-                    webView.putExtra("type_of_plot", "1_line_plot_over_time");
+                    webView.putExtra("type_of_plot", "live_data_over_time");
+//                    webView.putExtra("type_of_plot", "1_line_plot_over_time");
                     startActivity(webView);
-                } else Toast.makeText(getApplicationContext(), "No data found in this range.", Toast.LENGTH_LONG).show();
+                } else Toast.makeText(getApplicationContext(), "No data found in this rang: "+fromTimestamp+" - "+toTimestamp, Toast.LENGTH_LONG).show();
             } else if (selected_sensor.equalsIgnoreCase("Gyroscope"))
             {
                 SensorQueriesGyroscope sensorQ_Gyroscope = new SensorQueriesGyroscope(
@@ -313,7 +320,7 @@ public class SensorsStatisticsActivity extends Activity {
 
                     Calendar c = Calendar.getInstance();
 
-                    int increment = Math.round(sensorDescs.size()/MAX_NUMBER_PLOT_POINTS);
+                    int increment = (int)Math.ceil(sensorDescs.size()/MAX_NUMBER_PLOT_POINTS);
 
                     for(int i=0;i<sensorDescs.size();i+=increment)
                     {
@@ -364,7 +371,7 @@ public class SensorsStatisticsActivity extends Activity {
 
                     Calendar c = Calendar.getInstance();
 
-                    int increment = Math.round(sensorDescs.size()/MAX_NUMBER_PLOT_POINTS);
+                    int increment = (int)Math.ceil(sensorDescs.size()/MAX_NUMBER_PLOT_POINTS);
 
                     //TODO move extraction of year month day hr min sec into sensor maybe or in one unique place, don't replicate code
                     for(int i=0;i<sensorDescs.size();i+=increment)
@@ -395,7 +402,7 @@ public class SensorsStatisticsActivity extends Activity {
                     startActivity(webView);
                 } else Toast.makeText(getApplicationContext(), "No data found in this range.", Toast.LENGTH_LONG).show();
             } else if (selected_sensor.equalsIgnoreCase("Light"))
-            {
+            {    
                 SensorQueriesLight sensorQ_Light = new SensorQueriesLight(
                         fromTimestamp, toTimestamp, getFilesDir());
                 if (sensorQ_Light.containsReadings())
@@ -407,7 +414,7 @@ public class SensorsStatisticsActivity extends Activity {
 
                     Calendar c = Calendar.getInstance();
 
-                    int increment = Math.round(sensorDescs.size()/MAX_NUMBER_PLOT_POINTS);
+                    int increment = (int)Math.ceil(sensorDescs.size()/MAX_NUMBER_PLOT_POINTS);
 
                     //TODO move extraction of year month day hr min sec into sensor maybe or in one unique place, don't replicate code
                     for(int i=0;i<sensorDescs.size();i+=increment)
@@ -452,7 +459,7 @@ public class SensorsStatisticsActivity extends Activity {
 
                     Calendar c = Calendar.getInstance();
 
-                    int increment = Math.round(sensorDescs.size()/MAX_NUMBER_PLOT_POINTS);
+                    int increment = (int)Math.ceil(sensorDescs.size()/MAX_NUMBER_PLOT_POINTS);
 
                     for(int i=0;i<sensorDescs.size();i+=increment)
                     {
@@ -503,7 +510,7 @@ public class SensorsStatisticsActivity extends Activity {
 
                     Calendar c = Calendar.getInstance();
 
-                    int increment = Math.round(sensorDescs.size()/MAX_NUMBER_PLOT_POINTS);
+                    int increment = (int)Math.ceil(sensorDescs.size()/MAX_NUMBER_PLOT_POINTS);
 
                     //TODO move extraction of year month day hr min sec into sensor maybe or in one unique place, don't replicate code
                     for(int i=0;i<sensorDescs.size();i+=increment)
@@ -551,7 +558,7 @@ public class SensorsStatisticsActivity extends Activity {
 
                     Calendar c = Calendar.getInstance();
 
-                    int increment = Math.round(sensorDescs.size()/MAX_NUMBER_PLOT_POINTS);
+                    int increment = (int)Math.ceil(sensorDescs.size()/MAX_NUMBER_PLOT_POINTS);
 
                     //TODO move extraction of year month day hr min sec into sensor maybe or in one unique place, don't replicate code
                     for(int i=0;i<sensorDescs.size();i+=increment)
@@ -594,7 +601,7 @@ public class SensorsStatisticsActivity extends Activity {
 
                     Calendar c = Calendar.getInstance();
 
-                    int increment = Math.round(sensorDescs.size()/MAX_NUMBER_PLOT_POINTS);
+                    int increment = (int)Math.ceil(sensorDescs.size()/MAX_NUMBER_PLOT_POINTS);
 
                     //TODO move extraction of year month day hr min sec into sensor maybe or in one unique place, don't replicate code
                     for(int i=0;i<sensorDescs.size();i+=increment)
@@ -640,7 +647,6 @@ public class SensorsStatisticsActivity extends Activity {
 //
 //                    Calendar c = Calendar.getInstance();
 //
-//                    int increment = Math.round(sensorDescs.size()/MAX_NUMBER_PLOT_POINTS);
 //
 //                    for(int i=0;i<sensorDescs.size();i+=increment)
 //                    {

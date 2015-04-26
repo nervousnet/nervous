@@ -30,15 +30,21 @@
 	            }
 	        },
 	        title: {
-	            text: 'Live random data'
+            	text: plot_title
+	        },
+	        subtitle: {
+	            text: plot_subtitle
 	        },
 	        xAxis: {
 	            type: 'datetime',
-	            maxZoom: 20 * 1000
+	            maxZoom: 20 * 1000,
+	            title: {
+                	text: x_axis_title
+            	}
 	        },
 	        yAxis: {
 	            title: {
-	                text: 'Value'
+	               text: y_axis_title
 	            }
 	        },
 	        plotOptions: {

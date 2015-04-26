@@ -521,6 +521,10 @@ public class MainActivity extends ActionBarActivity implements NervousMapListene
 			Time now = new Time();
 	        now.setToNow();
 			intent.putExtra("javascript_global_variables",
+					 "var x_axis_title = " + "'Date';" +
+                    "var y_axis_title = " + "'Whatever sensor value (meas. unit)';" +
+                    "var plot_title = " + "'Meaningless values';" +
+                    "var plot_subtitle = " + "'temporarily';" +
                     "var point = " + "[Date.UTC("+now.year+","+now.month+","+now.monthDay+","+now.hour+","+now.minute+","+now.second+"),"+(now.second+2)+"];");
             intent.putExtra("type_of_plot", "live_data_over_time");
             startActivity(intent);
