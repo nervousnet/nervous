@@ -514,6 +514,7 @@ public class MainActivity extends ActionBarActivity implements NervousMapListene
 			break;
 		case R.id.menu_SensorsStatistics:
 	            intent = new Intent(this, SensorsStatisticsActivity.class);
+	            intent.putExtra("serviceSwitchIsChecked",serviceSwitch.isChecked());
 	            startActivity(intent);
 	            break;
 		case R.id.menu_RealTimePlot:

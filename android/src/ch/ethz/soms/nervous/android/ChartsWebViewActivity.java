@@ -5,8 +5,10 @@ import java.util.Calendar;
 
 import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesBattery;
 import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesLight;
+import ch.ethz.soms.nervous.android.sensorQueries.SensorSingleValueQueries;
 import ch.ethz.soms.nervous.android.sensors.SensorDescBattery;
 import ch.ethz.soms.nervous.android.sensors.SensorDescLight;
+import ch.ethz.soms.nervous.android.sensors.SensorDescSingleValue;
 import android.app.Activity;
 import android.graphics.Point;
 import android.os.Build;
@@ -55,6 +57,8 @@ public class ChartsWebViewActivity extends Activity {
 				    long fromTimestamp = toTimestamp-60000;
 	                SensorQueriesBattery sensorQ_Battery = new SensorQueriesBattery(
 	                        fromTimestamp, toTimestamp, getFilesDir());
+//	                SensorSingleValueQueries<SensorDescSingleValue> sensorQ_Battery = new SensorSingleValueQueries<SensorDescSingleValue>(
+//	                        fromTimestamp, toTimestamp, getFilesDir());
 	                if (sensorQ_Battery.containsReadings())
 	                {
 	                    ArrayList<SensorDescBattery> sensorDescs = sensorQ_Battery.getSensorDescriptorList();
@@ -72,7 +76,6 @@ public class ChartsWebViewActivity extends Activity {
 	                        int sec = c.get(Calendar.SECOND);
 
 	                        webView.loadUrl("javascript:" + "point = " + "[Date.UTC("+mYear+","+mMonth+","+mDay+","+hr+","+min+","+sec+"),"+sensorDesc.getBatteryPercent()+"];");
-	                        Log.i("charts","inside");
 	                }
 		     }
 

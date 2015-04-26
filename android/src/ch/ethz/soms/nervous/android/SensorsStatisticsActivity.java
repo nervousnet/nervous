@@ -58,6 +58,7 @@ public class SensorsStatisticsActivity extends Activity {
     private int fromTimeHour,fromTimeMin,fromDateDayOfMonth,fromDateMonth,fromDateYear,toTimeHour,toTimeMin,toDateDayOfMonth,toDateMonth,toDateYear;
     private TimePicker fromTimePicker,toTimePicker;
     private DatePicker fromDatePicker,toDatePicker;
+    private boolean serviceSwitchIsChecked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +66,8 @@ public class SensorsStatisticsActivity extends Activity {
         
         /* Initialize view components */
         setContentView(R.layout.activity_sensors_statistics);
+        
+        serviceSwitchIsChecked = getIntent().getBooleanExtra("serviceSwitchIsChecked", false);
 
         fromTimePicker = ((TimePicker) findViewById(R.id.fromTimePicker));
         toTimePicker = ((TimePicker) findViewById(R.id.toTimePicker));
@@ -104,9 +107,33 @@ public class SensorsStatisticsActivity extends Activity {
         tabHost.addTab(tab2);
     }
 
-    public void nextButtonClicked(View view)
+    public void toastToScreen(String msg, boolean lengthLong) {
+
+		int toastLength = lengthLong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT;
+		Toast.makeText(getApplicationContext(), msg, toastLength).show();
+	}
+    
+    public void nextButtonRealTimeClicked(View view)
     {
-    	/* Button to show charts clicked */
+    	/* Button to show real time plots clicked */	
+    	if(!serviceSwitchIsChecked)
+    	{
+    		//If sensor data reading is disable
+    		toastToScreen("Please, check the switch in the home view to enable sensor data collection!",true);
+    		return;
+    	}
+    	if(selectedViewOnListView == null)
+        {
+            // If none of the sensors is selected
+            toastToScreen("Please, select a sensor from the list.",true);
+            return;
+        }
+        // TODO call method below
+    }
+    
+    public void nextButtonTimeRangeClicked(View view)
+    {
+    	/* Button to show charts for time range clicked */
         fromTimeHour = fromTimePicker.getCurrentHour();
         fromTimeMin = fromTimePicker.getCurrentMinute();
         fromDateDayOfMonth = fromDatePicker.getDayOfMonth();
