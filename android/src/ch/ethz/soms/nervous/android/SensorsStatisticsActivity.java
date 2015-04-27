@@ -211,6 +211,8 @@ public class SensorsStatisticsActivity extends Activity {
     	//TODO put conditions and modify for real time
     	String selected_sensor = ((TextView) selectedViewOnListView).getText().toString();
         Intent webView = new Intent(this, ChartsWebViewActivity.class);
+        
+        webView.putExtra("selectedSensor",selected_sensor);
 
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
@@ -726,5 +728,6 @@ public class SensorsStatisticsActivity extends Activity {
 //                startActivity(webView);
 //            } else Toast.makeText(getApplicationContext(), "No data found in this range.", Toast.LENGTH_LONG).show();
 //        }
+        //TODO CONNECTIVITY
     }
 }
