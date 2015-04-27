@@ -4,6 +4,7 @@ import java.util.Random;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.Menu;
@@ -11,8 +12,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.AnimationSet;
+import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -20,7 +24,9 @@ public class MainActivity extends Activity {
 
 	private static final int vibDuration = 50;
 	int selectedActivity;
-	private ImageButton btnMain, btnPrivacy, btnDataVis, btnColFreq;
+	private ImageButton btnMain, btnPrivacy, btnDataVis, btnColFreq, btnOn,
+			btnOff;
+	boolean serviceRunning;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +42,8 @@ public class MainActivity extends Activity {
 		btnPrivacy = (ImageButton) findViewById(R.id.btn_privacy);
 		btnDataVis = (ImageButton) findViewById(R.id.btn_DataVisualizer);
 		btnColFreq = (ImageButton) findViewById(R.id.btn_collectionFrequency);
+		btnOn = (ImageButton) findViewById(R.id.btn_on);
+		btnOff = (ImageButton) findViewById(R.id.btn_off);
 
 		btnMain.setOnClickListener(new OnClickListener() {
 
@@ -43,10 +51,7 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				vibrator.vibrate(vibDuration);
 				selectedActivity = 0;
-				animateButtonOutSelected(btnMain);
-				animateButtonOut(btnColFreq);
-				animateButtonOut(btnDataVis);
-				animateButtonOut(btnPrivacy);
+				animateAllButtonsOut(btnMain);
 			}
 
 		});
@@ -56,10 +61,7 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				vibrator.vibrate(vibDuration);
 				selectedActivity = 1;
-				animateButtonOutSelected(btnPrivacy);
-				animateButtonOut(btnColFreq);
-				animateButtonOut(btnDataVis);
-				animateButtonOut(btnMain);
+				animateAllButtonsOut(btnPrivacy);
 			}
 		});
 
@@ -68,10 +70,7 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				vibrator.vibrate(vibDuration);
 				selectedActivity = 2;
-				animateButtonOutSelected(btnDataVis);
-				animateButtonOut(btnColFreq);
-				animateButtonOut(btnMain);
-				animateButtonOut(btnPrivacy);
+				animateAllButtonsOut(btnDataVis);
 			}
 		});
 
@@ -80,13 +79,89 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				vibrator.vibrate(vibDuration);
 				selectedActivity = 3;
-				animateButtonOutSelected(btnColFreq);
-				animateButtonOut(btnMain);
-				animateButtonOut(btnDataVis);
-				animateButtonOut(btnPrivacy);
+				animateAllButtonsOut(btnColFreq);
+			}
+
+		});
+
+		btnOn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				vibrator.vibrate(vibDuration);
+				switchServiceOnOff();
 			}
 		});
 
+		btnOff.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				vibrator.vibrate(vibDuration);
+				switchServiceOnOff();
+			}
+		});
+
+	}
+
+	protected void switchServiceOnOff() {
+		serviceRunning = !serviceRunning;
+
+		RotateAnimation rotAnim;
+		rotAnim = new RotateAnimation(0, 360, btnOff.getX()
+				+ (btnOff.getWidth() / 2), btnOff.getY()
+				+ (btnOff.getHeight() / 2));
+		rotAnim.setDuration(500);
+
+		AnimationSet sAll = new AnimationSet(false);
+		sAll.addAnimation(rotAnim);
+
+		if (serviceRunning) {
+			AlphaAnimation fadeOut = new AlphaAnimation(1, 0);
+			fadeOut.setDuration(500);
+			sAll.addAnimation(fadeOut);
+			sAll.setAnimationListener(new AnimationListener() {
+
+				@Override
+				public void onAnimationStart(Animation animation) {
+				}
+
+				@Override
+				public void onAnimationRepeat(Animation animation) {
+				}
+
+				@Override
+				public void onAnimationEnd(Animation animation) {
+					btnOff.setVisibility(Button.INVISIBLE);
+					btnOff.setEnabled(false);
+					btnOn.setVisibility(Button.VISIBLE);
+					btnOn.setEnabled(true);
+				}
+			});
+		} else {
+			AlphaAnimation fadeIn = new AlphaAnimation(0, 1);
+			fadeIn.setDuration(500);
+			sAll.addAnimation(fadeIn);
+			sAll.setAnimationListener(new AnimationListener() {
+
+				@Override
+				public void onAnimationStart(Animation animation) {
+				}
+
+				@Override
+				public void onAnimationRepeat(Animation animation) {
+				}
+
+				@Override
+				public void onAnimationEnd(Animation animation) {
+					btnOff.setVisibility(Button.VISIBLE);
+					btnOff.setEnabled(true);
+					btnOn.setVisibility(Button.INVISIBLE);
+					btnOn.setEnabled(false);
+				}
+			});
+		}
+
+		btnOff.startAnimation(sAll);
+		btnOn.startAnimation(rotAnim);
 	}
 
 	@Override
@@ -107,7 +182,7 @@ public class MainActivity extends Activity {
 		float newX = (maxX * 0.5f) - (newW / 2);
 		float newY = (maxY * 0.5f) - (newH / 2);
 
-		resetButton(btnMain, newW, newH, newX, newY);
+		resetButtonAnimateIn(btnMain, newW, newH, newX, newY);
 
 		// privacy Button
 		scale = 0.2f;
@@ -119,7 +194,7 @@ public class MainActivity extends Activity {
 		newX = (maxX * 0.8f) - (newW / 2);
 		newY = (maxY * 0.7f) - (newH / 2);
 
-		resetButton(btnPrivacy, newW, newH, newX, newY);
+		resetButtonAnimateIn(btnPrivacy, newW, newH, newX, newY);
 
 		// Data Visualizer button
 		scale = 0.15f;
@@ -128,10 +203,10 @@ public class MainActivity extends Activity {
 		newW = (int) Math.min(w, h);
 		newH = (int) Math.min(w, h);
 
-		newX = (maxX * 0.2f) - (newW / 2);
-		newY = (maxY * 0.8f) - (newH / 2);
+		newX = (maxX * 0.22f) - (newW / 2);
+		newY = (maxY * 0.75f) - (newH / 2);
 
-		resetButton(btnDataVis, newW, newH, newX, newY);
+		resetButtonAnimateIn(btnDataVis, newW, newH, newX, newY);
 
 		// Collection Frequency button
 		scale = 0.2f;
@@ -143,12 +218,38 @@ public class MainActivity extends Activity {
 		newX = (maxX * 0.7f) - (newW / 2);
 		newY = (maxY * 0.2f) - (newH / 2);
 
-		resetButton(btnColFreq, newW, newH, newX, newY);
+		resetButtonAnimateIn(btnColFreq, newW, newH, newX, newY);
+
+		// On-Off button
+		scale = 0.13f;
+		w = maxX * scale;
+		h = maxY * scale;
+		newW = (int) Math.min(w, h);
+		newH = (int) Math.min(w, h);
+
+		newX = (maxX * 0.2f) - (newW / 2);
+		newY = (maxY * 0.1f) - (newH / 2);
+
+		if (serviceRunning) {
+			btnOn.setVisibility(Button.VISIBLE);
+			btnOn.setEnabled(true);
+			btnOff.setVisibility(Button.INVISIBLE);
+			btnOff.setEnabled(false);
+			resetButtonAnimateIn(btnOn, newW, newH, newX, newY);
+			resetButtonPos(btnOff, newW, newH, newX, newY);
+		} else {
+			btnOff.setVisibility(Button.VISIBLE);
+			btnOff.setEnabled(true);
+			btnOn.setVisibility(Button.INVISIBLE);
+			btnOn.setEnabled(false);
+			resetButtonAnimateIn(btnOff, newW, newH, newX, newY);
+			resetButtonPos(btnOn, newW, newH, newX, newY);
+		}
 
 	}
 
-	private void resetButton(ImageButton btn, int newW, int newH, float newX,
-			float newY) {
+	private void resetButtonAnimateIn(ImageButton btn, int newW, int newH,
+			float newX, float newY) {
 		btn.setX(newX);
 		btn.setY(newY);
 
@@ -174,6 +275,17 @@ public class MainActivity extends Activity {
 		sAll.addAnimation(s1);
 		sAll.addAnimation(s2);
 		btn.startAnimation(sAll);
+	}
+
+	private void resetButtonPos(ImageButton btn, int newW, int newH,
+			float newX, float newY) {
+		btn.setX(newX);
+		btn.setY(newY);
+
+		android.view.ViewGroup.LayoutParams params = btn.getLayoutParams();
+		params.height = newW;
+		params.width = newH;
+		btn.setLayoutParams(params);
 	}
 
 	private void animateButtonOutSelected(ImageButton btn) {
@@ -245,6 +357,24 @@ public class MainActivity extends Activity {
 		scaleAnimMinus.setDuration(500);
 		scaleAnimMinus.setFillAfter(true);
 		btn.startAnimation(scaleAnimMinus);
+	}
+
+	private void animateAllButtonsOut(ImageButton selectedButton) {
+		animateButtonOutSelected(selectedButton);
+		if (!selectedButton.equals(btnMain)) {
+			animateButtonOut(btnMain);
+		}
+		if (!selectedButton.equals(btnDataVis)) {
+			animateButtonOut(btnDataVis);
+		}
+		if (!selectedButton.equals(btnPrivacy)) {
+			animateButtonOut(btnPrivacy);
+		}
+		if (!selectedButton.equals(btnColFreq)) {
+			animateButtonOut(btnColFreq);
+		}
+		animateButtonOut(btnOn);
+		animateButtonOut(btnOff);
 	}
 
 	public void toastToScreen(String msg, boolean lengthLong) {
