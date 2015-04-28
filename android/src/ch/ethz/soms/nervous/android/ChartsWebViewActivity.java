@@ -24,6 +24,7 @@ import android.os.CountDownTimer;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.Display;
+import android.view.View;
 import android.webkit.WebView;
 
 public class ChartsWebViewActivity extends Activity {
@@ -61,14 +62,16 @@ public class ChartsWebViewActivity extends Activity {
 		webView.loadUrl("file:///android_asset/webview_charts_" + type_of_plot
 				+ ".html");
 
-		if (type_of_plot.equals("live_data_over_time"))
+		if (type_of_plot.equals("1_line_live_data_over_time") || type_of_plot.equals("3_lines_live_data_over_time"))
 			updateData();
 	}
 
-	public void displaySingleSensorValue(SensorSingleValueQueries<SensorDescSingleValue> ssvq,long fromTimestamp) {
-
+	public <T extends SensorDescSingleValue> void displaySingleSensorValue(SensorSingleValueQueries<T> ssvq,long fromTimestamp)
+	{
 		if (ssvq.containsReadings()) {
-			ArrayList<SensorDescSingleValue> sensorDescs = ssvq.getSensorDescriptorList();
+			findViewById(R.id.waitingDataTextView).setVisibility(View.INVISIBLE);
+
+			ArrayList<T> sensorDescs = ssvq.getSensorDescriptorList();
 
 			Calendar c = Calendar.getInstance();
 
@@ -84,6 +87,9 @@ public class ChartsWebViewActivity extends Activity {
 					+ mYear + "," + mMonth + "," + mDay + "," + hr
 					+ "," + min + "," + sec + "),"
 					+ sensorDescs.get(sensorDescs.size()-1).getValue() + "];");
+		} else
+		{
+			findViewById(R.id.waitingDataTextView).setVisibility(View.VISIBLE);
 		}
 	}
 	
@@ -111,10 +117,12 @@ public class ChartsWebViewActivity extends Activity {
 		        {
 		            SensorQueriesHumidity sensorQuery = new SensorQueriesHumidity(
 		                    fromTimestamp, toTimestamp, getFilesDir());
+		            displaySingleSensorValue(sensorQuery,fromTimestamp);
 		        } else if (selected_sensor.equalsIgnoreCase("Light"))
 		        {    
 		            SensorQueriesLight sensorQuery = new SensorQueriesLight(
 		                    fromTimestamp, toTimestamp, getFilesDir());
+		            displaySingleSensorValue(sensorQuery,fromTimestamp);
 		        } else if (selected_sensor.equalsIgnoreCase("Magnetic"))
 		        {
 		            SensorQueriesMagnetic sensorQuery = new SensorQueriesMagnetic(
@@ -123,14 +131,17 @@ public class ChartsWebViewActivity extends Activity {
 		        {
 		            SensorQueriesProximity sensorQuery = new SensorQueriesProximity(
 		                    fromTimestamp, toTimestamp, getFilesDir());
+		            displaySingleSensorValue(sensorQuery,fromTimestamp);
 		        } else if (selected_sensor.equalsIgnoreCase("Temperature"))
 		        {
 		            SensorQueriesTemperature sensorQuery = new SensorQueriesTemperature(
 		                    fromTimestamp, toTimestamp, getFilesDir());
+		            displaySingleSensorValue(sensorQuery,fromTimestamp);
 		        } else if (selected_sensor.equalsIgnoreCase("Pressure"))
 		        {
 		            SensorQueriesPressure sensorQuery= new SensorQueriesPressure(
 		                    fromTimestamp, toTimestamp, getFilesDir());
+		            displaySingleSensorValue(sensorQuery,fromTimestamp);
 		        } else if (selected_sensor.equalsIgnoreCase("Microphone"))
 		        {
 //		            SensorQueriesMicrophone sensorQ_Microphone= new SensorQueriesMicrophone(
