@@ -1,6 +1,8 @@
 package ch.ethz.soms.nervous.android.sensorQueries;
 
 import java.io.File;
+import ch.ethz.soms.nervous.android.sensors.*;
+import ch.ethz.soms.nervous.android.Queries.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -9,10 +11,10 @@ import ch.ethz.soms.nervous.android.sensors.SensorDescLight;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
 
 public class SensorQueriesLight extends
-		SensorSingleValueQueries<SensorDescLight> {
+		QueryNumSingleValue<SensorDescLight> {
 
 	@Override
-	long getSensorId() {
+	public long getSensorId() {
 		return SensorDescLight.SENSOR_ID;
 	}
 
@@ -21,12 +23,12 @@ public class SensorQueriesLight extends
 	}
 
 	@Override
-	SensorDescLight createSensorDescSingleValue(SensorData sensorData) {
+	public SensorDescLight createSensorDescSingleValue(SensorData sensorData) {
 		return new SensorDescLight(sensorData);
 	}
 
 	@Override
-	SensorDescLight createDummyObject() {
+	public SensorDescLight createDummyObject() {
 		return new SensorDescLight(0, 0);
 	}
 

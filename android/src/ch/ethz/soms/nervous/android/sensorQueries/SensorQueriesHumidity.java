@@ -1,16 +1,18 @@
 package ch.ethz.soms.nervous.android.sensorQueries;
 
 import java.io.File;
+import ch.ethz.soms.nervous.android.sensors.*;
+import ch.ethz.soms.nervous.android.Queries.*;
 import java.util.ArrayList;
 
 import ch.ethz.soms.nervous.android.sensors.SensorDescHumidity;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
 
 public class SensorQueriesHumidity extends
-		SensorSingleValueQueries<SensorDescHumidity> {
+		QueryNumSingleValue<SensorDescHumidity> {
 
 	@Override
-	long getSensorId() {
+	public long getSensorId() {
 		return SensorDescHumidity.SENSOR_ID;
 	}
 
@@ -20,12 +22,12 @@ public class SensorQueriesHumidity extends
 	}
 
 	@Override
-	SensorDescHumidity createSensorDescSingleValue(SensorData sensorData) {
+	public SensorDescHumidity createSensorDescSingleValue(SensorData sensorData) {
 		return new SensorDescHumidity(sensorData);
 	}
 
 	@Override
-	SensorDescHumidity createDummyObject() {
+	public SensorDescHumidity createDummyObject() {
 		return new SensorDescHumidity(0, 0);
 	}
 

@@ -1,16 +1,20 @@
 package ch.ethz.soms.nervous.android.sensorQueries;
 
 import java.io.File;
+
+import ch.ethz.soms.nervous.android.sensors.*;
+import ch.ethz.soms.nervous.android.Queries.*;
+
 import java.util.ArrayList;
 
 import ch.ethz.soms.nervous.android.sensors.SensorDescGyroscope;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
 
-public class SensorQueriesGyroscope extends SensorQueries<SensorDescGyroscope> {
+public class SensorQueriesGyroscope extends QueryNumVectorValue<SensorDescGyroscopeNew> {
 
 	@Override
-	long getSensorId() {
-		return SensorDescGyroscope.SENSOR_ID;
+	public long getSensorId() {
+		return SensorDescGyroscopeNew.SENSOR_ID;
 	}
 
 	public SensorQueriesGyroscope(long timestamp_from, long timestamp_to,
@@ -18,11 +22,41 @@ public class SensorQueriesGyroscope extends SensorQueries<SensorDescGyroscope> {
 		super(timestamp_from, timestamp_to, file);
 	}
 
-	public SensorDescGyroscope getMaxAverageValue() {
-		SensorDescGyroscope maxGyrSensDesc = null;
+
+	@Override
+	public SensorDescGyroscopeNew createSensorDescVectorValue(
+			SensorData sensorData) {
+		// TODO Auto-generated method stub
+		return new SensorDescGyroscopeNew(sensorData);
+	}
+
+	@Override
+	public SensorDescGyroscopeNew createDummyObject() {
+		// TODO Auto-generated method stub
+		return new SensorDescGyroscopeNew(0, 0, 0, 0);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	/*public SensorDescGyroscopeNew getMaxAverageValue() {
+		SensorDescGyroscopeNew maxGyrSensDesc = null;
 		float maxAverage = 0;
 		for (SensorData sensorData : list) {
-			SensorDescGyroscope sensDesc = new SensorDescGyroscope(
+			SensorDescGyroscopeNew sensDesc = new SensorDescGyroscopeNew(
 					sensorData);
 
 			float x = Math.abs(sensDesc.getGyrX());
@@ -37,11 +71,11 @@ public class SensorQueriesGyroscope extends SensorQueries<SensorDescGyroscope> {
 		return maxGyrSensDesc;
 	}
 
-	public SensorDescGyroscope getMinAverageValue() {
-		SensorDescGyroscope minGyrSensDesc = null;
+	public SensorDescGyroscopeNew getMinAverageValue() {
+		SensorDescGyroscopeNew minGyrSensDesc = null;
 		float maxAverage = Float.MAX_VALUE;
 		for (SensorData sensorData : list) {
-			SensorDescGyroscope sensDesc = new SensorDescGyroscope(
+			SensorDescGyroscopeNew sensDesc = new SensorDescGyroscopeNew(
 					sensorData);
 
 			float x = Math.abs(sensDesc.getGyrX());
@@ -57,11 +91,11 @@ public class SensorQueriesGyroscope extends SensorQueries<SensorDescGyroscope> {
 	}
 	
 	@Override
-	public ArrayList<SensorDescGyroscope> getSensorDescriptorList() {
-		ArrayList<SensorDescGyroscope> descList = new ArrayList<SensorDescGyroscope>();
+	public ArrayList<SensorDescGyroscopeNew> getSensorDescriptorList() {
+		ArrayList<SensorDescGyroscopeNew> descList = new ArrayList<SensorDescGyroscopeNew>();
 		for (SensorData sensorData : list) {
-			descList.add(new SensorDescGyroscope(sensorData));
+			descList.add(new SensorDescGyroscopeNew(sensorData));
 		}
 		return descList;
-	}
+	}*/
 }

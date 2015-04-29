@@ -1,8 +1,10 @@
 package ch.ethz.soms.nervous.android.sensors;
 
+import java.util.ArrayList;
+
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
 
-public class SensorDescAccelerometer extends SensorDesc {
+public class SensorDescAccelerometerNew extends SensorDescVectorValue {
 	
 	public static final long SENSOR_ID = 0x0000000000000000L;
 	
@@ -10,14 +12,14 @@ public class SensorDescAccelerometer extends SensorDesc {
 	private final float accY;
 	private final float accZ;
 
-	public SensorDescAccelerometer(final long timestamp, final float accX, final float accY, final float accZ) {
+	public SensorDescAccelerometerNew(final long timestamp, final float accX, final float accY, final float accZ) {
 		super(timestamp);
 		this.accX = accX;
 		this.accY = accY;
 		this.accZ = accZ;
 	}
 	
-	public SensorDescAccelerometer(SensorData sensorData) {
+	public SensorDescAccelerometerNew(SensorData sensorData) {
 		super(sensorData);
 		this.accX = sensorData.getValueFloat(0);
 		this.accY = sensorData.getValueFloat(1);
@@ -51,4 +53,15 @@ public class SensorDescAccelerometer extends SensorDesc {
 		return SENSOR_ID;
 	}
 
+	@Override
+	public ArrayList<Float> getValue() {
+		// TODO Auto-generated method stub
+		ArrayList<Float> arrayList = new ArrayList<Float>();
+		arrayList.add(accX);
+		arrayList.add(accY);
+		arrayList.add(accZ);
+		return arrayList; // 3 values returned
+	}
+
 }
+
