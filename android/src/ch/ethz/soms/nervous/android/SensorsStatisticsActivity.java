@@ -50,17 +50,18 @@ import ch.ethz.soms.nervous.android.sensors.SensorDescMagnetic;
 import ch.ethz.soms.nervous.android.sensors.SensorDescPressure;
 import ch.ethz.soms.nervous.android.sensors.SensorDescProximity;
 import ch.ethz.soms.nervous.android.sensors.SensorDescTemperature;
+import ch.ethz.soms.nervous.utils.HighlightArrayAdapter;
 
 public class SensorsStatisticsActivity extends Activity {
 
     private static float MAX_NUMBER_PLOT_POINTS = (float)30.0;
-    private View selectedViewOnListView = null;
     // hours in 24hours format
     private int fromTimeHour,fromTimeMin,fromDateDayOfMonth,fromDateMonth,fromDateYear,toTimeHour,toTimeMin,toDateDayOfMonth,toDateMonth,toDateYear;
     private TimePicker fromTimePicker,toTimePicker;
     private DatePicker fromDatePicker,toDatePicker;
     private boolean serviceSwitchIsChecked = false;
-
+    private HighlightArrayAdapter<String> arrayAdapter;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,17 +71,18 @@ public class SensorsStatisticsActivity extends Activity {
         
         serviceSwitchIsChecked = getIntent().getBooleanExtra("serviceSwitchIsChecked", false);
 
-        ListView sensorsListView = ((ListView)findViewById(R.id.sensors_list_SensStatChart));
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,getResources().getStringArray(R.array.sensors_list));
+        final ListView sensorsListView = ((ListView)findViewById(R.id.sensors_list_SensStatChart));
+        sensorsListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        arrayAdapter = new HighlightArrayAdapter<String>(this,android.R.layout.simple_list_item_1,getResources().getStringArray(R.array.sensors_list));
         sensorsListView.setAdapter(arrayAdapter);
 
         sensorsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(selectedViewOnListView!=null)
-                    selectedViewOnListView.setBackgroundColor(Color.TRANSPARENT);
-                selectedViewOnListView = view;
+            	sensorsListView.setItemChecked(position, true);
                 view.setBackgroundColor(Color.rgb(77, 148, 255));
+                arrayAdapter.setSelectedItem(position);
+                arrayAdapter.notifyDataSetChanged();
             }
         });
 
@@ -101,7 +103,7 @@ public class SensorsStatisticsActivity extends Activity {
     		toastToScreen("Please, check the switch in the home view to enable sensor data collection!",true);
     		return;
     	}
-    	if(selectedViewOnListView == null)
+    	if(arrayAdapter.getSelectedItem() == -1)
         {
             // If none of the sensors is selected
             toastToScreen("Please, select a sensor from the list.",true);
@@ -113,7 +115,7 @@ public class SensorsStatisticsActivity extends Activity {
     
     public void nextButtonTimeRangeClicked(View view)
     {
-    	if(selectedViewOnListView == null)
+    	if(arrayAdapter.getSelectedItem() == -1)
         {
             // If none of the sensors is selected
             Toast.makeText(this, "Please, select a sensor from the list.",Toast.LENGTH_SHORT).show();
@@ -220,7 +222,7 @@ public class SensorsStatisticsActivity extends Activity {
     {
     	/* Sensor readings and javascript variables are set and passed to chart webview */
     	//TODO put conditions and modify for real time
-    	String selected_sensor = ((TextView) selectedViewOnListView).getText().toString();
+    	String selected_sensor = arrayAdapter.getItem(arrayAdapter.getSelectedItem());
         Intent webView = new Intent(this, ChartsWebViewActivity.class);
         
         webView.putExtra("selected_sensor",selected_sensor);
