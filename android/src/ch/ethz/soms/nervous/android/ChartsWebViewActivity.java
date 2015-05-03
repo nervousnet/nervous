@@ -70,27 +70,29 @@ public class ChartsWebViewActivity extends Activity {
 
 	public <T extends SensorDescSingleValue> void displaySingleSensorValue(SensorSingleValueQueries<T> ssvq,long fromTimestamp)
 	{
+		Calendar c = Calendar.getInstance();
+
+		c.setTimeInMillis(fromTimestamp);
+		int mYear = c.get(Calendar.YEAR);
+		int mMonth = c.get(Calendar.MONTH);
+		int mDay = c.get(Calendar.DAY_OF_MONTH);
+		int hr = c.get(Calendar.HOUR_OF_DAY);
+		int min = c.get(Calendar.MINUTE);
+		int sec = c.get(Calendar.SECOND);
+		
 		if (ssvq.containsReadings()) {
-
+			findViewById(R.id.waiting_for_sensor_data_textView).setVisibility(View.GONE);
 			ArrayList<T> sensorDescs = ssvq.getSensorDescriptorList();
-
-			Calendar c = Calendar.getInstance();
-
-			c.setTimeInMillis(fromTimestamp);
-			int mYear = c.get(Calendar.YEAR);
-			int mMonth = c.get(Calendar.MONTH);
-			int mDay = c.get(Calendar.DAY_OF_MONTH);
-			int hr = c.get(Calendar.HOUR_OF_DAY);
-			int min = c.get(Calendar.MINUTE);
-			int sec = c.get(Calendar.SECOND);
-
 			webView.loadUrl("javascript:" + "point = " + "[Date.UTC("
 					+ mYear + "," + mMonth + "," + mDay + "," + hr
 					+ "," + min + "," + sec + "),"
 					+ sensorDescs.get(sensorDescs.size()-1).getValue() + "];");
 		} else
 		{
-			 Toast.makeText(getApplicationContext(), "Waiting for sensor data...", Toast.LENGTH_LONG).show();
+			webView.loadUrl("javascript:" + "point = " + "{x: Date.UTC("
+					+ mYear + "," + mMonth + "," + mDay + "," + hr
+					+ "," + min + "," + sec + "), y: "
+					+ (float)0.0 + ", color: 'orange'};");
 		}
 	}
 	
@@ -128,10 +130,9 @@ public class ChartsWebViewActivity extends Activity {
 								+ mYear + "," + mMonth + "," + mDay + "," + hr
 								+ "," + min + "," + sec + "),"
 								+ sensorDescs.get(sensorDescs.size()-1).getAccZ() + "];");
-
 					} else
 					{
-						 Toast.makeText(getApplicationContext(), "Waiting for sensor data...", Toast.LENGTH_LONG).show();
+//						 Toast.makeText(getApplicationContext(), "Waiting for sensor data...", Toast.LENGTH_LONG).show();
 					}
 					
 		        } else if (selected_sensor.equalsIgnoreCase("Battery"))
