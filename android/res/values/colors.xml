@@ -14,4 +14,5 @@
     <color name="white_nervous">#FFFFFF</color>
 	<color name="white_nervous_transparent">#CCFFFFFF</color>
 	<color name="orange">#FFA500</color>    
+	<color name="light_blue">#ff52bbff</color>    
 </resources>

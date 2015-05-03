@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -69,14 +70,6 @@ public class SensorsStatisticsActivity extends Activity {
         
         serviceSwitchIsChecked = getIntent().getBooleanExtra("serviceSwitchIsChecked", false);
 
-        fromTimePicker = ((TimePicker) findViewById(R.id.fromTimePicker));
-        toTimePicker = ((TimePicker) findViewById(R.id.toTimePicker));
-        fromDatePicker = ((DatePicker) findViewById(R.id.fromDatePicker));
-        toDatePicker = ((DatePicker) findViewById(R.id.toDatePicker));
-
-        fromTimePicker.setIs24HourView(true);
-        toTimePicker.setIs24HourView(true);
-
         ListView sensorsListView = ((ListView)findViewById(R.id.sensors_list_SensStatChart));
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,getResources().getStringArray(R.array.sensors_list));
         sensorsListView.setAdapter(arrayAdapter);
@@ -91,20 +84,6 @@ public class SensorsStatisticsActivity extends Activity {
             }
         });
 
-
-        TabHost tabHost = (TabHost)findViewById(R.id.tabHost);
-        tabHost.setup();
-
-        TabHost.TabSpec tab1 = tabHost.newTabSpec("From");
-        TabHost.TabSpec tab2 = tabHost.newTabSpec("To");
-
-        tab1.setIndicator("From");
-        tab1.setContent(R.id.From);
-        tab2.setIndicator("To");
-        tab2.setContent(R.id.To);
-
-        tabHost.addTab(tab1);
-        tabHost.addTab(tab2);
     }
 
     public void toastToScreen(String msg, boolean lengthLong) {
@@ -134,6 +113,56 @@ public class SensorsStatisticsActivity extends Activity {
     
     public void nextButtonTimeRangeClicked(View view)
     {
+    	if(selectedViewOnListView == null)
+        {
+            // If none of the sensors is selected
+            Toast.makeText(this, "Please, select a sensor from the list.",Toast.LENGTH_SHORT).show();
+            return;
+        }
+    	
+    	/* Show a dialog to make user select from/to dates and times */
+    	LayoutInflater inflater = getLayoutInflater();
+    	View dialoglayout = inflater.inflate(R.layout.time_range_plots_input,null);
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    	builder.setView(dialoglayout);
+    	builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+            	onFromToSelected();
+            }
+        })
+        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                //Do nothing
+            }
+        });
+    	
+        fromTimePicker = ((TimePicker) dialoglayout.findViewById(R.id.fromTimePicker));
+        toTimePicker = ((TimePicker) dialoglayout.findViewById(R.id.toTimePicker));
+        fromDatePicker = ((DatePicker) dialoglayout.findViewById(R.id.fromDatePicker));
+        toDatePicker = ((DatePicker) dialoglayout.findViewById(R.id.toDatePicker));
+
+        fromTimePicker.setIs24HourView(true);
+        toTimePicker.setIs24HourView(true);
+    	
+        TabHost tabHost = (TabHost)dialoglayout.findViewById(R.id.tabHost);
+        tabHost.setup();
+
+        TabHost.TabSpec tab1 = tabHost.newTabSpec("From");
+        TabHost.TabSpec tab2 = tabHost.newTabSpec("To");
+
+        tab1.setIndicator("From");
+        tab1.setContent(R.id.From);
+        tab2.setIndicator("To");
+        tab2.setContent(R.id.To);
+
+        tabHost.addTab(tab1);
+        tabHost.addTab(tab2);
+        
+        builder.show();
+    }
+    
+    public void onFromToSelected()
+    {	
     	/* Button to show charts for time range clicked */
         fromTimeHour = fromTimePicker.getCurrentHour();
         fromTimeMin = fromTimePicker.getCurrentMinute();
@@ -183,26 +212,8 @@ public class SensorsStatisticsActivity extends Activity {
             return;
         }
 
-        if(selectedViewOnListView == null)
-        {
-            // If none of the sensors is selected
-            new AlertDialog.Builder(this)
-                    .setTitle("One more step!")
-                    .setMessage("Please, select a sensor from the list.")
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            //do things
-                        }
-                    })
-                    .show();
-            return;
-        }
-        else
-        {
-        	// Date/time input is ok 
-            generatePlot(false); 
-        }
+    	// Date/time input is ok 
+        generatePlot(false);
     }
     
     public void generatePlot(boolean realTime)
