@@ -11,9 +11,9 @@
 	                                                 // longer than 20
 	
 	            // add the point
-	            chart.series[0].addPoint(point0, true, true);
-	            chart.series[1].addPoint(point1, true, true);
-	            chart.series[2].addPoint(point2, true, true);
+	            chart.series[0].addPoint(point0, true, shift);
+	            chart.series[1].addPoint(point1, true, shift);
+	            chart.series[2].addPoint(point2, true, shift);
 	            
 	            // call it again after one second
 	            setTimeout(requestData, 1000);    

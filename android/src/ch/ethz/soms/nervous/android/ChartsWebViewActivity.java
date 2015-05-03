@@ -66,6 +66,7 @@ public class ChartsWebViewActivity extends Activity {
 
 		if (type_of_plot.equals("1_line_live_data_over_time") || type_of_plot.equals("3_lines_live_data_over_time"))
 			updateData();
+		else findViewById(R.id.waiting_for_sensor_data_textView).setVisibility(View.GONE);
 	}
 
 	public <T extends SensorDescSingleValue> void displaySingleSensorValue(SensorSingleValueQueries<T> ssvq,long fromTimestamp)
@@ -107,18 +108,19 @@ public class ChartsWebViewActivity extends Activity {
 					SensorQueriesAccelerometer sensorQuery = new SensorQueriesAccelerometer(
 		                    fromTimestamp, toTimestamp, getFilesDir());
 					
+					Calendar c = Calendar.getInstance();
+
+					c.setTimeInMillis(fromTimestamp);
+					int mYear = c.get(Calendar.YEAR);
+					int mMonth = c.get(Calendar.MONTH);
+					int mDay = c.get(Calendar.DAY_OF_MONTH);
+					int hr = c.get(Calendar.HOUR_OF_DAY);
+					int min = c.get(Calendar.MINUTE);
+					int sec = c.get(Calendar.SECOND);
+					
 					if (sensorQuery.containsReadings()) {
+						findViewById(R.id.waiting_for_sensor_data_textView).setVisibility(View.GONE);
 						ArrayList<SensorDescAccelerometer> sensorDescs = sensorQuery.getSensorDescriptorList();
-
-						Calendar c = Calendar.getInstance();
-
-						c.setTimeInMillis(fromTimestamp);
-						int mYear = c.get(Calendar.YEAR);
-						int mMonth = c.get(Calendar.MONTH);
-						int mDay = c.get(Calendar.DAY_OF_MONTH);
-						int hr = c.get(Calendar.HOUR_OF_DAY);
-						int min = c.get(Calendar.MINUTE);
-						int sec = c.get(Calendar.SECOND);
 
 						webView.loadUrl("javascript:" + "point0 = " + "[Date.UTC("
 								+ mYear + "," + mMonth + "," + mDay + "," + hr
@@ -132,7 +134,26 @@ public class ChartsWebViewActivity extends Activity {
 								+ sensorDescs.get(sensorDescs.size()-1).getAccZ() + "];");
 					} else
 					{
-//						 Toast.makeText(getApplicationContext(), "Waiting for sensor data...", Toast.LENGTH_LONG).show();
+//						 webView.loadUrl("javascript:" + "point0 = " + "{x: Date.UTC("
+//							+ mYear + "," + mMonth + "," + mDay + "," + hr
+//							+ "," + min + "," + sec + "), y: "
+//							+ (float)0.0 + ", color: 'orange'};" + "point1 = " + "{x: Date.UTC("
+//							+ mYear + "," + mMonth + "," + mDay + "," + hr
+//							+ "," + min + "," + sec + "), y: "
+//							+ (float)0.0 + ", color: 'orange'};" + "point2 = " + "{: Date.UTC("
+//							+ mYear + "," + mMonth + "," + mDay + "," + hr
+//							+ "," + min + "," + sec + "), y: "
+//							+ (float)0.0 + ", color: 'orange'};");
+						webView.loadUrl("javascript:" + "point0 = " + "{x: Date.UTC("
+								+ mYear + "," + mMonth + "," + mDay + "," + hr
+								+ "," + min + "," + sec + "), y: "
+								+ (float)0.0 + ", color: 'orange'}; point1 = " + "{x: Date.UTC("
+								+ mYear + "," + mMonth + "," + mDay + "," + hr
+								+ "," + min + "," + sec + "), y: "
+								+ (float)0.0 + ", color: 'orange'}; point2 = " + "{x: Date.UTC("
+								+ mYear + "," + mMonth + "," + mDay + "," + hr
+								+ "," + min + "," + sec + "), y: "
+								+ (float)0.0 + ", color: 'orange'};");
 					}
 					
 		        } else if (selected_sensor.equalsIgnoreCase("Battery"))
