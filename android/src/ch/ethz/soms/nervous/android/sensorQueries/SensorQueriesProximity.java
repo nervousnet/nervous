@@ -8,12 +8,14 @@ import ch.ethz.soms.nervous.android.sensors.SensorDesc;
 import ch.ethz.soms.nervous.android.sensors.SensorDescLight;
 import ch.ethz.soms.nervous.android.sensors.SensorDescProximity;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
+import ch.ethz.soms.nervous.android.sensors.*;
+import ch.ethz.soms.nervous.android.Queries.*;
 
 public class SensorQueriesProximity extends
-		SensorSingleValueQueries<SensorDescProximity> {
+		QueryNumSingleValue<SensorDescProximity> {
 
 	@Override
-	long getSensorId() {
+	public long getSensorId() {
 		return SensorDescProximity.SENSOR_ID;
 	}
 
@@ -23,12 +25,12 @@ public class SensorQueriesProximity extends
 	}
 
 	@Override
-	SensorDescProximity createSensorDescSingleValue(SensorData sensorData) {
+	 public SensorDescProximity createSensorDescSingleValue(SensorData sensorData) {
 		return new SensorDescProximity(sensorData);
 	}
 
 	@Override
-	SensorDescProximity createDummyObject() {
+	public SensorDescProximity createDummyObject() {
 		return new SensorDescProximity(0, 0);
 	}
 }

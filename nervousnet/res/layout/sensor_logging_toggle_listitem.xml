@@ -9,8 +9,10 @@
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_alignParentRight="true"
+        android:checked="true"
         android:paddingRight="5sp"
-        android:text="Share" />
+        android:text="Share"
+        android:textColor="@android:color/black" />
 
     <TextView
         android:id="@+id/txt_SensorItem"
@@ -32,6 +34,7 @@
         android:layout_alignParentTop="true"
         android:layout_toLeftOf="@+id/checkBox_Share"
         android:gravity="center"
-        android:text="Log" />
+        android:text="Log"
+        android:textColor="@android:color/black" />
 
 </RelativeLayout>

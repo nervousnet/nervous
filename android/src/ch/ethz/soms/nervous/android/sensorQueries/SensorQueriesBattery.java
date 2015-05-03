@@ -7,15 +7,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.PriorityQueue;
 
-import ch.ethz.soms.nervous.android.sensors.SensorDesc;
+import ch.ethz.soms.nervous.android.Queries.QueryNumSingleValue;
 import ch.ethz.soms.nervous.android.sensors.SensorDescBattery;
 import ch.ethz.soms.nervous.android.sensors.SensorDescProximity;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
+import ch.ethz.soms.nervous.android.sensors.*;
+import ch.ethz.soms.nervous.android.sensorQueries.*;
 
 public class SensorQueriesBattery extends
-		SensorSingleValueQueries<SensorDescBattery> {
+		QueryNumSingleValue<SensorDescBattery> {
 
 	@Override
+	public
 	long getSensorId() {
 		return SensorDescBattery.SENSOR_ID;
 	}
@@ -26,11 +29,13 @@ public class SensorQueriesBattery extends
 	}
 
 	@Override
+	public
 	SensorDescBattery createSensorDescSingleValue(SensorData sensorData) {
 		return new SensorDescBattery(sensorData);
 	}
 
 	@Override
+	public
 	SensorDescBattery createDummyObject() {
 		return new SensorDescBattery(0, 0, false, false, false);
 	}
