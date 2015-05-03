@@ -15,7 +15,9 @@ import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesTemperature;
 import ch.ethz.soms.nervous.android.sensorQueries.SensorSingleValueQueries;
 import ch.ethz.soms.nervous.android.sensors.SensorDescAccelerometer;
 import ch.ethz.soms.nervous.android.sensors.SensorDescBattery;
+import ch.ethz.soms.nervous.android.sensors.SensorDescGyroscope;
 import ch.ethz.soms.nervous.android.sensors.SensorDescLight;
+import ch.ethz.soms.nervous.android.sensors.SensorDescMagnetic;
 import ch.ethz.soms.nervous.android.sensors.SensorDescSingleValue;
 import android.app.Activity;
 import android.graphics.Point;
@@ -134,16 +136,6 @@ public class ChartsWebViewActivity extends Activity {
 								+ sensorDescs.get(sensorDescs.size()-1).getAccZ() + "];");
 					} else
 					{
-//						 webView.loadUrl("javascript:" + "point0 = " + "{x: Date.UTC("
-//							+ mYear + "," + mMonth + "," + mDay + "," + hr
-//							+ "," + min + "," + sec + "), y: "
-//							+ (float)0.0 + ", color: 'orange'};" + "point1 = " + "{x: Date.UTC("
-//							+ mYear + "," + mMonth + "," + mDay + "," + hr
-//							+ "," + min + "," + sec + "), y: "
-//							+ (float)0.0 + ", color: 'orange'};" + "point2 = " + "{: Date.UTC("
-//							+ mYear + "," + mMonth + "," + mDay + "," + hr
-//							+ "," + min + "," + sec + "), y: "
-//							+ (float)0.0 + ", color: 'orange'};");
 						webView.loadUrl("javascript:" + "point0 = " + "{x: Date.UTC("
 								+ mYear + "," + mMonth + "," + mDay + "," + hr
 								+ "," + min + "," + sec + "), y: "
@@ -165,6 +157,45 @@ public class ChartsWebViewActivity extends Activity {
 		        {
 		            SensorQueriesGyroscope sensorQuery = new SensorQueriesGyroscope(
 		                    fromTimestamp, toTimestamp, getFilesDir());
+		            
+		            Calendar c = Calendar.getInstance();
+
+					c.setTimeInMillis(fromTimestamp);
+					int mYear = c.get(Calendar.YEAR);
+					int mMonth = c.get(Calendar.MONTH);
+					int mDay = c.get(Calendar.DAY_OF_MONTH);
+					int hr = c.get(Calendar.HOUR_OF_DAY);
+					int min = c.get(Calendar.MINUTE);
+					int sec = c.get(Calendar.SECOND);
+					
+					if (sensorQuery.containsReadings()) {
+						findViewById(R.id.waiting_for_sensor_data_textView).setVisibility(View.GONE);
+						ArrayList<SensorDescGyroscope> sensorDescs = sensorQuery.getSensorDescriptorList();
+
+						webView.loadUrl("javascript:" + "point0 = " + "[Date.UTC("
+								+ mYear + "," + mMonth + "," + mDay + "," + hr
+								+ "," + min + "," + sec + "),"
+								+ sensorDescs.get(sensorDescs.size()-1).getGyrX()+ "];" + "point1 = " + "[Date.UTC("
+								+ mYear + "," + mMonth + "," + mDay + "," + hr
+								+ "," + min + "," + sec + "),"
+								+ sensorDescs.get(sensorDescs.size()-1).getGyrY() + "];" + "point2 = " + "[Date.UTC("
+								+ mYear + "," + mMonth + "," + mDay + "," + hr
+								+ "," + min + "," + sec + "),"
+								+ sensorDescs.get(sensorDescs.size()-1).getGyrZ() + "];");
+					} else
+					{
+						webView.loadUrl("javascript:" + "point0 = " + "{x: Date.UTC("
+								+ mYear + "," + mMonth + "," + mDay + "," + hr
+								+ "," + min + "," + sec + "), y: "
+								+ (float)0.0 + ", color: 'orange'}; point1 = " + "{x: Date.UTC("
+								+ mYear + "," + mMonth + "," + mDay + "," + hr
+								+ "," + min + "," + sec + "), y: "
+								+ (float)0.0 + ", color: 'orange'}; point2 = " + "{x: Date.UTC("
+								+ mYear + "," + mMonth + "," + mDay + "," + hr
+								+ "," + min + "," + sec + "), y: "
+								+ (float)0.0 + ", color: 'orange'};");
+					}
+					
 		        } else if (selected_sensor.equalsIgnoreCase("Humidity"))
 		        {
 		            SensorQueriesHumidity sensorQuery = new SensorQueriesHumidity(
@@ -179,6 +210,45 @@ public class ChartsWebViewActivity extends Activity {
 		        {
 		            SensorQueriesMagnetic sensorQuery = new SensorQueriesMagnetic(
 		                    fromTimestamp, toTimestamp, getFilesDir());
+		            
+		            Calendar c = Calendar.getInstance();
+
+					c.setTimeInMillis(fromTimestamp);
+					int mYear = c.get(Calendar.YEAR);
+					int mMonth = c.get(Calendar.MONTH);
+					int mDay = c.get(Calendar.DAY_OF_MONTH);
+					int hr = c.get(Calendar.HOUR_OF_DAY);
+					int min = c.get(Calendar.MINUTE);
+					int sec = c.get(Calendar.SECOND);
+					
+					if (sensorQuery.containsReadings()) {
+						findViewById(R.id.waiting_for_sensor_data_textView).setVisibility(View.GONE);
+						ArrayList<SensorDescMagnetic> sensorDescs = sensorQuery.getSensorDescriptorList();
+
+						webView.loadUrl("javascript:" + "point0 = " + "[Date.UTC("
+								+ mYear + "," + mMonth + "," + mDay + "," + hr
+								+ "," + min + "," + sec + "),"
+								+ sensorDescs.get(sensorDescs.size()-1).getMagX()+ "];" + "point1 = " + "[Date.UTC("
+								+ mYear + "," + mMonth + "," + mDay + "," + hr
+								+ "," + min + "," + sec + "),"
+								+ sensorDescs.get(sensorDescs.size()-1).getMagY() + "];" + "point2 = " + "[Date.UTC("
+								+ mYear + "," + mMonth + "," + mDay + "," + hr
+								+ "," + min + "," + sec + "),"
+								+ sensorDescs.get(sensorDescs.size()-1).getMagZ() + "];");
+					} else
+					{
+						webView.loadUrl("javascript:" + "point0 = " + "{x: Date.UTC("
+								+ mYear + "," + mMonth + "," + mDay + "," + hr
+								+ "," + min + "," + sec + "), y: "
+								+ (float)0.0 + ", color: 'orange'}; point1 = " + "{x: Date.UTC("
+								+ mYear + "," + mMonth + "," + mDay + "," + hr
+								+ "," + min + "," + sec + "), y: "
+								+ (float)0.0 + ", color: 'orange'}; point2 = " + "{x: Date.UTC("
+								+ mYear + "," + mMonth + "," + mDay + "," + hr
+								+ "," + min + "," + sec + "), y: "
+								+ (float)0.0 + ", color: 'orange'};");
+					}
+					
 		        } else if (selected_sensor.equalsIgnoreCase("Proximity"))
 		        {
 		            SensorQueriesProximity sensorQuery = new SensorQueriesProximity(
