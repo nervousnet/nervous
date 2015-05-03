@@ -3,6 +3,7 @@ package ch.ethz.soms.nervous.android;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import ch.ethz.soms.nervous.android.Queries.QueryNumSingleValue;
 import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesAccelerometer;
 import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesBattery;
 import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesGyroscope;
@@ -12,24 +13,16 @@ import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesMagnetic;
 import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesPressure;
 import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesProximity;
 import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesTemperature;
-import ch.ethz.soms.nervous.android.sensorQueries.SensorSingleValueQueries;
-import ch.ethz.soms.nervous.android.sensors.SensorDescAccelerometer;
-import ch.ethz.soms.nervous.android.sensors.SensorDescBattery;
-import ch.ethz.soms.nervous.android.sensors.SensorDescGyroscope;
-import ch.ethz.soms.nervous.android.sensors.SensorDescLight;
-import ch.ethz.soms.nervous.android.sensors.SensorDescMagnetic;
+import ch.ethz.soms.nervous.android.sensors.SensorDescAccelerometerNew;
+import ch.ethz.soms.nervous.android.sensors.SensorDescGyroscopeNew;
+import ch.ethz.soms.nervous.android.sensors.SensorDescMagneticNew;
 import ch.ethz.soms.nervous.android.sensors.SensorDescSingleValue;
 import android.app.Activity;
-import android.graphics.Point;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.text.format.Time;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
 import android.webkit.WebView;
-import android.widget.Toast;
 
 public class ChartsWebViewActivity extends Activity {
 
@@ -71,7 +64,7 @@ public class ChartsWebViewActivity extends Activity {
 		else findViewById(R.id.waiting_for_sensor_data_textView).setVisibility(View.GONE);
 	}
 
-	public <T extends SensorDescSingleValue> void displaySingleSensorValue(SensorSingleValueQueries<T> ssvq,long fromTimestamp)
+	public <T extends SensorDescSingleValue> void displaySingleSensorValue(QueryNumSingleValue<T> ssvq,long fromTimestamp)
 	{
 		Calendar c = Calendar.getInstance();
 
@@ -122,7 +115,7 @@ public class ChartsWebViewActivity extends Activity {
 					
 					if (sensorQuery.containsReadings()) {
 						findViewById(R.id.waiting_for_sensor_data_textView).setVisibility(View.GONE);
-						ArrayList<SensorDescAccelerometer> sensorDescs = sensorQuery.getSensorDescriptorList();
+						ArrayList<SensorDescAccelerometerNew> sensorDescs = sensorQuery.getSensorDescriptorList();
 
 						webView.loadUrl("javascript:" + "point0 = " + "[Date.UTC("
 								+ mYear + "," + mMonth + "," + mDay + "," + hr
@@ -170,7 +163,7 @@ public class ChartsWebViewActivity extends Activity {
 					
 					if (sensorQuery.containsReadings()) {
 						findViewById(R.id.waiting_for_sensor_data_textView).setVisibility(View.GONE);
-						ArrayList<SensorDescGyroscope> sensorDescs = sensorQuery.getSensorDescriptorList();
+						ArrayList<SensorDescGyroscopeNew> sensorDescs = sensorQuery.getSensorDescriptorList();
 
 						webView.loadUrl("javascript:" + "point0 = " + "[Date.UTC("
 								+ mYear + "," + mMonth + "," + mDay + "," + hr
@@ -223,7 +216,7 @@ public class ChartsWebViewActivity extends Activity {
 					
 					if (sensorQuery.containsReadings()) {
 						findViewById(R.id.waiting_for_sensor_data_textView).setVisibility(View.GONE);
-						ArrayList<SensorDescMagnetic> sensorDescs = sensorQuery.getSensorDescriptorList();
+						ArrayList<SensorDescMagneticNew> sensorDescs = sensorQuery.getSensorDescriptorList();
 
 						webView.loadUrl("javascript:" + "point0 = " + "[Date.UTC("
 								+ mYear + "," + mMonth + "," + mDay + "," + hr

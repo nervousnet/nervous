@@ -1,4 +1,4 @@
-package ch.ethz.soms.nervous.android;
+package ch.ethz.soms.nervous.android.test;
 
 import java.io.File;
 import java.util.ArrayList;

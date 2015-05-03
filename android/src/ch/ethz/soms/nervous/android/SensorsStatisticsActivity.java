@@ -42,11 +42,14 @@ import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesPressure;
 import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesProximity;
 import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesTemperature;
 import ch.ethz.soms.nervous.android.sensors.SensorDescAccelerometer;
+import ch.ethz.soms.nervous.android.sensors.SensorDescAccelerometerNew;
 import ch.ethz.soms.nervous.android.sensors.SensorDescBattery;
 import ch.ethz.soms.nervous.android.sensors.SensorDescGyroscope;
+import ch.ethz.soms.nervous.android.sensors.SensorDescGyroscopeNew;
 import ch.ethz.soms.nervous.android.sensors.SensorDescHumidity;
 import ch.ethz.soms.nervous.android.sensors.SensorDescLight;
 import ch.ethz.soms.nervous.android.sensors.SensorDescMagnetic;
+import ch.ethz.soms.nervous.android.sensors.SensorDescMagneticNew;
 import ch.ethz.soms.nervous.android.sensors.SensorDescPressure;
 import ch.ethz.soms.nervous.android.sensors.SensorDescProximity;
 import ch.ethz.soms.nervous.android.sensors.SensorDescTemperature;
@@ -278,8 +281,8 @@ public class SensorsStatisticsActivity extends Activity {
             {
 	            if (sensorQ_Accel.containsReadings())
 	            {
-	                ArrayList<SensorDescAccelerometer> sensorDescs = sensorQ_Accel.getSensorDescriptorList();
-	                SensorDescAccelerometer sensorDesc;
+	                ArrayList<SensorDescAccelerometerNew> sensorDescs = sensorQ_Accel.getSensorDescriptorList();
+	                SensorDescAccelerometerNew sensorDesc;
 	
 	                String x_axis_data_arrays = "[";
 	                String y_axis_data_arrays = "[";
@@ -371,7 +374,7 @@ public class SensorsStatisticsActivity extends Activity {
 	                webView.putExtra("javascript_global_variables",javascript_variables);
 	                webView.putExtra("type_of_plot", "1_line_plot_over_time");
 	                startActivity(webView);
-	            } else Toast.makeText(getApplicationContext(), "No data found in this rang: "+fromTimestamp+" - "+toTimestamp, Toast.LENGTH_LONG).show();
+	            } else Toast.makeText(getApplicationContext(), "No data found in this range.", Toast.LENGTH_LONG).show();
             }
         	else
         	{
@@ -396,8 +399,8 @@ public class SensorsStatisticsActivity extends Activity {
 	                    fromTimestamp, toTimestamp, getFilesDir());
 	            if (sensorQ_Gyroscope.containsReadings())
 	            {
-	                ArrayList<SensorDescGyroscope> sensorDescs = sensorQ_Gyroscope.getSensorDescriptorList();
-	                SensorDescGyroscope sensorDesc;
+	                ArrayList<SensorDescGyroscopeNew> sensorDescs = sensorQ_Gyroscope.getSensorDescriptorList();
+	                SensorDescGyroscopeNew sensorDesc;
 	
 	                String x_axis_data_arrays = "[";
 	                String y_axis_data_arrays = "[";
@@ -562,8 +565,8 @@ public class SensorsStatisticsActivity extends Activity {
 	                    fromTimestamp, toTimestamp, getFilesDir());
 	            if (sensorQ_Magnetic.containsReadings())
 	            {
-	                ArrayList<SensorDescMagnetic> sensorDescs = sensorQ_Magnetic.getSensorDescriptorList();
-	                SensorDescMagnetic sensorDesc;
+	                ArrayList<SensorDescMagneticNew> sensorDescs = sensorQ_Magnetic.getSensorDescriptorList();
+	                SensorDescMagneticNew sensorDesc;
 	
 	                String x_axis_data_arrays = "[";
 	                String y_axis_data_arrays = "[";
