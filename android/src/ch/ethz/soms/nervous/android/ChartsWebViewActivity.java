@@ -13,6 +13,7 @@ import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesPressure;
 import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesProximity;
 import ch.ethz.soms.nervous.android.sensorQueries.SensorQueriesTemperature;
 import ch.ethz.soms.nervous.android.sensorQueries.SensorSingleValueQueries;
+import ch.ethz.soms.nervous.android.sensors.SensorDescAccelerometer;
 import ch.ethz.soms.nervous.android.sensors.SensorDescBattery;
 import ch.ethz.soms.nervous.android.sensors.SensorDescLight;
 import ch.ethz.soms.nervous.android.sensors.SensorDescSingleValue;
@@ -26,6 +27,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.webkit.WebView;
+import android.widget.Toast;
 
 public class ChartsWebViewActivity extends Activity {
 
@@ -69,7 +71,6 @@ public class ChartsWebViewActivity extends Activity {
 	public <T extends SensorDescSingleValue> void displaySingleSensorValue(SensorSingleValueQueries<T> ssvq,long fromTimestamp)
 	{
 		if (ssvq.containsReadings()) {
-			findViewById(R.id.waitingDataTextView).setVisibility(View.INVISIBLE);
 
 			ArrayList<T> sensorDescs = ssvq.getSensorDescriptorList();
 
@@ -89,7 +90,7 @@ public class ChartsWebViewActivity extends Activity {
 					+ sensorDescs.get(sensorDescs.size()-1).getValue() + "];");
 		} else
 		{
-			findViewById(R.id.waitingDataTextView).setVisibility(View.VISIBLE);
+			 Toast.makeText(getApplicationContext(), "Waiting for sensor data...", Toast.LENGTH_LONG).show();
 		}
 	}
 	
@@ -103,7 +104,36 @@ public class ChartsWebViewActivity extends Activity {
 		        {
 					SensorQueriesAccelerometer sensorQuery = new SensorQueriesAccelerometer(
 		                    fromTimestamp, toTimestamp, getFilesDir());
-					//TODO display multiple value sensor
+					
+					if (sensorQuery.containsReadings()) {
+						ArrayList<SensorDescAccelerometer> sensorDescs = sensorQuery.getSensorDescriptorList();
+
+						Calendar c = Calendar.getInstance();
+
+						c.setTimeInMillis(fromTimestamp);
+						int mYear = c.get(Calendar.YEAR);
+						int mMonth = c.get(Calendar.MONTH);
+						int mDay = c.get(Calendar.DAY_OF_MONTH);
+						int hr = c.get(Calendar.HOUR_OF_DAY);
+						int min = c.get(Calendar.MINUTE);
+						int sec = c.get(Calendar.SECOND);
+
+						webView.loadUrl("javascript:" + "point0 = " + "[Date.UTC("
+								+ mYear + "," + mMonth + "," + mDay + "," + hr
+								+ "," + min + "," + sec + "),"
+								+ sensorDescs.get(sensorDescs.size()-1).getAccX()+ "];" + "point1 = " + "[Date.UTC("
+								+ mYear + "," + mMonth + "," + mDay + "," + hr
+								+ "," + min + "," + sec + "),"
+								+ sensorDescs.get(sensorDescs.size()-1).getAccY() + "];" + "point2 = " + "[Date.UTC("
+								+ mYear + "," + mMonth + "," + mDay + "," + hr
+								+ "," + min + "," + sec + "),"
+								+ sensorDescs.get(sensorDescs.size()-1).getAccZ() + "];");
+
+					} else
+					{
+						 Toast.makeText(getApplicationContext(), "Waiting for sensor data...", Toast.LENGTH_LONG).show();
+					}
+					
 		        } else if (selected_sensor.equalsIgnoreCase("Battery"))
 		        { 
 		            SensorQueriesBattery sensorQuery = new SensorQueriesBattery(
