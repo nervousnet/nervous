@@ -8,11 +8,5 @@
     <item
         android:id="@+id/menu_SensorsStatistics"
         android:title="Sensor statistics">
-    </item>
-    
-    <item
-        android:id="@+id/menu_RealTimePlot"
-        android:title="Real time plot">
-    </item>
-    
+    </item>    
 </menu>
