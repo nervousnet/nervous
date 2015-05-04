@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   
+    <color name="orange_nervous_accent">#F19918</color>
+    <color name="orange_nervous">#F15F18</color>
+    <color name="orange_nervous_dark">#983100</color>
+    <color name="blue_nervous">#1A5C9C</color>
+    <color name="blue_nervous_dark">#063563</color>
+    <color name="green_nervous">#10A26E</color>
+    <color name="green_nervous_dark">#006642</color>
+    <color name="gray_nervous">#BBBBBB</color>
+    <color name="gray_nervous_dark">#555555</color>
+    <color name="gray_nervous_light">#DDDDDD</color>
+    <color name="white_nervous">#FFFFFF</color>
+	<color name="white_nervous_transparent">#CCFFFFFF</color>
+	<color name="orange">#FFA500</color>    
+	<color name="light_blue">#4D94FF</color>    
+</resources>

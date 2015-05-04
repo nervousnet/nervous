@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/menu_PrivacySettings"
+        android:title="Privacy Settings">
+    </item>
+
+    <item
+        android:id="@+id/menu_SensorsStatistics"
+        android:title="Sensor statistics">
+    </item>    
+</menu>

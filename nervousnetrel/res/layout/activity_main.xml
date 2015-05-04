@@ -1,0 +1,73 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical" >
+
+    <ch.ethz.soms.nervous.android.DrawView
+        android:id="@+id/signature_canvas"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textColor="#FFFFFF" />
+
+    <ImageButton
+        android:id="@+id/btn_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/circle_orange1"
+        android:padding="20dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/nervousnet_icon_white" />
+
+    <ImageButton
+        android:id="@+id/btn_collectionFrequency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/circle_orange1"
+        android:padding="10dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/schedule" />
+
+    <ImageButton
+        android:id="@+id/btn_privacy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/circle_orange1"
+        android:padding="10dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/lock" />
+
+    <ImageButton
+        android:id="@+id/btn_DataVisualizer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/circle_orange1"
+        android:padding="10dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/sensor" />
+
+    <ImageButton
+        android:id="@+id/btn_on"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/circle_orange1"
+        android:padding="10dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ico_on" />
+
+    <ImageButton
+        android:id="@+id/btn_off"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/circle_orange_dark"
+        android:padding="10dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ico_off" />
+
+</RelativeLayout>
