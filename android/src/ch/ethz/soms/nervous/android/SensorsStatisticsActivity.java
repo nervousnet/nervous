@@ -670,10 +670,10 @@ public class SensorsStatisticsActivity extends Activity {
         } else if (selected_sensor.equalsIgnoreCase("Temperature"))
         {
         	javascript_variables =  "var curve_name = " + "'Temperature';" +
-                    "var unit_of_meas = " + "'cm';" +
+                    "var unit_of_meas = " + "'°';" +
                     "var x_axis_title = " + "'Date';" +
-                    "var y_axis_title = " + "'Proximity (cm)';" +
-                    "var plot_title = " + "'Proximity data';" +
+                    "var y_axis_title = " + "'Temperature(°)';" +
+                    "var plot_title = " + "'Temperature data';" +
                     "var plot_subtitle = " + "'';";
         	
         	if(!realTime)
@@ -721,11 +721,11 @@ public class SensorsStatisticsActivity extends Activity {
             }
         } else if (selected_sensor.equalsIgnoreCase("Pressure"))
         {
-        	javascript_variables =  "var curve_name = " + "'Temperature';" +
-                    "var unit_of_meas = " + "'cm';" +
+        	javascript_variables =  "var curve_name = " + "'Pressure';" +
+                    "var unit_of_meas = " + "'mbar';" +
                     "var x_axis_title = " + "'Date';" +
-                    "var y_axis_title = " + "'Proximity (cm)';" +
-                    "var plot_title = " + "'Proximity data';" +
+                    "var y_axis_title = " + "'Pressure (mbar)';" +
+                    "var plot_title = " + "'Pressure data';" +
                     "var plot_subtitle = " + "'';";
         	if(!realTime)
             {
@@ -771,59 +771,8 @@ public class SensorsStatisticsActivity extends Activity {
             	startActivity(webView);
             }
         } 
-//            else if (selected_sensor.equalsIgnoreCase("Microphone"))
-//        {
-//            SensorQueriesMicrophone sensorQ_Microphone= new SensorQueriesMicrophone(
-//                    fromTimestamp, toTimestamp, getFilesDir());
-//            if (sensorQ_Microphone.containsReadings())
-//            {
-//                ArrayList<SensorDescMagnetic> sensorDescs = sensorQ_Microphone.getSensorDescriptorList();
-//                SensorDescMagnetic sensorDesc;
-//
-//                String x_axis_data_arrays = "[";
-//                String y_axis_data_arrays = "[";
-//                String z_axis_data_arrays = "[";
-//
-//                Calendar c = Calendar.getInstance();
-//
-//
-//                for(int i=0;i<sensorDescs.size();i+=increment)
-//                {
-//                    sensorDesc = sensorDescs.get(i);
-//                    c.setTimeInMillis(sensorDesc.getTimestamp());
-//                    int mYear = c.get(Calendar.YEAR);
-//                    int mMonth = c.get(Calendar.MONTH);
-//                    int mDay = c.get(Calendar.DAY_OF_MONTH);
-//                    int hr = c.get(Calendar.HOUR_OF_DAY);
-//                    int min = c.get(Calendar.MINUTE);
-//                    int sec = c.get(Calendar.SECOND);
-//
-//                    x_axis_data_arrays+="[Date.UTC("+mYear+","+mMonth+","+mDay+","+hr+","+min+","+sec+"),"+sensorDesc.getMagX()+"],";
-//                    y_axis_data_arrays+="[Date.UTC("+mYear+","+mMonth+","+mDay+","+hr+","+min+","+sec+"),"+sensorDesc.getMagY()+"],";
-//                    z_axis_data_arrays+="[Date.UTC("+mYear+","+mMonth+","+mDay+","+hr+","+min+","+sec+"),"+sensorDesc.getMagZ()+"],";
-//                }
-//                x_axis_data_arrays = x_axis_data_arrays.substring(0,x_axis_data_arrays.length()-1)+"]; ";
-//                y_axis_data_arrays = y_axis_data_arrays.substring(0,y_axis_data_arrays.length()-1)+"]; ";
-//                z_axis_data_arrays = z_axis_data_arrays.substring(0,z_axis_data_arrays.length()-1)+"]; ";
-//
-//
-//                webView.putExtra("javascript_global_variables",
-//                        "var x_axis_data_arrays = " + x_axis_data_arrays +
-//                        "var y_axis_data_arrays = " + y_axis_data_arrays +
-//                        "var z_axis_data_arrays = " + z_axis_data_arrays + 
-//                        "var unit_of_meas = " + "'μT';" +
-//                        "var first_curve_name = " + "'μT along X axis';" +
-//                        "var second_curve_name = " +"'μT along Y axis';" + 
-//                        "var third_curve_name = " + "'μT along Z axis';" +
-//                        "var x_axis_title = " + "'Date';" +
-//                        "var y_axis_title = " + "'Field strength (μT)';" +
-//                        "var plot_title = " + "'Geomagnetic field data';" +
-//                        "var plot_subtitle = " + "'strength along axes x,y,z';");
-//
-//                webView.putExtra("type_of_plot", "3_lines_plot_over_time");
-//                startActivity(webView);
-//            } else Toast.makeText(getApplicationContext(), "No data found in this range.", Toast.LENGTH_LONG).show();
-//        }
-        //TODO CONNECTIVITY
+        //TODO NOISE (API not ready)
+        //TODO MICROPHONE (API not ready)
+        //TODO CONNECTIVITY (API not ready)
     }
 }
