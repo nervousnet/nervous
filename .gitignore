@@ -33,6 +33,15 @@ desktop.ini
 /android-support-v7-appcompat/gen
 /android-support-v7-appcompat/bin
 
+/nervousnetrel/bin
+/nervousnetrel/.settings
+/nervousnetrel/gen
+/nervousnetrel/build
+
+/nervousnet/bin
+/nervousnet/.settings
+/nervousnet/gen
+/nervousnet/build
 
 # Nervous Router #
 /router/router/.settings
