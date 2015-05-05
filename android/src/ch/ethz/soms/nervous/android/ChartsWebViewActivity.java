@@ -28,6 +28,8 @@ public class ChartsWebViewActivity extends Activity {
 
 	private WebView webView;
 	private String selected_sensor;
+	private boolean start,initialized = false;
+	private float lastValueX,lastValueY,lastValueZ;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -58,12 +60,62 @@ public class ChartsWebViewActivity extends Activity {
 		webView.loadUrl("javascript:" + javascript_global_variables);
 		webView.loadUrl("file:///android_asset/webview_charts_" + type_of_plot
 				+ ".html");
+		
+		start = true;
 
 		if (type_of_plot.equals("1_line_live_data_over_time") || type_of_plot.equals("3_lines_live_data_over_time"))
 			updateData();
 		else findViewById(R.id.waiting_for_sensor_data_textView).setVisibility(View.GONE);
 	}
-
+	
+	//1 value sensors
+	private void plotLastValue(int mYear,int mMonth,int mDay,int hr,int min,int sec)
+	{
+		webView.loadUrl("javascript:" + "point = " + "[Date.UTC("
+				+ mYear + "," + mMonth + "," + mDay + "," + hr
+				+ "," + min + "," + sec + "),"
+				+ lastValueX+ "];");
+	}
+	
+	//1 value sensors
+	private void plotZeroValue(int mYear,int mMonth,int mDay,int hr,int min,int sec)
+	{
+		webView.loadUrl("javascript:" + "point = " + "{x: Date.UTC("
+				+ mYear + "," + mMonth + "," + mDay + "," + hr
+				+ "," + min + "," + sec + "), y: "
+				+ (float)0.0 + ", color: 'orange'};");
+	}
+	
+	//3 values sensors
+	private void plotLastValues(int mYear,int mMonth,int mDay,int hr,int min,int sec)
+	{
+		webView.loadUrl("javascript:" + "point0 = " + "[Date.UTC("
+				+ mYear + "," + mMonth + "," + mDay + "," + hr
+				+ "," + min + "," + sec + "),"
+				+ lastValueX + "];" + "point1 = " + "[Date.UTC("
+				+ mYear + "," + mMonth + "," + mDay + "," + hr
+				+ "," + min + "," + sec + "),"
+				+ lastValueY + "];" + "point2 = " + "[Date.UTC("
+				+ mYear + "," + mMonth + "," + mDay + "," + hr
+				+ "," + min + "," + sec + "),"
+				+ lastValueZ + "];");
+	}
+	
+	//3 values sensors
+	private void plotZeroValues(int mYear,int mMonth,int mDay,int hr,int min,int sec)
+	{
+		webView.loadUrl("javascript:" + "point0 = " + "{x: Date.UTC("
+				+ mYear + "," + mMonth + "," + mDay + "," + hr
+				+ "," + min + "," + sec + "), y: "
+				+ (float)0.0 + ", color: 'orange'}; point1 = " + "{x: Date.UTC("
+				+ mYear + "," + mMonth + "," + mDay + "," + hr
+				+ "," + min + "," + sec + "), y: "
+				+ (float)0.0 + ", color: 'orange'}; point2 = " + "{x: Date.UTC("
+				+ mYear + "," + mMonth + "," + mDay + "," + hr
+				+ "," + min + "," + sec + "), y: "
+				+ (float)0.0 + ", color: 'orange'};");
+	}
+	
 	public <T extends SensorDescSingleValue> void displaySingleSensorValue(QueryNumSingleValue<T> ssvq,long fromTimestamp)
 	{
 		Calendar c = Calendar.getInstance();
@@ -79,16 +131,16 @@ public class ChartsWebViewActivity extends Activity {
 		if (ssvq.containsReadings()) {
 			findViewById(R.id.waiting_for_sensor_data_textView).setVisibility(View.GONE);
 			ArrayList<T> sensorDescs = ssvq.getSensorDescriptorList();
-			webView.loadUrl("javascript:" + "point = " + "[Date.UTC("
-					+ mYear + "," + mMonth + "," + mDay + "," + hr
-					+ "," + min + "," + sec + "),"
-					+ sensorDescs.get(sensorDescs.size()-1).getValue() + "];");
+			
+			lastValueX = sensorDescs.get(sensorDescs.size()-1).getValue();
+			plotLastValue(mYear,mMonth,mDay,hr,min,sec);
+			initialized = true;
+		} else if(initialized)
+		{
+			plotLastValue(mYear,mMonth,mDay,hr,min,sec);
 		} else
 		{
-			webView.loadUrl("javascript:" + "point = " + "{x: Date.UTC("
-					+ mYear + "," + mMonth + "," + mDay + "," + hr
-					+ "," + min + "," + sec + "), y: "
-					+ (float)0.0 + ", color: 'orange'};");
+			plotZeroValue(mYear,mMonth,mDay,hr,min,sec);
 		}
 	}
 	
@@ -96,7 +148,13 @@ public class ChartsWebViewActivity extends Activity {
 		new CountDownTimer(30000, 1000) {
 			public void onTick(long millisUntilFinished) {
 				long toTimestamp = System.currentTimeMillis();
-				long fromTimestamp = toTimestamp - 60000;
+				long pastWindow = 1000;
+				if(start)
+				{
+					pastWindow = 60000;
+					start = false;
+				}
+				long fromTimestamp = toTimestamp - pastWindow;
 				
 				if (selected_sensor.equalsIgnoreCase("Accelerometer"))
 		        {
@@ -117,28 +175,17 @@ public class ChartsWebViewActivity extends Activity {
 						findViewById(R.id.waiting_for_sensor_data_textView).setVisibility(View.GONE);
 						ArrayList<SensorDescAccelerometerNew> sensorDescs = sensorQuery.getSensorDescriptorList();
 
-						webView.loadUrl("javascript:" + "point0 = " + "[Date.UTC("
-								+ mYear + "," + mMonth + "," + mDay + "," + hr
-								+ "," + min + "," + sec + "),"
-								+ sensorDescs.get(sensorDescs.size()-1).getAccX()+ "];" + "point1 = " + "[Date.UTC("
-								+ mYear + "," + mMonth + "," + mDay + "," + hr
-								+ "," + min + "," + sec + "),"
-								+ sensorDescs.get(sensorDescs.size()-1).getAccY() + "];" + "point2 = " + "[Date.UTC("
-								+ mYear + "," + mMonth + "," + mDay + "," + hr
-								+ "," + min + "," + sec + "),"
-								+ sensorDescs.get(sensorDescs.size()-1).getAccZ() + "];");
+						lastValueX = sensorDescs.get(sensorDescs.size()-1).getAccX();
+						lastValueY = sensorDescs.get(sensorDescs.size()-1).getAccY();
+						lastValueZ = sensorDescs.get(sensorDescs.size()-1).getAccZ();
+						plotLastValues(mYear,mMonth,mDay,hr,min,sec);
+						initialized = true;
+					} else if(initialized)
+					{
+						plotLastValues(mYear,mMonth,mDay,hr,min,sec);
 					} else
 					{
-						webView.loadUrl("javascript:" + "point0 = " + "{x: Date.UTC("
-								+ mYear + "," + mMonth + "," + mDay + "," + hr
-								+ "," + min + "," + sec + "), y: "
-								+ (float)0.0 + ", color: 'orange'}; point1 = " + "{x: Date.UTC("
-								+ mYear + "," + mMonth + "," + mDay + "," + hr
-								+ "," + min + "," + sec + "), y: "
-								+ (float)0.0 + ", color: 'orange'}; point2 = " + "{x: Date.UTC("
-								+ mYear + "," + mMonth + "," + mDay + "," + hr
-								+ "," + min + "," + sec + "), y: "
-								+ (float)0.0 + ", color: 'orange'};");
+						plotZeroValues(mYear,mMonth,mDay,hr,min,sec);
 					}
 					
 		        } else if (selected_sensor.equalsIgnoreCase("Battery"))
@@ -164,29 +211,18 @@ public class ChartsWebViewActivity extends Activity {
 					if (sensorQuery.containsReadings()) {
 						findViewById(R.id.waiting_for_sensor_data_textView).setVisibility(View.GONE);
 						ArrayList<SensorDescGyroscopeNew> sensorDescs = sensorQuery.getSensorDescriptorList();
-
-						webView.loadUrl("javascript:" + "point0 = " + "[Date.UTC("
-								+ mYear + "," + mMonth + "," + mDay + "," + hr
-								+ "," + min + "," + sec + "),"
-								+ sensorDescs.get(sensorDescs.size()-1).getGyrX()+ "];" + "point1 = " + "[Date.UTC("
-								+ mYear + "," + mMonth + "," + mDay + "," + hr
-								+ "," + min + "," + sec + "),"
-								+ sensorDescs.get(sensorDescs.size()-1).getGyrY() + "];" + "point2 = " + "[Date.UTC("
-								+ mYear + "," + mMonth + "," + mDay + "," + hr
-								+ "," + min + "," + sec + "),"
-								+ sensorDescs.get(sensorDescs.size()-1).getGyrZ() + "];");
+						
+						lastValueX = sensorDescs.get(sensorDescs.size()-1).getGyrX();
+						lastValueY = sensorDescs.get(sensorDescs.size()-1).getGyrY();
+						lastValueZ = sensorDescs.get(sensorDescs.size()-1).getGyrZ();
+						plotLastValues(mYear,mMonth,mDay,hr,min,sec);
+						initialized = true;
+					} else if(initialized)
+					{
+						plotLastValues(mYear,mMonth,mDay,hr,min,sec);
 					} else
 					{
-						webView.loadUrl("javascript:" + "point0 = " + "{x: Date.UTC("
-								+ mYear + "," + mMonth + "," + mDay + "," + hr
-								+ "," + min + "," + sec + "), y: "
-								+ (float)0.0 + ", color: 'orange'}; point1 = " + "{x: Date.UTC("
-								+ mYear + "," + mMonth + "," + mDay + "," + hr
-								+ "," + min + "," + sec + "), y: "
-								+ (float)0.0 + ", color: 'orange'}; point2 = " + "{x: Date.UTC("
-								+ mYear + "," + mMonth + "," + mDay + "," + hr
-								+ "," + min + "," + sec + "), y: "
-								+ (float)0.0 + ", color: 'orange'};");
+						plotZeroValues(mYear,mMonth,mDay,hr,min,sec);
 					}
 					
 		        } else if (selected_sensor.equalsIgnoreCase("Humidity"))
@@ -218,28 +254,17 @@ public class ChartsWebViewActivity extends Activity {
 						findViewById(R.id.waiting_for_sensor_data_textView).setVisibility(View.GONE);
 						ArrayList<SensorDescMagneticNew> sensorDescs = sensorQuery.getSensorDescriptorList();
 
-						webView.loadUrl("javascript:" + "point0 = " + "[Date.UTC("
-								+ mYear + "," + mMonth + "," + mDay + "," + hr
-								+ "," + min + "," + sec + "),"
-								+ sensorDescs.get(sensorDescs.size()-1).getMagX()+ "];" + "point1 = " + "[Date.UTC("
-								+ mYear + "," + mMonth + "," + mDay + "," + hr
-								+ "," + min + "," + sec + "),"
-								+ sensorDescs.get(sensorDescs.size()-1).getMagY() + "];" + "point2 = " + "[Date.UTC("
-								+ mYear + "," + mMonth + "," + mDay + "," + hr
-								+ "," + min + "," + sec + "),"
-								+ sensorDescs.get(sensorDescs.size()-1).getMagZ() + "];");
+						lastValueX = sensorDescs.get(sensorDescs.size()-1).getMagX();
+						lastValueY = sensorDescs.get(sensorDescs.size()-1).getMagY();
+						lastValueZ = sensorDescs.get(sensorDescs.size()-1).getMagZ();
+						plotLastValues(mYear,mMonth,mDay,hr,min,sec);
+						initialized = true;
+					} else if(initialized)
+					{
+						plotLastValues(mYear,mMonth,mDay,hr,min,sec);
 					} else
 					{
-						webView.loadUrl("javascript:" + "point0 = " + "{x: Date.UTC("
-								+ mYear + "," + mMonth + "," + mDay + "," + hr
-								+ "," + min + "," + sec + "), y: "
-								+ (float)0.0 + ", color: 'orange'}; point1 = " + "{x: Date.UTC("
-								+ mYear + "," + mMonth + "," + mDay + "," + hr
-								+ "," + min + "," + sec + "), y: "
-								+ (float)0.0 + ", color: 'orange'}; point2 = " + "{x: Date.UTC("
-								+ mYear + "," + mMonth + "," + mDay + "," + hr
-								+ "," + min + "," + sec + "), y: "
-								+ (float)0.0 + ", color: 'orange'};");
+						plotZeroValues(mYear,mMonth,mDay,hr,min,sec);
 					}
 					
 		        } else if (selected_sensor.equalsIgnoreCase("Proximity"))
@@ -259,11 +284,13 @@ public class ChartsWebViewActivity extends Activity {
 		            displaySingleSensorValue(sensorQuery,fromTimestamp);
 		        } else if (selected_sensor.equalsIgnoreCase("Microphone"))
 		        {
-//		            SensorQueriesMicrophone sensorQ_Microphone= new SensorQueriesMicrophone(
-//		                    fromTimestamp, toTimestamp, getFilesDir());
+		        	//TODO (API not ready)
 		        } else if (selected_sensor.equalsIgnoreCase("Connectivity"))
 		        {
-//		            //TODO
+		            //TODO (API not ready)
+		        } else if (selected_sensor.equalsIgnoreCase("Noise"))
+		        {
+		            //TODO (API not ready)
 		        }
 			}
 
