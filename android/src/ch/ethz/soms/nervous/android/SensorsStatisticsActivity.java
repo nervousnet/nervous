@@ -65,6 +65,60 @@ public class SensorsStatisticsActivity extends Activity {
     private boolean serviceSwitchIsChecked = false;
     private HighlightArrayAdapter<String> arrayAdapter;
     
+    private String[] getActiveSensorsArray()
+    {
+    	ArrayList<String> sensors = new ArrayList<String>();
+    	if(SensorConfiguration.getInstance(getApplicationContext()).getInitialSensorCollectStatus(SensorDescAccelerometer.SENSOR_ID).isCollect() || SensorConfiguration.getInstance(getApplicationContext()).getInitialSensorCollectStatus(SensorDescAccelerometerNew.SENSOR_ID).isCollect())
+    	{
+    		sensors.add("Accelerometer");
+    	}
+    	if(SensorConfiguration.getInstance(getApplicationContext()).getInitialSensorCollectStatus(SensorDescBattery.SENSOR_ID).isCollect())
+    	{
+    		sensors.add("Battery");
+    	}
+    	//TODO add when API to query it is ready
+//    	if(SensorConfiguration.getInstance(getApplicationContext()).getInitialSensorCollectStatus(SensorDescConnectivity.SENSOR_ID).isCollect())
+//    	{
+//    		sensors.add("Connectivity");
+//    	}
+    	if(SensorConfiguration.getInstance(getApplicationContext()).getInitialSensorCollectStatus(SensorDescGyroscope.SENSOR_ID).isCollect())
+    	{
+    		sensors.add("Gyroscope");
+    	}
+    	if(SensorConfiguration.getInstance(getApplicationContext()).getInitialSensorCollectStatus(SensorDescHumidity.SENSOR_ID).isCollect())
+    	{
+    		sensors.add("Humidity");
+    	}
+    	if(SensorConfiguration.getInstance(getApplicationContext()).getInitialSensorCollectStatus(SensorDescMagnetic.SENSOR_ID).isCollect() || SensorConfiguration.getInstance(getApplicationContext()).getInitialSensorCollectStatus(SensorDescMagneticNew.SENSOR_ID).isCollect())
+    	{
+    		sensors.add("Magnetic");
+    	}
+    	//TODO add when API to query it is ready
+//    	if(SensorConfiguration.getInstance(getApplicationContext()).getInitialSensorCollectStatus(SensorDescMicrophone.SENSOR_ID).isCollect())
+//    	{
+//    		sensors.add("Microphone");
+//    	}
+    	//TODO add when API to query it is ready
+//    	if(SensorConfiguration.getInstance(getApplicationContext()).getInitialSensorCollectStatus(SensorDescNoise.SENSOR_ID).isCollect())
+//    	{
+//    		sensors.add("Noise");
+//    	}
+    	if(SensorConfiguration.getInstance(getApplicationContext()).getInitialSensorCollectStatus(SensorDescPressure.SENSOR_ID).isCollect())
+    	{
+    		sensors.add("Pressure");
+    	}
+    	if(SensorConfiguration.getInstance(getApplicationContext()).getInitialSensorCollectStatus(SensorDescProximity.SENSOR_ID).isCollect())
+    	{
+    		sensors.add("Proximity");
+    	}
+    	if(SensorConfiguration.getInstance(getApplicationContext()).getInitialSensorCollectStatus(SensorDescTemperature.SENSOR_ID).isCollect())
+    	{
+    		sensors.add("Temperature");
+    	}
+    	
+    	return sensors.toArray(new String[sensors.size()]);
+    }
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +130,8 @@ public class SensorsStatisticsActivity extends Activity {
 
         final ListView sensorsListView = ((ListView)findViewById(R.id.sensors_list_SensStatChart));
         sensorsListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        arrayAdapter = new HighlightArrayAdapter<String>(this,android.R.layout.simple_list_item_1,getResources().getStringArray(R.array.sensors_list));
+        
+        arrayAdapter = new HighlightArrayAdapter<String>(this,android.R.layout.simple_list_item_1,getActiveSensorsArray());
         sensorsListView.setAdapter(arrayAdapter);
 
         sensorsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -88,7 +143,6 @@ public class SensorsStatisticsActivity extends Activity {
                 arrayAdapter.notifyDataSetChanged();
             }
         });
-
     }
 
     public void toastToScreen(String msg, boolean lengthLong) {
