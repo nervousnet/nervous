@@ -60,7 +60,8 @@
         </activity>
         <activity
             android:name=".ChartsWebViewActivity"
-            android:label="@string/title_activity_charts_webview" >
+            android:label="@string/title_activity_charts_webview"
+            android:screenOrientation="portrait"  >
         </activity>
         <!--
         <activity
