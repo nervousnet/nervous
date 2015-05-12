@@ -285,15 +285,7 @@ public class MainActivity extends Activity {
 		TestQueries tq = new TestQueries(getApplicationContext(), getFilesDir());
 
 		Intent intent;
-		switch (item.getItemId()) {
-		case R.id.menu_IfThisThenThat:
-			intent = new Intent(this, IfThisThenThatActivity.class);
-			startActivity(intent);
-			break;
-		case R.id.menu_PrivacySettings:
-			intent = new Intent(this, SensorLoggingToggleActivity.class);
-			startActivity(intent);
-			break;
+		switch (item.getItemId()) {		
 		case R.id.menu_TestQuery_Battery_MinBattery:
 			tq.minBattery();
 			break;
@@ -337,17 +329,14 @@ public class MainActivity extends Activity {
 			tq.bottom10Proximity();
 			break;
 		case R.id.menu_TestQuery_Light_Prox_Kmean:
+			// TODO @Priya this method does not exist
 //			tq.lightProxKMean();
-			break;
-		case R.id.menu_settings:
-			intent = new Intent(this, SettingsActivity.class);
-			startActivity(intent);
-			break;
-//		case R.id.menu_SensorsStatistics:
-//	            intent = new Intent(this, SensorsStatisticsActivity.class);
-//	            intent.putExtra("serviceSwitchIsChecked",serviceSwitch.isChecked());
-//	            startActivity(intent);
-//	            break;
+			break;		
+		case R.id.menu_SensorsStatistics:
+	            intent = new Intent(this, SensorsStatisticsActivity.class);
+	            intent.putExtra("serviceSwitchIsChecked", serviceRunning);
+	            startActivity(intent);
+	            break;
 		default:
 			break;
 

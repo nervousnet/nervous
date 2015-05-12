@@ -14,15 +14,16 @@
         android:paddingBottom="2px" >
 
         <ListView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/sensors_list_SensStatChart"
-            android:drawSelectorOnTop="false"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="4.5"
             android:background="#F5F5F5"
             android:clickable="false"
+            android:drawSelectorOnTop="false"
             android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:layout_weight="4.5" />
+            android:focusableInTouchMode="false" />
+
     </RelativeLayout>
 
    <LinearLayout

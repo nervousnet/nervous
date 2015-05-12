@@ -9,31 +9,34 @@
         android:id="@+id/menu_main"
         android:title="Main Apps">
     </item>
-    <item
-        android:id="@+id/menu_visualizer"
-        android:title="Visualizer">
-    </item>
-    <item
-        android:id="@+id/menu_privacy"
-        android:title="Privacy">
-    </item>
     
     <item
-        android:id="@+id/menu_settings"
-        android:title="Settings">
-    </item>
-    <item
-        android:id="@+id/menu_IfThisThenThat"
-        android:title="If This Then That">
-    </item>
-    <item
-        android:id="@+id/menu_SensorLoggingToggle"
-        android:title="Sensor Logging Toggle">
-    </item>
-     <item
         android:id="@+id/menu_SensorsStatistics"
         android:title="Sensor statistics">
     </item>
+    
+    <!-- <item
+        android:id="@+id/menu_visualizer"
+        android:title="Visualizer">
+    </item> -->
+    <!-- <item
+        android:id="@+id/menu_privacy"
+        android:title="Privacy">
+    </item> -->
+    
+<!--     <item
+        android:id="@+id/menu_settings"
+        android:title="Settings">
+    </item> -->
+<!--     <item
+        android:id="@+id/menu_IfThisThenThat"
+        android:title="If This Then That">
+    </item> -->
+<!--     <item
+        android:id="@+id/menu_SensorLoggingToggle"
+        android:title="Sensor Logging Toggle">
+    </item> -->
+
     <item
         android:id="@+id/menu_TestQuery"
         android:title="Test Query">
