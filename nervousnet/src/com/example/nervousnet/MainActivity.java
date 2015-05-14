@@ -25,7 +25,7 @@ public class MainActivity extends Activity {
 	private static final int vibDuration = 50;
 	int selectedActivity;
 	private ImageButton btnMain, btnPrivacy, btnDataVis, btnColFreq, btnOn,
-			btnOff;
+			btnOff, btnServerInfo;
 	boolean serviceRunning;
 
 	@Override
@@ -44,6 +44,7 @@ public class MainActivity extends Activity {
 		btnColFreq = (ImageButton) findViewById(R.id.btn_collectionFrequency);
 		btnOn = (ImageButton) findViewById(R.id.btn_on);
 		btnOff = (ImageButton) findViewById(R.id.btn_off);
+		btnServerInfo = (ImageButton) findViewById(R.id.btn_serverInfo);
 
 		btnMain.setOnClickListener(new OnClickListener() {
 
@@ -80,6 +81,16 @@ public class MainActivity extends Activity {
 				vibrator.vibrate(vibDuration);
 				selectedActivity = 3;
 				animateAllButtonsOut(btnColFreq);
+			}
+
+		});
+		
+		btnServerInfo.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				vibrator.vibrate(vibDuration);
+				selectedActivity = 4;
+				animateAllButtonsOut(btnServerInfo);
 			}
 
 		});
@@ -220,6 +231,18 @@ public class MainActivity extends Activity {
 
 		resetButtonAnimateIn(btnColFreq, newW, newH, newX, newY);
 
+		//Server Info Button
+		scale = 0.2f;
+		w = maxX * scale;
+		h = maxY * scale;
+		newW = (int) Math.min(w, h);
+		newH = (int) Math.min(w, h);
+
+		newX = (maxX * 0.6f) - (newW / 2);
+		newY = (maxY * 0.9f) - (newH / 2);
+
+		resetButtonAnimateIn(btnServerInfo, newW, newH, newX, newY);
+		
 		// On-Off button
 		scale = 0.13f;
 		w = maxX * scale;
@@ -319,7 +342,7 @@ public class MainActivity extends Activity {
 				switch (selectedActivity) {
 				case 0:
 					intent = new Intent(MainActivity.this,
-							SensorLoggingToggleActivity.class);
+							ServerDetailsActivity.class);
 					intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 					break;
 				case 1:
@@ -335,6 +358,11 @@ public class MainActivity extends Activity {
 				case 3:
 					intent = new Intent(MainActivity.this,
 							SensorLoggingToggleActivity.class);
+					intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+					break;
+				case 4:
+					intent = new Intent(MainActivity.this,
+							ServerDetailsActivity.class);
 					intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 					break;
 
@@ -372,6 +400,9 @@ public class MainActivity extends Activity {
 		}
 		if (!selectedButton.equals(btnColFreq)) {
 			animateButtonOut(btnColFreq);
+		}
+		if (!selectedButton.equals(btnServerInfo)) {
+			animateButtonOut(btnServerInfo);
 		}
 		animateButtonOut(btnOn);
 		animateButtonOut(btnOff);
