@@ -357,7 +357,7 @@ public class MainActivity extends Activity {
 					break;
 				case 3:
 					intent = new Intent(MainActivity.this,
-							SensorLoggingToggleActivity.class);
+							SensorFrequencyActivity.class);
 					intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 					break;
 				case 4:
