@@ -14,6 +14,7 @@ import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -23,6 +24,7 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
+import android.widget.EditText;
 import ch.ethz.soms.nervous.android.sensors.SensorDesc;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.Builder;
@@ -34,8 +36,14 @@ public class UploadService extends Service {
 
 	private PowerManager.WakeLock wakeLock;
 
-	private SharedPreferences uploadPreferences;
+	private SharedPreferences uploadPreferences;	
 
+	private String nervousIP = "inn.ac";
+	private int nervousPort = 25600;
+	
+	private String additionalIP = null;
+	private int additionalPort = -1;
+	
 	private static final String LOG_TAG = UploadService.class.getSimpleName();
 
 	private final IBinder mBinder = new UploadBinder();
@@ -49,12 +57,16 @@ public class UploadService extends Service {
 	}
 
 	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
+	public int onStartCommand(Intent intent, int flags, int startId) {								
 
-		uploadPreferences = getSharedPreferences(NervousStatics.UPLOAD_PREFS, 0);
+		uploadPreferences = getSharedPreferences(NervousStatics.UPLOAD_PREFS, 0);		
+		
 		final int delay = uploadPreferences.getInt("UploadDelay", 10 * 1000);
 		final int period = uploadPreferences.getInt("UploadFrequency", 10 * 1000);
 
+		additionalIP = uploadPreferences.getString("serverIP", null);
+		additionalPort = uploadPreferences.getInt("serverPort", -1);
+		
 		final Handler handler = new Handler(hthread.getLooper());
 
 		final Runnable run = new Runnable() {
@@ -67,8 +79,24 @@ public class UploadService extends Service {
 
 				// Conditions subject to change to fit app purpose and user settings
 				if (isConnected) {
-					UploadTask task = new UploadTask();
-					task.execute();
+					
+					try {
+						Socket nervousServer = new Socket(nervousIP, nervousPort);
+						UploadTask task = new UploadTask(nervousServer);
+						task.execute();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					System.out.println(additionalIP + " " + additionalPort);
+					if (additionalIP != null && additionalPort != -1) {
+						try {						
+							Socket additionalServer = new Socket(additionalIP, additionalPort);
+							UploadTask task = new UploadTask(additionalServer);
+							task.execute();						
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
 				}
 
 				handler.postDelayed(this, period);
@@ -108,12 +136,16 @@ public class UploadService extends Service {
 
 	public class UploadTask extends AsyncTask<SensorDesc, Void, Void> {
 
+		Socket socket;
+		public UploadTask(Socket socket) {
+			this.socket = socket;
+		}
+		
 		@Override
 		protected Void doInBackground(SensorDesc... params) {
 			final SharedPreferences settings = getApplicationContext().getSharedPreferences(NervousStatics.SENSOR_PREFS, 0);
 			try {
-				NervousVM nvm = NervousVM.getInstance(getApplicationContext().getFilesDir());
-				Socket socket = new Socket("inn.ac", 25600);
+				NervousVM nvm = NervousVM.getInstance(getApplicationContext().getFilesDir());				
 				OutputStream os = socket.getOutputStream();
 				for (long i = 0x0; i < 0xC; i++) {
 					boolean doShare = settings.getBoolean(Long.toHexString(i) + "_doShare", true);

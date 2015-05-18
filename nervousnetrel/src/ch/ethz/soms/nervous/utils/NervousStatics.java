@@ -3,8 +3,7 @@ package ch.ethz.soms.nervous.utils;
 public class NervousStatics {
 
 	public final static String SENSOR_PREFS = "SensorPreferences";
+	public final static String SENSOR_FREQ= "SensorFrequencies";
 	public final static String SERVICE_PREFS = "ServicePreferences";
-	public final static String UPLOAD_PREFS = "UploadPreferences";
-
-	
+	public final static String UPLOAD_PREFS = "UploadPreferences";	
 }

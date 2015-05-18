@@ -44,7 +44,7 @@ public class MainActivity extends Activity {
 	private static final int vibDuration = 50;
 	int selectedActivity;
 	private ImageButton btnMain, btnPrivacy, btnDataVis, btnColFreq, btnOn,
-			btnOff;
+			btnOff,btnServerInfo;
 
 	
 	@Override
@@ -61,6 +61,7 @@ public class MainActivity extends Activity {
 		btnColFreq = (ImageButton) findViewById(R.id.btn_collectionFrequency);
 		btnOn = (ImageButton) findViewById(R.id.btn_on);
 		btnOff = (ImageButton) findViewById(R.id.btn_off);
+		btnServerInfo = (ImageButton) findViewById(R.id.btn_serverInfo);
 
 		btnMain.setOnClickListener(new OnClickListener() {
 
@@ -117,6 +118,14 @@ public class MainActivity extends Activity {
 			}
 		});
 
+		btnServerInfo.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				vibrator.vibrate(vibDuration);
+				selectedActivity = 4;
+				animateAllButtonsOut(btnServerInfo);
+			}
+		});
 		
 		updateServiceInfo();
 		if (!serviceRunning) {
@@ -393,6 +402,18 @@ public class MainActivity extends Activity {
 
 		resetButtonAnimateIn(btnColFreq, newW, newH, newX, newY);
 
+		//Server Info Button
+		scale = 0.2f;
+		w = maxX * scale;
+		h = maxY * scale;
+		newW = (int) Math.min(w, h);
+		newH = (int) Math.min(w, h);
+
+		newX = (maxX * 0.6f) - (newW / 2);
+		newY = (maxY * 0.9f) - (newH / 2);
+
+		resetButtonAnimateIn(btnServerInfo, newW, newH, newX, newY);
+		
 		// On-Off button
 		scale = 0.13f;
 		w = maxX * scale;
@@ -417,8 +438,7 @@ public class MainActivity extends Activity {
 			btnOn.setEnabled(false);
 			resetButtonAnimateIn(btnOff, newW, newH, newX, newY);
 			resetButtonPos(btnOn, newW, newH, newX, newY);
-		}
-
+		}		
 	}
 
 	private void resetButtonAnimateIn(ImageButton btn, int newW, int newH,
@@ -491,9 +511,10 @@ public class MainActivity extends Activity {
 				Intent intent = null;
 				switch (selectedActivity) {
 				case 0:
-					intent = new Intent(MainActivity.this,
-							SensorLoggingToggleActivity.class);
-					intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+//					intent = new Intent(MainActivity.this,
+//							ServerDetailsActivity.class);
+//					intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+					// TODO nothing yet
 					break;
 				case 1:
 					intent = new Intent(MainActivity.this,
@@ -502,15 +523,19 @@ public class MainActivity extends Activity {
 					break;
 				case 2:
 					intent = new Intent(MainActivity.this,
-							SensorLoggingToggleActivity.class);
+							SensorsStatisticsActivity.class);
 					intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 					break;
 				case 3:
 					intent = new Intent(MainActivity.this,
-							SensorLoggingToggleActivity.class);
+							SensorFrequencyActivity.class);
 					intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 					break;
-
+				case 4:
+					intent = new Intent(MainActivity.this,
+							ServerDetailsActivity.class);
+					intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+					break;
 				default:
 					break;
 				}
@@ -546,6 +571,9 @@ public class MainActivity extends Activity {
 		if (!selectedButton.equals(btnColFreq)) {
 			animateButtonOut(btnColFreq);
 		}
+		if (!selectedButton.equals(btnServerInfo)) {
+			animateButtonOut(btnServerInfo);
+		}
 		animateButtonOut(btnOn);
 		animateButtonOut(btnOff);
 	}
@@ -554,5 +582,5 @@ public class MainActivity extends Activity {
 
 		int toastLength = lengthLong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT;
 		Toast.makeText(getApplicationContext(), msg, toastLength).show();
-	}
+	}	
 }

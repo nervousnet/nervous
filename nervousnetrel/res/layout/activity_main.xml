@@ -40,6 +40,15 @@
         android:src="@drawable/lock" />
 
     <ImageButton
+        android:id="@+id/btn_serverInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/circle_orange1"
+        android:padding="18dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ico_server" />
+    
+    <ImageButton
         android:id="@+id/btn_DataVisualizer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -35,5 +35,7 @@
         <item>Proximity</item>
         <item>Temperature</item>
     </string-array>
+    <string name="title_activity_server_details">ServerDetailsActivity</string>
+    <string name="title_activity_sensor_frequency">SensorFrequencyActivity</string>
 
 </resources>
