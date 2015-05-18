@@ -32,6 +32,19 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.nervousnet.MainActivity" />
         </activity>
+        <activity
+            android:name=".ServerDetailsActivity"
+            android:label="@string/title_activity_server_details"
+            android:parentActivityName=".MainActivity" >
+        </activity>
+        <activity
+            android:name=".SensorFrequencyActivity"
+            android:label="@string/title_activity_sensor_frequency"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.nervousnet.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
