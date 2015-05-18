@@ -23,8 +23,12 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 	
 	public ArrayList<G> getSensorDescriptorList() { //get sensors desc list
 		ArrayList<G> descList = new ArrayList<G>();
-		for (SensorData sensorData : list) {
+		try{for (SensorData sensorData : list) {
 			descList.add(createSensorDescVectorValue(sensorData));
+		}
+		}
+		catch(Exception e1){
+			System.out.println(e1);
 		}
 		return descList;
 	}
@@ -78,7 +82,7 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 			//after that loop through all the elements and check if value within range
 			//output the descriptor in an ArrayList
 			
-			for(int i=0; i < desc_list.size(); i++) //loop through the data
+			try{for(int i=0; i < desc_list.size(); i++) //loop through the data
 			{
 				G sensDesc = desc_list.get(i);
 				ArrayList<Float> temp = new ArrayList<Float>();
@@ -99,6 +103,10 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 					answer.add(sensDesc);
 				}
 			}
+			}
+			catch(Exception e1){
+				System.out.println(e1);
+			}
 				
 		
 		return answer;		
@@ -109,7 +117,7 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 	public ArrayList<Float> getRmsError(ArrayList<Float> comp)
 	{
 		ArrayList<Float> answer = new ArrayList<Float>();
-		ArrayList<Float> average = new ArrayList<Float>();
+		try{ArrayList<Float> average = new ArrayList<Float>();
 		int s =0;
 		for (SensorData sensorData : list) {
 			G sensDesc = createSensorDescVectorValue(sensorData); // loop over the sensor data,get the object
@@ -131,7 +139,10 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 			temptemp = (float) Math.sqrt(temptemp);
 			answer.add(i,temptemp);
 		}
-		
+		}
+		catch(Exception e1){
+			System.out.println(e1);
+		}
 		return answer;//rms vector!!
 		
 	}
@@ -143,7 +154,7 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 		//d = 0 returns arraylist of variance for each reading
 		//d = 1 returns arraylist of variance for each variable of each reading(each x,y,z)
 		
-			ArrayList<Float> average = new ArrayList<Float>();
+			try{ArrayList<Float> average = new ArrayList<Float>();
 			for (SensorData sensorData : list) {
 				G sensDesc = createSensorDescVectorValue(sensorData); // loop over the sensor data,get the object
 				ArrayList<Float> temp = new ArrayList<Float>();       //temporary data
@@ -215,7 +226,10 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 				
 			}*/
 
-		
+			}
+			catch(Exception e1){
+				System.out.println(e1);
+			}
 		
 		return variance;
 	}
@@ -227,7 +241,7 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 		//d = 0 returns arraylist of variance for each reading
 		//d = 1 returns arraylist of variance for each variable of each reading
 		
-			ArrayList<Float> average = new ArrayList<Float>();
+			try{ArrayList<Float> average = new ArrayList<Float>();
 			for (SensorData sensorData : list) {
 				G sensDesc = createSensorDescVectorValue(sensorData); // loop over the sensor data,get the object
 				ArrayList<Float> temp = new ArrayList<Float>();       //temporary data
@@ -305,13 +319,16 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 			temp = (float) Math.sqrt(temp);
 			variance.add(i,temp);
 		}
-		
+			}
+			catch(Exception e1){
+				System.out.println(e1);
+			}
 		return variance;  //not variance SD!!
 	}
 	
 	public G getMaxValue() { //add all three values and find the maximum
 		G maxSensDesc = createDummyObject(); // dummy object
-		float maxAverage = 0;
+		try{float maxAverage = 0;
 		for (SensorData sensorData : list) {
 			G sensDesc = createSensorDescVectorValue(sensorData); // get sensor data
 			ArrayList<Float> value = new ArrayList<Float>();    
@@ -330,12 +347,16 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 				maxSensDesc = sensDesc;
 			}
 		}
+		}
+		catch(Exception e1){
+			System.out.println(e1);
+		}
 		return maxSensDesc; //return the object itself
 	}
 	
 	public G getMinValue() { // add all three values and find the minimum
 		G minSensDesc = createDummyObject();
-		float maxAverage = Float.MAX_VALUE;
+		try{float maxAverage = Float.MAX_VALUE;
 		for (SensorData sensorData : list) {
 			G sensDesc = createSensorDescVectorValue(sensorData);
 			ArrayList<Float> value = new ArrayList<Float>();    
@@ -351,10 +372,16 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 				minSensDesc = sensDesc;
 			}
 		}
+		}
+		catch(Exception e1){
+			System.out.println(e1);
+		}
 		return minSensDesc; //return object itself
 	}
 	
 	public ArrayList<G> getLargest(int k) {  //largest values within this range
+		ArrayList<G> descList = new ArrayList<G>();
+		try{
 		Comparator<G> comparator = new LargestFirstComparator();
 		PriorityQueue<G> prioQueue = new PriorityQueue<G>(3,comparator);
 
@@ -362,22 +389,27 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 			prioQueue.add(createSensorDescVectorValue(sensorData));
 		}
 		int i = 1;
-		ArrayList<G> descList = new ArrayList<G>();
+		
 		while (i <= k && !prioQueue.isEmpty()) {
 			descList.add(prioQueue.poll());
 			++i;
+		}
+		}
+		catch(Exception e1){
+			System.out.println(e1);
 		}
 		return descList;
 	}
 	
 	public G getRankLargest(int k) {  //largest values within this range
-		Comparator<G> comparator = new LargestFirstComparator();
+		G dummydesc = createDummyObject();
+		try{Comparator<G> comparator = new LargestFirstComparator();
 		PriorityQueue<G> prioQueue = new PriorityQueue<G>(11,comparator);
 
 		for (SensorData sensorData : list) {
 			prioQueue.add(createSensorDescVectorValue(sensorData));
 		}
-		G dummydesc = createDummyObject();
+		
 		int i = 1;
 		
 		while (i <= k && !prioQueue.isEmpty()) {
@@ -389,17 +421,23 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 			prioQueue.poll();
 			++i;
 		}
+	}
+		catch(Exception e1){
+			System.out.println(e1);
+		}
 		return dummydesc;
 	}
 	
 	public G getRankSmallest(int k) {  //largest values within this range
+		G dummydesc = createDummyObject();
+		try{
 		Comparator<G> comparator = new SmallestFirstComparator();
 		PriorityQueue<G> prioQueue = new PriorityQueue<G>(11,comparator);
 
 		for (SensorData sensorData : list) {
 			prioQueue.add(createSensorDescVectorValue(sensorData));
 		}
-		G dummydesc = createDummyObject();
+		
 		int i = 1;
 		
 		while (i <= k && !prioQueue.isEmpty()) {
@@ -411,10 +449,16 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 			prioQueue.poll();
 			++i;
 		}
+		}
+		catch(Exception e1){
+			System.out.println(e1);
+		}
 		return dummydesc;
 	}
 	
 	public ArrayList<G> getSmallest(int k) {
+		ArrayList<G> descList = new ArrayList<G>();
+		try{
 		Comparator<G> comparator = new SmallestFirstComparator();
 		PriorityQueue<G> prioQueue = new PriorityQueue<G>(11, comparator);
 
@@ -422,17 +466,21 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 			prioQueue.add(createSensorDescVectorValue(sensorData));
 		}
 		int i = 1;
-		ArrayList<G> descList = new ArrayList<G>();
+		
 		while (i <= k && !prioQueue.isEmpty()) {
 			descList.add(prioQueue.poll());
 			++i;
+		}
+		}
+		catch(Exception e1){
+			System.out.println(e1);
 		}
 		return descList;
 	}
 	
 	public ArrayList<Float> getAverage() {                       // find the average of all the values
 		ArrayList<Float> average = new ArrayList<Float>();  
-		          // 0-> avg of x and so on...
+		  try{        // 0-> avg of x and so on...
 		for (SensorData sensorData : list) {
 			G sensDesc = createSensorDescVectorValue(sensorData); // loop over the sensor data,get the object
 			ArrayList<Float> temp = new ArrayList<Float>();       //temporary data
@@ -451,7 +499,10 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 			temptemp = temptemp/list.size();
 			average.set(i,temptemp);
 		}
-		
+		  }
+		catch(Exception e1){
+			System.out.println(e1);
+		}
 		return average;
 	}
 	
@@ -466,7 +517,7 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 		    }
 		}*/
 		
-		Comparator<G> comparator = new SmallestFirstComparator();
+		try{ Comparator<G> comparator = new SmallestFirstComparator();
 		ArrayList<G> arrList = new ArrayList<G>();
 
 		// Add all SensorDesc
@@ -495,14 +546,22 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 				median.set(i, temptemp);
 				
 			}
+		
 			return median;
 		}
+		}
+		catch(Exception e1){
+			System.out.println(e1);
+			ArrayList<Float> k= new ArrayList<Float>();
+			return k;
+		}
+		
 	}
 	
 
 	public ArrayList<Float> getSum() {                       // find the average of all the values
 		ArrayList<Float> sum = new ArrayList<Float>();        // 0-> avg of x and so on...
-		for (SensorData sensorData : list) {
+		try{for (SensorData sensorData : list) {
 			G sensDesc = createSensorDescVectorValue(sensorData); // loop over the sensor data,get the object
 			ArrayList<Float> temp = new ArrayList<Float>();       //temporary data
 			temp = sensDesc.getValue();
@@ -513,13 +572,16 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 			}
 			
 		}
-		
+		}
+		catch(Exception e1){
+			System.out.println(e1);
+		}
 		return sum;
 	}
 	
 	public ArrayList<Float> getSumSquare() {                       // find the average of all the values
 		ArrayList<Float> sum = new ArrayList<Float>();        // 0-> avg of x and so on...
-		for (SensorData sensorData : list) {
+		try{for (SensorData sensorData : list) {
 			G sensDesc = createSensorDescVectorValue(sensorData); // loop over the sensor data,get the object
 			ArrayList<Float> temp = new ArrayList<Float>();       //temporary data
 			temp = sensDesc.getValue();
@@ -530,13 +592,16 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 			}
 			
 		}
-		
+		}
+		catch(Exception e1){
+			System.out.println(e1);
+		}
 		return sum;
 	}
 	
 	public ArrayList<Float> getRms() {                       // find the average of all the values
 		ArrayList<Float> sum = new ArrayList<Float>();        // 0-> avg of x and so on...
-		for (SensorData sensorData : list) {
+		try{for (SensorData sensorData : list) {
 			G sensDesc = createSensorDescVectorValue(sensorData); // loop over the sensor data,get the object
 			ArrayList<Float> temp = new ArrayList<Float>();       //temporary data
 			temp = sensDesc.getValue();
@@ -554,13 +619,17 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 			temptemp = (float) Math.sqrt(temptemp);
 			sum.set(i,temptemp);
 		}
+		}
+		catch(Exception e1){
+			System.out.println(e1);
+		}
 		
 		return sum;
 	}
 
 	public ArrayList<Float> getMeanSquare() {                       // find the average of all the values
 		ArrayList<Float> sum = new ArrayList<Float>();        // 0-> avg of x and so on...
-		for (SensorData sensorData : list) {
+		try{for (SensorData sensorData : list) {
 			G sensDesc = createSensorDescVectorValue(sensorData); // loop over the sensor data,get the object
 			ArrayList<Float> temp = new ArrayList<Float>();       //temporary data
 			temp = sensDesc.getValue();
@@ -577,7 +646,10 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 			temptemp = temptemp/list.size();
 			sum.set(i,temptemp);
 		}
-		
+		}
+		catch(Exception e1){
+			System.out.println(e1);
+		}
 		return sum;
 	}
 
@@ -586,7 +658,7 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 		@Override
 		public int compare(G lhs, G rhs) {
 
-			ArrayList<Float> lVal = new ArrayList<Float>();
+			try{ArrayList<Float> lVal = new ArrayList<Float>();
 			lVal = lhs.getValue();
 			int i;
 			Float lsum = (float) 0;
@@ -607,6 +679,11 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 			} else {
 				return 0;
 			}
+			}
+			catch(Exception e1){
+				System.out.println(e1);
+				return 1000;
+			}
 		}
 
 	}
@@ -616,7 +693,7 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 		@Override
 		public int compare(G lhs, G rhs) {
 
-			ArrayList<Float> lVal = new ArrayList<Float>();
+			try{ArrayList<Float> lVal = new ArrayList<Float>();
 			lVal = lhs.getValue();
 			int i;
 			Float lsum = (float) 0;
@@ -638,6 +715,11 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 				return 0;
 			}
 		}
+			catch(Exception e1){
+				System.out.println(e1);
+				return 1000;
+			}
+		}
 
 	}
 	
@@ -645,7 +727,7 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 	{
 		ArrayList<Float> moo = new ArrayList<Float>();//results
 		
-		ArrayList<Float> avg = new ArrayList<Float>();
+		try {ArrayList<Float> avg = new ArrayList<Float>();
 		ArrayList<Float> avg1 = new ArrayList<Float>();
 		
 		ArrayList< ArrayList<Float> > a = new ArrayList<ArrayList<Float> >();//centered data
@@ -738,7 +820,10 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 			float temp = top.get(i)/(bota.get(i)*botb.get(i));
 			moo.add(i,temp);
 		}
-		
+		}
+		catch(Exception e1){
+			System.out.println(e1);
+		}
 		return moo;//size of different variables
 	}
 		
@@ -749,7 +834,8 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 	public ArrayList<Float> getEntropy()
 		{
 			ArrayList<Float> moo = new ArrayList<Float>();
-			ArrayList<Float> average = new ArrayList<Float>();  
+			try{
+				ArrayList<Float> average = new ArrayList<Float>();  
 	          // 0-> avg of x and so on...
 	for (SensorData sensorData : list) {
 		G sensDesc = createSensorDescVectorValue(sensorData); // loop over the sensor data,get the object
@@ -774,6 +860,7 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 			 temptemp = temptemp / average.get(i);
 			 temp.add(i,temptemp);                            //now temp contains the probabilities of x,y,z
 		}
+		
 		prob.add(temp);    
 		
 	}
@@ -791,15 +878,22 @@ public abstract G createSensorDescVectorValue(SensorData sensorData);
 	}
 	
 	
-	
-	
+		}
+	catch(Exception e1){
+		System.out.println(e1);
+	}
 			return moo;
 		}
+	
+	
 	
 	public ArrayList<Float> getKMeans(int n,ArrayList<Float> init)
 	{
 		ArrayList<Float> moo = new ArrayList<Float>();
-		
+		try{}
+		catch(Exception e1){
+			System.out.println(e1);
+		}
 		
 		return moo;
 	}

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import ch.ethz.soms.nervous.android.sensors.SensorDescTemperature;
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
 
-public class SensorQueriesTemperature extends
+public class SensorQueriesTemparature extends
 		QueryNumSingleValue<SensorDescTemperature> {
 
 	@Override
@@ -16,7 +16,7 @@ public class SensorQueriesTemperature extends
 		return SensorDescTemperature.SENSOR_ID;
 	}
 
-	public SensorQueriesTemperature(long timestamp_from, long timestamp_to,
+	public SensorQueriesTemparature(long timestamp_from, long timestamp_to,
 			File file) {
 		super(timestamp_from, timestamp_to, file);
 	}

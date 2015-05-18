@@ -1,8 +1,10 @@
 package ch.ethz.soms.nervous.android.sensors;
 
+import java.util.ArrayList;
+
 import ch.ethz.soms.nervous.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
 
-public class SensorDescConnectivity extends SensorDesc {
+public class SensorDescConnectivity extends SensorDescVectorValue {
 
 	public static final long SENSOR_ID = 0x000000000000000AL;
 
@@ -49,7 +51,21 @@ public class SensorDescConnectivity extends SensorDesc {
 	public long getSensorId() {
 		return SENSOR_ID;
 	}
-
+	
+	public String getWifiHashId()
+	{
+		return wifiHashId;
+	}
+	
+	public int getWifiStrength()
+	{
+		return wifiStrength;
+	}
+	
+	public String getMobileHashId()
+	{
+		return mobileHashId;
+	}
 	@Override
 	public SensorData toProtoSensor() {
 		SensorData.Builder sdb = SensorData.newBuilder();
@@ -62,5 +78,32 @@ public class SensorDescConnectivity extends SensorDesc {
 		sdb.addValueString(mobileHashId);
 		return sdb.build();
 	}
+
+	@Override
+	public ArrayList<Float> getValue() {//convert boolean and string to float!!
+		// TODO Auto-generated method stub
+		ArrayList<Float> arrayList = new ArrayList<Float>();
+		int conn=0;
+		boolean temp = isConnected();
+		if(temp == true)
+			conn=1;
+		arrayList.add((float) conn);
+		arrayList.add((float) getNetworkType());
+		int roam =0;
+		temp = isRoaming();
+		if(temp == true)
+			roam = 1;
+		arrayList.add((float) roam);
+		String moo = getWifiHashId();
+		
+		arrayList.add(Float.valueOf(moo));
+		arrayList.add((float) getWifiStrength());
+		moo = getMobileHashId();
+		arrayList.add(Float.valueOf(moo));
+		
+		return arrayList;
+	}
+	
+	
 
 }

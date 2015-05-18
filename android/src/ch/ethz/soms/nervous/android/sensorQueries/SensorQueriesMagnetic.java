@@ -32,8 +32,6 @@ public class SensorQueriesMagnetic extends QueryNumVectorValue<SensorDescMagneti
 		// TODO Auto-generated method stub
 		return new SensorDescMagneticNew(0, 0, 0, 0);
 	}
-
-	
 	
 	
 	

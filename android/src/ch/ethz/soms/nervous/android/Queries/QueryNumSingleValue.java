@@ -1,4 +1,5 @@
 package ch.ethz.soms.nervous.android.Queries;
+//exception are done!!(just basic ones)
 
 import java.io.File;
 import java.util.ArrayList;
@@ -23,9 +24,18 @@ public abstract class QueryNumSingleValue <G extends SensorDescSingleValue> exte
 	public abstract G createSensorDescSingleValue(SensorData sensorData);
 	
 	public ArrayList<G> getSensorDescriptorList() {
+		
 		ArrayList<G> descList = new ArrayList<G>();
+		try{
+			
+		
 		for (SensorData sensorData : list) {
 			descList.add(createSensorDescSingleValue(sensorData));
+		}
+		
+		}
+		catch(Exception e){
+			System.out.println(e);
 		}
 		return descList;
 	}
@@ -39,13 +49,19 @@ public abstract class QueryNumSingleValue <G extends SensorDescSingleValue> exte
 		//after that loop through all the elements and check if value within range
 		//output the descriptor in an ArrayList
 		
-		for(int i=0;i<desc_list.size();i++) //loop through the data
+		try{
+			for(int i=0;i<desc_list.size();i++) //loop through the data
+		
 		{
 			G sensDesc = desc_list.get(i);
 			if(sensDesc.getValue() <= end && sensDesc.getValue() >= start)
 			{
 				answer.add(sensDesc);
 			}
+		}
+		}
+		catch(Exception e1){
+			System.out.println(e1);
 		}
 		
 		return answer;
@@ -55,7 +71,9 @@ public abstract class QueryNumSingleValue <G extends SensorDescSingleValue> exte
 	{
 		ArrayList<Float> sd = new ArrayList<Float>();
 		
-		 float totalSum = 0;
+		 try{
+			 float totalSum = 0;
+		 
 			for (SensorData sensorData : list) {
 				G sensDesc = createSensorDescSingleValue(sensorData);
 				totalSum += sensDesc.getValue();
@@ -71,7 +89,10 @@ public abstract class QueryNumSingleValue <G extends SensorDescSingleValue> exte
 			temp = temp / list.size();
 			temp = (float) Math.sqrt(temp);
 			sd.add(0, temp);
-		
+		 }
+		 catch(Exception e){
+				System.out.println(e);
+			}
 		return sd;//sd!! not variance!!
 	}
 	
@@ -79,7 +100,9 @@ public abstract class QueryNumSingleValue <G extends SensorDescSingleValue> exte
 	{
 		ArrayList<Float> variance = new ArrayList<Float>();
 		
-		 float totalSum = 0;
+		 try{
+			 float totalSum = 0;
+		 
 			for (SensorData sensorData : list) {
 				G sensDesc = createSensorDescSingleValue(sensorData);
 				totalSum += sensDesc.getValue();
@@ -94,13 +117,20 @@ public abstract class QueryNumSingleValue <G extends SensorDescSingleValue> exte
 			
 			temp = temp / list.size();
 			variance.add(0, temp);
+		 }
+		 catch(Exception e){
+				System.out.println(e);
+			}
+		 
 		return variance;
 		
 	}
 	
 	public G getMaxValue() {  
-		Float maxVal = Float.MIN_VALUE;
 		G maxSensDesc = createDummyObject();
+		try{
+		Float maxVal = Float.MIN_VALUE;
+		
 		for (SensorData sensorData : list) {
 			G sensDesc = createSensorDescSingleValue(sensorData);
 			if (sensDesc.getValue() > maxVal) {
@@ -108,10 +138,16 @@ public abstract class QueryNumSingleValue <G extends SensorDescSingleValue> exte
 				maxSensDesc = sensDesc;
 			}
 		}
+	}
+		catch(Exception e1){
+			System.out.println(e1);
+		}
 		return maxSensDesc;
 	}
 
 	public ArrayList<Float> getAverage(){
+		ArrayList<Float> temp = new ArrayList<Float>();
+		try{
 		 float totalSum = 0;
 		for (SensorData sensorData : list) {
 			G sensDesc = createSensorDescSingleValue(sensorData);
@@ -119,12 +155,18 @@ public abstract class QueryNumSingleValue <G extends SensorDescSingleValue> exte
 		}
 
 		float average = totalSum / (list.size());
-		ArrayList<Float> temp = new ArrayList<Float>();
+		
 		temp.add(0, average);
+		}
+		catch(Exception e1){
+			System.out.println(e1);
+		}
 		return temp;
 	}
 	
 	public ArrayList<Float> getRms(){
+		ArrayList<Float> temp = new ArrayList<Float>();
+		try{
 		 float totalSum = 0;
 		for (SensorData sensorData : list) {
 			G sensDesc = createSensorDescSingleValue(sensorData);
@@ -132,13 +174,19 @@ public abstract class QueryNumSingleValue <G extends SensorDescSingleValue> exte
 		}
 
 		float average = totalSum / (list.size());//meansquare
-		ArrayList<Float> temp = new ArrayList<Float>();
+		
 		average = (float) Math.sqrt(average);//rms
 		temp.add(0, average);
+		}
+		catch(Exception e1){
+			System.out.println(e1);
+		}
 		return temp;
 	}
 
 	public ArrayList<Float> getMeanSquare(){
+		ArrayList<Float> temp = new ArrayList<Float>();
+		try{
 		 float totalSum = 0;
 		for (SensorData sensorData : list) {
 			G sensDesc = createSensorDescSingleValue(sensorData);
@@ -146,31 +194,44 @@ public abstract class QueryNumSingleValue <G extends SensorDescSingleValue> exte
 		}
 
 		float average = totalSum / (list.size());
-		ArrayList<Float> temp = new ArrayList<Float>();
 		
-		temp.add(0, average);
+		temp.add(0, average);}
+		catch(Exception e1){
+			System.out.println(e1);
+		}
 		return temp;
 	}
 	
 	public ArrayList<Float> getSum() {
-		float totalSum = 0;
+		ArrayList<Float> temp = new ArrayList<Float>();
+		try{float totalSum = 0;
 		for (SensorData sensorData : list) {
 			G sensDesc = createSensorDescSingleValue(sensorData);
 			totalSum += sensDesc.getValue();
 		}
-		ArrayList<Float> temp = new ArrayList<Float>();
-		temp.add(0, totalSum);
+		
+		temp.add(0, totalSum);}
+		catch(Exception e1){
+			System.out.println(e1);
+		}
+		
 		return temp;
 	}
 	
 	public ArrayList<Float> getSumSquare() {
 		float totalSum = 0;
+		ArrayList<Float> temp = new ArrayList<Float>();
+		try{
 		for (SensorData sensorData : list) {
 			G sensDesc = createSensorDescSingleValue(sensorData);
 			totalSum += Math.pow(sensDesc.getValue(), 2);
 		}
-		ArrayList<Float> temp = new ArrayList<Float>();
+		
 		temp.add(0, totalSum);
+		}
+		catch(Exception e1){
+			System.out.println(e1);
+		}
 		return temp;
 	}
 	
@@ -178,12 +239,16 @@ public abstract class QueryNumSingleValue <G extends SensorDescSingleValue> exte
 		Float minVal = Float.MAX_VALUE;
 		G minSensDesc = createDummyObject();
 
-		for (SensorData sensorData : list) {
+		try{for (SensorData sensorData : list) {
 			G sensDesc = createSensorDescSingleValue(sensorData);
 			if (sensDesc.getValue() < minVal) {
 				minVal = sensDesc.getValue();
 				minSensDesc = sensDesc;
 			}
+		}
+		}
+		catch(Exception e1){
+			System.out.println(e1);
 		}
 		return minSensDesc;
 	}
@@ -191,7 +256,7 @@ public abstract class QueryNumSingleValue <G extends SensorDescSingleValue> exte
 	public ArrayList<Float> getRmsError(ArrayList<Float> comp) // sum of squared diff between same sensor readings at different timestamps
 	{// 1 val vs all
 		ArrayList<Float> answer = new ArrayList<Float>();
-		float temp = 0;
+		try{float temp = 0;
 		float data = comp.get(0);//only 1 data
 		for(SensorData sensordata:list)
 		{
@@ -200,13 +265,17 @@ public abstract class QueryNumSingleValue <G extends SensorDescSingleValue> exte
 		}
 		temp = temp / list.size();
 		temp = (float) Math.sqrt(temp);
-		answer.add(0, temp);
+		answer.add(0, temp);}
+		catch(Exception e1){
+			System.out.println(e1);
+		}
 		return answer;//single value return
 		
 	}
 
 	public ArrayList<Float> getMedian() {//middle element
-		Comparator<G> comparator = new SmallestFirstComparator();
+		ArrayList<Float> temp = new ArrayList<Float>();
+		try{Comparator<G> comparator = new SmallestFirstComparator();
 		ArrayList<G> arrList = new ArrayList<G>();
 
 		// Add all SensorDesc
@@ -224,14 +293,20 @@ public abstract class QueryNumSingleValue <G extends SensorDescSingleValue> exte
 			float r2 = arrList.get((int) middle + 1).getValue();
 			result = (r1 + r2) / 2;
 		}
-		ArrayList<Float> temp = new ArrayList<Float>();
+		
 		temp.add(0, result);
+		}
+		catch(Exception e1){
+			System.out.println(e1);
+		}
 		return temp;
 	}
 	
 	
 
 	public ArrayList<G> getLargest(int k) { //largest top 10
+		ArrayList<G> descList = new ArrayList<G>();
+		try{
 		Comparator<G> comparator = new LargestFirstComparator();
 		PriorityQueue<G> prioQueue = new PriorityQueue<G>(3, comparator);
 
@@ -239,15 +314,20 @@ public abstract class QueryNumSingleValue <G extends SensorDescSingleValue> exte
 			prioQueue.add(createSensorDescSingleValue(sensorData));
 		}
 		int i = 1;
-		ArrayList<G> descList = new ArrayList<G>();
+		
 		while (i <= k && !prioQueue.isEmpty()) {
 			descList.add(prioQueue.poll());
 			++i;
+		}}
+		catch(Exception e1){
+			System.out.println(e1);
 		}
 		return descList;
 	}
 
 	public ArrayList<G> getSmallest(int k) {//smallest bottom 10
+		ArrayList<G> descList = new ArrayList<G>();
+		try{
 		Comparator<G> comparator = new SmallestFirstComparator();
 		PriorityQueue<G> prioQueue = new PriorityQueue<G>(3, comparator);
 
@@ -255,17 +335,21 @@ public abstract class QueryNumSingleValue <G extends SensorDescSingleValue> exte
 			prioQueue.add(createSensorDescSingleValue(sensorData));
 		}
 		int i = 1;
-		ArrayList<G> descList = new ArrayList<G>();
+		
 		while (i <= k && !prioQueue.isEmpty()) {
 			descList.add(prioQueue.poll());
 			++i;
 		}
+		}catch(Exception e1){
+			System.out.println(e1);
+		}
+		
 		return descList;
 	}
 	
 	public G getRankSmallest(int k) {//rank k from acsending order
 		//1 based rank
-		Comparator<G> comparator = new SmallestFirstComparator();//ascending order
+		try{Comparator<G> comparator = new SmallestFirstComparator();//ascending order
 		PriorityQueue<G> prioQueue = new PriorityQueue<G>(3, comparator);
 
 		for (SensorData sensorData : list) {
@@ -284,12 +368,17 @@ public abstract class QueryNumSingleValue <G extends SensorDescSingleValue> exte
 			prioQueue.poll();//don't care!
 			++i;
 		}
-		return dummydesc;
+		return dummydesc;}
+		catch(Exception e1){
+			System.out.println(e1);
+			G d = createDummyObject();
+			return d;
+		}
 	}
 	
 	public G getRankLargest(int k) {//largest elelment of rank k
 		//1 based rank
-		Comparator<G> comparator = new LargestFirstComparator();//descending order
+		try{Comparator<G> comparator = new LargestFirstComparator();//descending order
 		PriorityQueue<G> prioQueue = new PriorityQueue<G>(3, comparator);//more general than a queue
 
 		for (SensorData sensorData : list) {
@@ -308,7 +397,12 @@ public abstract class QueryNumSingleValue <G extends SensorDescSingleValue> exte
 			prioQueue.poll();//don't care!
 			++i;
 		}
-		return dummydesc;
+		return dummydesc;}
+		catch(Exception e1){
+			System.out.println(e1);
+			G d = createDummyObject();
+			return d;
+		}
 	}
 
 	public class SmallestFirstComparator implements Comparator<G> {
@@ -316,7 +410,7 @@ public abstract class QueryNumSingleValue <G extends SensorDescSingleValue> exte
 		@Override
 		public int compare(G lhs, G rhs) {
 
-			float lVal = lhs.getValue();
+			try{float lVal = lhs.getValue();
 			float rVal = rhs.getValue();
 			if (lVal < rVal) {
 				return -1;
@@ -324,6 +418,10 @@ public abstract class QueryNumSingleValue <G extends SensorDescSingleValue> exte
 				return 1;
 			} else {
 				return 0;
+			}}
+			catch(Exception e1){
+				System.out.println(e1);
+				return 1000;
 			}
 		}
 
@@ -334,7 +432,7 @@ public abstract class QueryNumSingleValue <G extends SensorDescSingleValue> exte
 		@Override
 		public int compare(G lhs, G rhs) {
 
-			float lVal = lhs.getValue();
+			try{float lVal = lhs.getValue();
 			float rVal = rhs.getValue();
 			if (lVal > rVal) {
 				return -1;
@@ -342,6 +440,10 @@ public abstract class QueryNumSingleValue <G extends SensorDescSingleValue> exte
 				return 1;
 			} else {
 				return 0;
+			}}
+			catch(Exception e1){
+				System.out.println(e1);
+				return 1000;
 			}
 		}
 
@@ -349,6 +451,8 @@ public abstract class QueryNumSingleValue <G extends SensorDescSingleValue> exte
 	
 public ArrayList<Float> getCorrelation(ArrayList<G> comp,ArrayList<G> comp1)//single value sensors
 {
+	ArrayList<Float> c3 = new ArrayList<Float>();
+	try{
 	//output is the correlation index
 	float totalSum = 0;
 	for (int i = 0;i<comp.size();i++) {
@@ -398,8 +502,11 @@ public ArrayList<Float> getCorrelation(ArrayList<G> comp,ArrayList<G> comp1)//si
 	
 	float bottom = (float) Math.sqrt(a2*b2);
 	float coef = top / bottom;
-	ArrayList<Float> c3 = new ArrayList<Float>();
-	c3.add(coef);
+	
+	c3.add(coef);}
+	catch(Exception e1){
+		System.out.println(e1);
+	}
 	return c3;
 
 	
@@ -408,7 +515,8 @@ public ArrayList<Float> getCorrelation(ArrayList<G> comp,ArrayList<G> comp1)//si
 	
 	public ArrayList<Float> getEntropy()
 	{
-		float ent = 0;
+		ArrayList<Float> n = new ArrayList<Float>();
+		try{ float ent = 0;
 		// get total sum
 		// get probability
 		// p * log(1/p) addition return
@@ -431,8 +539,13 @@ public ArrayList<Float> getCorrelation(ArrayList<G> comp,ArrayList<G> comp1)//si
 		{
 			ent = (float) (ent + prob.get(i)*Math.log10(1/prob.get(i)));
 		}
-		ArrayList<Float> n = new ArrayList<Float>();
+		
 		n.add(ent);
+		}
+		catch(Exception e1){
+			System.out.println(e1);
+		}
+		
 		return n;
 	}
 
@@ -451,6 +564,12 @@ public ArrayList<Float> getCorrelation(ArrayList<G> comp,ArrayList<G> comp1)//si
 	public ArrayList<Float> getKMeans(int n,ArrayList<Float> init)
 	{
 		ArrayList<Float> moo = new ArrayList<Float>();
+		try{
+			
+		}
+		catch(Exception e1){
+			System.out.println(e1);
+		}
 		
 		
 		return moo;

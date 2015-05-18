@@ -60,7 +60,7 @@ public abstract class QueryNum<G extends SensorDesc> extends Query<G>{
 	
 	public  abstract ArrayList<Float> getAverage(); 
 	
-	public abstract ArrayList<Float> getKMeans(int n, ArrayList<Float> init);
+	public abstract ArrayList<Float> getKMeans(int n, ArrayList<Float> init);//to be impl
 	
 	
 	
